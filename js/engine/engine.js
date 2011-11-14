@@ -12,6 +12,7 @@ var Game = function() {
     }
     this.proceed = function() {
 	c2d.clearRect( 0, 0, display2d.width, display2d.height );
+	dispatcher.check();
 	objectManager.updateAll();
 	this.stage.drawAll();
     }

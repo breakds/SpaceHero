@@ -47,7 +47,15 @@ var Square = function() {
 	    this.velocity = -this.velocity;
 	}
 	this.x += this.velocity;
+	/// Event Test
+	if ( Math.abs(this.x - 300) < 21 ) {
+	    dispatcher.broadcast( { name: "TestEvent" } );
+	}
     }
+    this.onTestEvent = function() {
+	trace( "hey!" );
+    }
+    dispatcher.addListener( "TestEvent", this );
 }
 Square.prototype = new GameObject();
 
