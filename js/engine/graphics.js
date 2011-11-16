@@ -11,7 +11,7 @@ var mvMatrixStack = [];
 var pMatrix = mat4.create();
 
 	
-var ambientLight = [0.2, 0.2, 0.2];
+var ambientLight = [0.0, 0.0, 0.0];
 var lightPos = [0.0, 3.0, 0.0];
 var lightDiffColor = [0.7, 0.7, 0.7];
 var lightSpecColor = [0.4, 0.4, 0.4];

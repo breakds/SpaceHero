@@ -53,7 +53,7 @@ var Square = function() {
 	}
     }
     this.onTestEvent = function() {
-	trace( "hey!" );
+	//trace( "hey!" );
     }
     dispatcher.addListener( "TestEvent", this );
 }
@@ -62,14 +62,6 @@ Square.prototype = new GameObject();
 var square = new Square();
 var square = new Square();
 
-var testPlanet = new Model("ball.obj", "testPlanet.png");
-testPlanet.setPosition(0,0,-10);
-testPlanet.setRotation(30,0,0);
-//model.setScale(0.3,0.3,0.3);
-testPlanet.constantRotation(0,0.05,0);
-var testClouds = new Model("ball.obj", "clouds.png");
-testClouds.setPosition(0,0,-10);
-testClouds.setRotation(30,0,0);
-testClouds.setScale(1.1,1.1,1.1);
-testClouds.constantRotation(0,0.20,0);
+var testStar = new Star("star1.png", 0, 0, -20, 2);
+var testPlanet = new Planet("testPlanet.png", "clouds.png", -8, 0, -20, 1);
 game.play();

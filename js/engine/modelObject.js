@@ -1,77 +1,20 @@
-
-
-var ModelView = function( m ) {
-    this.setModel( m );
-	var that = this.model;
-	
-	
-	
-    /// Do register a view on stage !!!
-    this.register( battleField );
+function Model(modelPath, texturePath) {
+    var that = this;
     
-    this.draw = function() {
-		mvPushMatrix();
-		mat4.translate(mvMatrix, [that.pos[0], that.pos[1], that.pos[2]]);
-		mat4.rotate(mvMatrix, that.rot[0], [1.0, 0, 0]);
-		mat4.rotate(mvMatrix, that.rot[1], [0, 1.0, 0]);
-		mat4.rotate(mvMatrix, that.rot[2], [0, 0, 1.0]);
-		mat4.scale(mvMatrix, [that.size[0], that.size[1], that.size[2]]);
-		
-		
-		var shaderProgram = currentShader;
-		gl.bindBuffer(gl.ARRAY_BUFFER, that.vertexBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, that.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
-			
-			
-		gl.bindBuffer(gl.ARRAY_BUFFER, that.normalBuffer);
-		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, that.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
-		
-		gl.uniform3f(shaderProgram.ambientColorUniform,ambientLight[0],ambientLight[1],ambientLight[2]);
-		
-		gl.uniform3f(shaderProgram.lightingLocationUniform, lightPos[0], lightPos[1], lightPos[2]);
-
-		gl.uniform3f(shaderProgram.lightingDiffuseColorUniform,lightDiffColor[0],lightDiffColor[1],lightDiffColor[2]);
-		gl.uniform3f(shaderProgram.lightingSpecularColorUniform,lightSpecColor[0],lightSpecColor[1],lightSpecColor[2]);
-		gl.uniform1f(shaderProgram.materialShininessUniform, that.shininess);
-		gl.uniform1i(shaderProgram.isLitUniform, true);		
-  
-		
-        gl.enable(gl.BLEND);
-            
-        gl.bindBuffer(gl.ARRAY_BUFFER, that.textCoordsBuffer);
-        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, that.textCoordsBuffer.itemSize, gl.FLOAT, false, 0, 0);
-            
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D, that.texture);
-        gl.uniform1i(shaderProgram.samplerUniform, 0);
-            
-        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, that.indicesBuffer);
-        setMatrixUniforms(shaderProgram);
-        
-		gl.drawArrays(gl.TRIANGLES, 0, that.vertexBuffer.numItems);
-
-
-        if (that.isTextured) {
-            gl.disable(gl.BLEND);
-        }
-		mvPopMatrix();
-    }
-}
-ModelView.prototype = new View();
-
-
-/// Create class Square inheriting GameObjects
-function Model(modelFile, textureFile) {
-	if (textureFile == null) {
-		textureFile = "default.png";
+	modelPath = "models/" + modelPath;
+	if (texturePath == null) {
+		texturePath = "default.png";
 	}
-	modelFile = "models/" + modelFile;
-	textureFile = "textures/" + textureFile;
-	textureImg = textureFile;
-    //this.modelFile = new modelObject("models/frig1.obj", "textures/testPlanet.png");
+	texturePath = "textures/" + texturePath;
 	
-	this.texture;
-    this.textureImg = textureFile;
+    this.shininess = 2;
+	this.ul = true; // use lighting
+
+    this.pos = [0.0,0.0,0.0];
+    this.rot = [0.0,0.0,0.0];
+    this.size = [1.0, 1.0, 1.0];
+    this.texture;
+    this.textureImg = texturePath;
 
     this.vertexBuffer;
     this.vertices = [];
@@ -87,13 +30,8 @@ function Model(modelFile, textureFile) {
 
     this.indicesBuffer;
     this.indices = [];
-	this.shininess = 2;
-	
-	var that = this;
-    this.pos = [0.0,0.0,0.0];
-    this.rot = [0.0,0.0,0.0];
-    this.size = [1.0, 1.0, 1.0];
-	this.translating = false;
+
+    this.translating = false;
     this.rotating = false;
     this.conRot = false;
     this.scaling = false;
@@ -102,12 +40,12 @@ function Model(modelFile, textureFile) {
     this.newScale = [0.0,0.0,0.0];
     this.moveSpeed = 0;
     this.velVector = [0.0,0.0,0.0];
+    //this.rotSpeed = 0;
     this.rotSpeedVector = [0.0,0.0,0.0];
     this.scaleSpeed = 0;
     this.scaleSpeedVector = [0.0,0.0,0.0];
 
     this.loadModel = function(path) {
-		
 		var result = jQuery.ajax({ url: path, async: false }).responseText;
 		var lines = result.split('\n');
 		var v = [];
@@ -196,8 +134,12 @@ function Model(modelFile, textureFile) {
         that.indicesBuffer.numItems = that.indices.length;
     }
     
-    this.loadModel(modelFile);
+    this.loadModel(modelPath);
     this.initObject();
+	
+	this.useLighting = function(ul) {
+		that.ul = ul;
+	}
 	
     this.setPosition = function(x, y, z) {
 	    that.pos[0] = x;
@@ -226,6 +168,7 @@ function Model(modelFile, textureFile) {
 	that.translating = true;
 	this.moveSpeed = speed;
 	that.velVector = [(that.newPos[0] - that.pos[0]) * speed, (that.newPos[1] - that.pos[1]) * speed, (that.newPos[2] - that.pos[2]) * speed];
+	//console.log("velocity: " + that.velVector);
     }
     
     this.rotate = function(x, y, z, speed) {
@@ -338,10 +281,52 @@ function Model(modelFile, textureFile) {
 	}
     }
 
-    /// Add a View:
-    this.addView( new ModelView( this ) );
-    /// do init a game object before using it
-    this.init();
-	
+    
+    this.draw = function() {
+		mvPushMatrix();
+		mat4.translate(mvMatrix, [that.pos[0], that.pos[1], that.pos[2]]);
+		mat4.rotate(mvMatrix, that.rot[0], [1.0, 0, 0]);
+		mat4.rotate(mvMatrix, that.rot[1], [0, 1.0, 0]);
+		mat4.rotate(mvMatrix, that.rot[2], [0, 0, 1.0]);
+		mat4.scale(mvMatrix, [that.size[0], that.size[1], that.size[2]]);
+		
+		
+		var shaderProgram = currentShader;
+		gl.bindBuffer(gl.ARRAY_BUFFER, that.vertexBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, that.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
+			
+			
+		gl.bindBuffer(gl.ARRAY_BUFFER, that.normalBuffer);
+		gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, that.normalBuffer.itemSize, gl.FLOAT, false, 0, 0);
+		
+		gl.uniform3f(shaderProgram.ambientColorUniform,ambientLight[0],ambientLight[1],ambientLight[2]);
+		
+		gl.uniform3f(shaderProgram.lightingLocationUniform, lightPos[0], lightPos[1], lightPos[2]);
+
+		gl.uniform3f(shaderProgram.lightingDiffuseColorUniform,lightDiffColor[0],lightDiffColor[1],lightDiffColor[2]);
+		gl.uniform3f(shaderProgram.lightingSpecularColorUniform,lightSpecColor[0],lightSpecColor[1],lightSpecColor[2]);
+		gl.uniform1f(shaderProgram.materialShininessUniform, that.shininess);
+		gl.uniform1i(shaderProgram.isLitUniform, that.ul);		
+  
+		
+        gl.enable(gl.BLEND);
+            
+        gl.bindBuffer(gl.ARRAY_BUFFER, that.textCoordsBuffer);
+        gl.vertexAttribPointer(shaderProgram.textureCoordAttribute, that.textCoordsBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            
+        gl.activeTexture(gl.TEXTURE0);
+        gl.bindTexture(gl.TEXTURE_2D, that.texture);
+        gl.uniform1i(shaderProgram.samplerUniform, 0);
+            
+        gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, that.indicesBuffer);
+        setMatrixUniforms(shaderProgram);
+        
+		gl.drawArrays(gl.TRIANGLES, 0, that.vertexBuffer.numItems);
+
+
+        if (that.isTextured) {
+            gl.disable(gl.BLEND);
+        }
+		mvPopMatrix();
+    }
 }
-Model.prototype = new GameObject();
