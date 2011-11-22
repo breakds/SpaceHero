@@ -1,0 +1,2 @@
+Canvas are now Layered. The depths are defined in the css.
+Need to specify the canvas/context one stage ueses by calling stage.addContext.

@@ -1,7 +1,7 @@
 var PlanetView = function( m ) {
     this.setModel( m );
     /// Do register a view on stage !!!
-    this.register( battleField );
+    this.register( solarSystem );
     
     this.draw = function() {
 		this.model.planetModel.update();

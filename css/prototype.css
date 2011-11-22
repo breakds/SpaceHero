@@ -13,8 +13,8 @@
 }
 
 .screen {
-    width: 1200px;
-    height: 450px;
+    width: 1024px;
+    height: 768px;
     position: relative;
     border: solid gray 1px;
 }
@@ -28,10 +28,33 @@ canvas {
     position: absolute;
     left: 0px;
     top: 0px;
+    z-index: 5;
 }
 
-#display2d {
+#BackGround2d {
     position: absolute;
-    left: 600px;
+    left: 0px;
     top: 0px;
+    z-index: 50;
+}
+
+#Animation2d1 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 51;
+}
+
+#Animation2d2 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 52;
+}
+
+#Menu {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 100;
 }

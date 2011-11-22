@@ -2,7 +2,7 @@ var StarView = function( m ) {
     this.setModel( m );
 	this.that = this;
     /// Do register a view on stage !!!
-    this.register( battleField );
+    this.register( solarSystem );
     
     this.draw = function() {
 		//lightPos = [this.model.x, this.model.y, this.model.z];

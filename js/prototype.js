@@ -1,9 +1,16 @@
 /// Create a Stage
 var battleField = new Stage();
+battleField.addContext( ctxBg2d );
+
+var solarSystem = new Stage();
+solarSystem.enable3D = true;
+
+
 
 /// Set Current Rendering Stage
 game.setStage( battleField );
 
+/// setTimeout( "game.setStage( solarSystem );", 3000 );
 
 /// Create class SquareView inheriting View
 var SquareView = function( m ) {
@@ -13,18 +20,18 @@ var SquareView = function( m ) {
     this.register( battleField );
     
     this.draw = function() {
-	c2d.fillStyle = "#FF0000";
-	c2d.beginPath();
-	c2d.moveTo( this.model.x, this.model.y );
-	c2d.lineTo( this.model.x + this.model.size, 
+	ctxBg2d.fillStyle = "#FF0000";
+	ctxBg2d.beginPath();
+	ctxBg2d.moveTo( this.model.x, this.model.y );
+	ctxBg2d.lineTo( this.model.x + this.model.size, 
 		    this.model.y );
-	c2d.lineTo( this.model.x + this.model.size, 
+	ctxBg2d.lineTo( this.model.x + this.model.size, 
 		    this.model.y + this.model.size);
-	c2d.lineTo( this.model.x,
+	ctxBg2d.lineTo( this.model.x,
 		    this.model.y + this.model.size );
-	c2d.lineTo( this.model.x, this.model.y );
-	c2d.closePath();
-	c2d.fill();
+	ctxBg2d.lineTo( this.model.x, this.model.y );
+	ctxBg2d.closePath();
+	ctxBg2d.fill();
     }
 }
 SquareView.prototype = new View();
