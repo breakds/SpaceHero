@@ -1,0 +1,10 @@
+var Universe = function( cols, rows, cellRadius ) {
+    this.cols = cols;
+    this.rows = rows;
+    this.cellRadius = cellRadius;
+
+    this.drawHexacon
+    
+    
+}
+Universe.prototype = new GameObject;
