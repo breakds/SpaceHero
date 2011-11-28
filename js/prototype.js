@@ -13,10 +13,18 @@ game.setStage( universe );
 
 
 
+
+
+
+
 /// Create Universe Map
 var univMap = new HexagonMap( 12, 10 );
 var univMapView = new HexagonGridView( univMap, 50, 50, 20.0 );
 
+
+/// Player Commander
+var commander = new Commander();
+var commanderUnivView = new CommanderUniverseView( commander );
 
 
 var testStar = new Star("star1.png", 0, 0, -20, 2);

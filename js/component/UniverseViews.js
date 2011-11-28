@@ -85,6 +85,12 @@ var HexagonGridView = function( m, top, left, radius ) {
 	}
     }
 
+
+    this.getXYFromUV = function( u, v ) {
+	return  { x: this.radius * 1.5 * u + this.left, 
+		  y: this.radius * Math.sqrt(3) * ( v - 0.5 ) + this.top };
+    }
+
     /// Implement mouse related functions
     this.hitTest = function( x, y ) {
 	if ( x < this.boundBox.xmin ||
@@ -102,3 +108,18 @@ var HexagonGridView = function( m, top, left, radius ) {
     }
 }
 HexagonGridView.prototype = new View();
+
+
+
+
+var CommanderUniverseView = function( commander ) {
+    this.setModel( commander );
+    this.register( universe );
+    
+    this.draw = function() {
+	c = univMapView.getXYFromUV( this.model.u, this.model.v );
+	ctxBg2d.drawImage( resources.getResource( "commanderImg" ), 
+			   c.x, c.y, 50, 50 );
+    }
+}
+CommanderUniverseView.prototype = new View;

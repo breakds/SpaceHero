@@ -127,18 +127,20 @@ var BattleUnit = function( template ) {
 BattleUnit.prototype = new GameObject;
 
 
-var Fleet = function() {
+var Commander = function() {
     this.maxLen = 5;
     this.curLen = 0;
     this.units = new Array();
+
+    /// Coordinates
+    this.u = 0;
+    this.v = 1;
+
+    
     this.init();
     this.addUnit = function( unit ) {
 	this.units.push( unit );
     }
 }
-Fleet.prototype = new GameObject;
-
-
-
-
+Commander.prototype = new GameObject;
 
