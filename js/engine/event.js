@@ -11,7 +11,7 @@ var EventDispatcher = function() {
 	    if ( this.handlers[event.name] ) {
 		for ( idx in this.handlers[event.name] ) {
 		    this.handlers[event.name]
-		    [idx]["on" + event.name].apply( event );
+		    [idx]["on" + event.name].apply( this.handlers[event.name][idx], [event] );
 		}
 	    }
 	}

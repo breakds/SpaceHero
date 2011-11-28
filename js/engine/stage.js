@@ -30,4 +30,61 @@ var Stage = function() {
     this.remove = function( view ) {
 	this.viewObjs.splice( this.viewObjs.indexOf(obj), 1 );
     }
+
+
+    dispatcher.addListener( "LeftMouseDown", this );
+    this.onLeftMouseDown = function( e ) {
+	if ( this == game.stage ) {
+	    for ( idx in this.viewObjs ) {
+		if ( this.viewObjs[idx].hitTest( e.x, e.y ) ) {
+		    this.viewObjs[idx].onLeftMouseDown.apply( this.viewObjs[idx], [e.x, e.y] );
+		}
+	    }
+	}
+    }
+
+    dispatcher.addListener( "LeftMouseUp", this );
+    this.onLeftMouseUp = function( e ) {
+	if ( this == game.stage ) {
+	    for ( idx in this.viewObjs ) {
+		if ( this.viewObjs[idx].hitTest( e.x, e.y ) ) {
+		    this.viewObjs[idx].onLeftMouseUp.apply( this.viewObjs[idx], [e.x, e.y] );
+		}
+	    }
+	}
+    }
+
+    dispatcher.addListener( "RightMouseDown", this );
+    this.onRightMouseDown = function( e ) {
+	if ( this == game.stage ) {
+	    for ( idx in this.viewObjs ) {
+		if ( this.viewObjs[idx].hitTest( e.x, e.y ) ) {
+		    this.viewObjs[idx].onRightMouseDown.apply( this.viewObjs[idx], [e.x, e.y] );
+		}
+	    }
+	}
+    }
+
+    dispatcher.addListener( "RightMouseUp", this );
+    this.onRightMouseUp = function( e ) {
+	if ( this == game.stage ) {
+	    for ( idx in this.viewObjs ) {
+		if ( this.viewObjs[idx].hitTest( e.x, e.y ) ) {
+		    this.viewObjs[idx].onRightMouseUp.apply( this.viewObjs[idx], [e.x, e.y] );
+		}
+	    }
+	}
+    }
+
+    dispatcher.addListener( "MouseMove", this );
+    this.onMouseMove = function( e ) {
+	if ( this == game.stage ) {
+	    for ( idx in this.viewObjs ) {
+		if ( this.viewObjs[idx].hitTest( e.x, e.y ) ) {
+		    this.viewObjs[idx].onMouseMove.apply( this.viewObjs[idx], [e.x, e.y] );
+		}
+	    }
+	}
+    }
+    
 }

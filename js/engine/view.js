@@ -19,4 +19,24 @@ var View = function( m ) {
     this.draw = function() {
 	return ;
     }
+    /// hitTest() returns true when (x,y) is within its 
+    /// hitArea.
+    this.hitTest = function( x, y ) {
+	return false;
+    }
+    this.onLeftMouseDown = function( x, y ) {
+	return ;
+    }
+    this.onLeftMouseUp = function( x, y ) {
+	return ;
+    }
+    this.onRightMouseDown = function( x, y ) {
+	return ;
+    }
+    this.onRightMouseUp = function( x, y ) {
+	return ;
+    }
+    this.onMouseMove = function( x, y ) {
+	return ;
+    }
 }
