@@ -12,14 +12,16 @@ var StarView = function( m ) {
 }
 StarView.prototype = new View();
 
+
 var Star = function(texture, x, y, z, radius) {
-    this.x = x;
-    this.y = y;
-	this.z = z;
+    this.position = vec3.create();
+	this.position[0] = x;
+	this.position[1] = y;
+	this.position[2] = z;
     this.radius = radius;
 	this.starModel = new Model("ball.obj", texture);
 	
-	this.starModel.setPosition(this.x, this.y, this.z);
+	this.starModel.setPosition(this.position[0], this.position[1], this.position[2]);
 	this.starModel.setScale(this.radius, this.radius, this.radius);
 	this.starModel.useLighting(false);
 
@@ -28,9 +30,8 @@ var Star = function(texture, x, y, z, radius) {
 	
     /// do init a game object before using it
     this.init();
-    this.update = function() {
-	
-	
+    this.update = function()
+	{
     }
 }
 Star.prototype = new GameObject();

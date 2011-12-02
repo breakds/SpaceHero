@@ -12,8 +12,13 @@ var Stage = function()
 		{
 			gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
 			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-			mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
+			var camTranslate = vec3.create();
+			vec3.negate(cam.position, camTranslate);
 			mat4.identity(mvMatrix);
+			var quatMat = mat4.create();
+			quat4.toMat4(cam.orientation, quatMat);
+			mat4.multiply(mvMatrix, quatMat);
+			mat4.translate(mvMatrix, camTranslate);
 			setShader(lightShaderProgram);
 			gl.useProgram(currentShader);
 		}
@@ -33,6 +38,10 @@ var Stage = function()
     this.drawAll = function()
 	{
 		this.clear();
+		if(this.enable3D)
+		{
+			cam.update();
+		}
 		for ( idx in this.viewObjs )
 		{
 			if ( this.viewObjs[idx].visible )
