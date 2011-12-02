@@ -1,4 +1,4 @@
-var HexagonMap = function( cols, rows ) {
+var HexagonMap = function( rows, cols ) {
     /// The assignment of coordinates for the hexagon cells work this way:
     /// Note: Use integer (u,v) to represent coordinates 
     ///       And float   (x,y) to represent absolute positions
@@ -19,7 +19,8 @@ var HexagonMap = function( cols, rows ) {
     this.cols = cols;
 
 
-    /// The adjecent relative coordinates
+    // The following two arrays find adjacent board spaces
+	// If you are at (u, v) then (u + du[i], v + dv[i]) is adjacent to you for 0 <= i < 6
     this.du = [ 0, 1, 1, 0, -1, -1 ];
     this.dv = [ -2, -1, 1, 2, 1, -1 ];
 
@@ -32,10 +33,11 @@ var HexagonMap = function( cols, rows ) {
     this.upper = new Array();
     
     var iTmp = 1;
-    for ( var i=0; i<this.cols; i++ ) {
-	this.lower[i] = iTmp;
-	this.upper[i] = iTmp + ( this.rows << 1 );
-	iTmp = 1 - iTmp;
+    for ( var i=0; i<this.cols; i++ )
+	{
+		this.lower[i] = iTmp;
+		this.upper[i] = iTmp + ( this.rows << 1 );
+		iTmp = 1 - iTmp;
     }
 
 
@@ -45,11 +47,13 @@ var HexagonMap = function( cols, rows ) {
       otherwise - the object
      */
     this.map = new Array();
-    for ( var i=0; i<this.cols; i++ ) {
-	this.map[i] = new Array();
-	for ( var j=this.lower[i]; j<=this.upper[i]; j++ ) {
-	    this.map[i][j] = 0;
-	}
+    for ( var i=0; i<this.cols; i++ )
+	{
+		this.map[i] = new Array();
+		for ( var j=this.lower[i]; j<=this.upper[i]; j++ )
+		{
+			this.map[i][j] = 0;
+		}
     }
 
     /// Terran
@@ -79,55 +83,75 @@ var HexagonMap = function( cols, rows ) {
       
     
     this.init();
-    this.update = function() {
-	return ;
+    this.update = function()
+	{
+		return ;
     }
     
 
-    /// Check whether (u,v) is in the map
-    this.inMap = function( u, v ) {
-	if ( u < 0 || u >= this.cols ) {
-	    return false;
-	} else if ( v < this.lower[u] || v > this.upper[u] ) {
-	    return false;
-	} else if ( 0 == ( u + v ) % 2 ) {
-	    return false;
-	}
-	return true;
+    // Check whether (u,v) is in the map
+    this.inMap = function( u, v )
+	{
+		if ( u < 0 || u >= this.cols )
+		{
+			return false;
+		}
+		else if ( v < this.lower[u] || v > this.upper[u] )
+		{
+			return false;
+		}
+		else if ( 0 == ( u + v ) % 2 )
+		{
+			return false;
+		}
+		return true;
     }
     
     
-    /// Check whether (u,v) is suitable for placing an object
-    this.available = function( u, v ) {
-	if ( this.inMap( u, v ) && 0 == this.map[u][v] ) {
-	    return true;
-	}
-	return false;
+    // check whether (u, v) is filled
+    this.available = function( u, v )
+	{
+		if ( this.inMap( u, v ) && this.map[u][v] == 0 )
+		{
+			return true;
+		}
+		return false;
     }
 
-    this.setMap = function( u, v, obj ) {
-	if ( this.available( u, v ) ) {
-	    this.map[u][v] = obj;
-	    obj.u = u;
-	    obj.v = v;
-	    return true;
-	}
-	return false;
+	// sets the object in a map space
+    this.setMap = function( u, v, obj )
+	{
+		if ( this.available( u, v ) )
+		{
+			this.map[u][v] = obj;
+			obj.u = u;
+			obj.v = v;
+			return true;
+		}
+		return false;
     }
-    this.getMap = function( u, v ) {
-	if ( this.inMap( u, v ) ) {
-	    return this.map[u][v];
-	}
-	return -1;
+	
+	// returns the object in a map space
+    this.getMap = function( u, v )
+	{
+		if ( this.inMap( u, v ) )
+		{
+			return this.map[u][v];
+		}
+		return -1;
     }
     
-    this.initAuxMap = function() {
-	for ( var i=0; i<this.cols; i++ ) {
-	    for ( var j=0; j<(this.rows<<1)+1; j++ ) {
-		this.auxMap[i][j] = 0;
-	    }
-	}
+    this.initAuxMap = function()
+	{
+		for ( var i=0; i<this.cols; i++ )
+		{
+			for ( var j=0; j<(this.rows<<1)+1; j++ )
+			{
+				this.auxMap[i][j] = 0;
+			}
+		}
     }
+	
     this.floodFill = function( u0, v0, u1, v1 ) {
 	if ( this.inMap( u0, v0 ) && this.available( u1, v1 ) ) {
 	    this.initAuxMap();
@@ -173,4 +197,5 @@ var HexagonMap = function( cols, rows ) {
 	return null;
     }
 }
+
 HexagonMap.prototype = new GameObject;
