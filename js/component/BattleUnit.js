@@ -119,7 +119,7 @@ var BattleUnit = function( template ) {
 BattleUnit.prototype = new GameObject;
 
 
-var Commander = function( group ) {
+var Commander = function( group, u ,v  ) {
     /* gourp:
      * 0 : Player
      * 1 .. n : AI
@@ -136,9 +136,11 @@ var Commander = function( group ) {
     
     this.init();
     this.tick = 0;
-
+    this.u = 0;
+    this.v = 1;
+    
     this.setPos = function( u, v ) {
-	if ( ! univMap.setMap( u, v, this ) ) {
+	if ( !univMap.setMap( u, v, this ) ) {
 	    trace ( "[ERROR] setPos() of Commander." );
 	}
     }
@@ -160,7 +162,7 @@ var Commander = function( group ) {
 
 
     /// Coordinates
-    this.setPos( 0, 1 );
+    this.setPos( u, v );
 }
 Commander.prototype = new GameObject;
 

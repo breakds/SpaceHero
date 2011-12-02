@@ -104,10 +104,13 @@ var HexagonMap = function( cols, rows ) {
 	}
 	return false;
     }
-
+    
     this.setMap = function( u, v, obj ) {
 	if ( this.available( u, v ) ) {
 	    this.map[u][v] = obj;
+	    if ( this.inMap( obj.u, obj.v ) ) {
+		this.map[obj.u][obj.v] = 0;
+	    }
 	    obj.u = u;
 	    obj.v = v;
 	    return true;

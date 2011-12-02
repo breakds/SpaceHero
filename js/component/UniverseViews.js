@@ -116,9 +116,13 @@ var HexagonGridView = function( m, top, left, radius ) {
 	} else if ( status.onSelect != null ) {
 	    obj = status.onSelect;
 	    if ( "Commander" == obj.type && 0 == obj.group ) {
-		dispatcher.broadcast( { name: "RequestArrowPath", 
-					obj: obj,
-					target: uv } );
+		if ( uv.u == status.target.u && uv.v == status.target.v ) {
+		    dispatcher.broadcast( { name: "CommanderMove" } );
+		} else {
+		    dispatcher.broadcast( { name: "RequestArrowPath", 
+					    obj: obj,
+					    target: uv } );
+		}
 	    }
 	}
     }
@@ -146,6 +150,31 @@ var CommanderUniverseView = function( commander ) {
     }
 }
 CommanderUniverseView.prototype = new View;
+
+
+var CommanderMoveAnimation = function( commanderObj, lifetime ) {
+    this.objs = new Array();
+    this.objs.push( commanderObj );
+    this.lifetime = lifetime * 5;
+    this.onStart = function() {
+	dispatcher.broadcast( "BlockAll" );
+    }
+    this.onTerminate = function() {
+	dispatcher.broadcast( "UnblockAll" );
+    }
+    this.next = function() {
+	if ( 0 == this.tick % 5 ) {
+	    var status = logic.getStatus();
+	    univMap.setMap( this.objs[0].u + univMap.du[status.arrowPath[0]],
+			    this.objs[0].v + univMap.dv[status.arrowPath[0]],
+			    this.objs[0] );
+	    this.objs[0].setOrientation( status.arrowPath[0] );
+	    status.arrowPath.splice(0,1);
+	}
+    }
+    this.init();
+}
+CommanderMoveAnimation.prototype = new Tween;
 
 
 /*
@@ -197,4 +226,7 @@ var UniverseLogicView = function( logicModel ) {
     }
 }
 UniverseLogicView.prototype = new View;
+
+
+
 
