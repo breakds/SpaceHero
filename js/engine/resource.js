@@ -15,4 +15,4 @@ var ResourceManager = function() {
     }
 }
 var resources = new ResourceManager();
-resources.addImage( "img/commander.png", "commanderImg" );
+

@@ -116,8 +116,9 @@ var HexagonGridView = function( m, top, left, radius ) {
 	} else if ( status.onSelect != null ) {
 	    obj = status.onSelect;
 	    if ( "Commander" == obj.type && 0 == obj.group ) {
-		var path = univMap.floodFill( obj.u, obj.v, uv.u, uv.v );
-		trace( path );
+		dispatcher.broadcast( { name: "RequestArrowPath", 
+					obj: obj,
+					target: uv } );
 	    }
 	}
     }
@@ -145,3 +146,55 @@ var CommanderUniverseView = function( commander ) {
     }
 }
 CommanderUniverseView.prototype = new View;
+
+
+/*
+ * LogicView Singleton : Including Menu
+ */
+
+var UniverseLogicView = function( logicModel ) {
+    this.setModel( logicModel );
+    this.register( universe );
+    this.drawArrows = function() {
+	var status = this.model.getStatus();
+	if ( status.onSelect != null ) {
+	    var obj = status.onSelect;
+	    if ( obj.type == "Commander" && 0 == obj.group ) {
+		if ( status.arrowPath != null && status.showArrows) {
+		    var u = obj.u;
+		    var v = obj.v;
+		    var size = univMapView.radius * 1.40;
+		    for ( var i=0; i<status.arrowPath.length; i++ ) {
+			u += univMap.du[status.arrowPath[i]];
+			v += univMap.dv[status.arrowPath[i]];
+			var c = univMapView.getXYFromUV( u, v );
+			if ( i != status.arrowPath.length-1 ) {
+			    drawRotatedImage( ctx2d[1],
+					      resources.getResource( "greenArrowImg" ),
+					      Math.PI * 2 / 6 * status.arrowPath[i+1],
+					      c.x,
+					      c.y,
+					      size,
+					      size,
+					      true );
+			} else {
+			    drawRotatedImage( ctx2d[1],
+					      resources.getResource( "targetImg" ),
+					      0,
+					      c.x,
+					      c.y,
+					      size,
+					      size,
+					      true );
+			}
+		    }
+		}
+	    }
+	}
+    }
+    this.draw = function() {
+	this.drawArrows();
+    }
+}
+UniverseLogicView.prototype = new View;
+

@@ -1,20 +1,10 @@
-/// Create Universe Stage
-var universe = new Stage();
-universe.addContext( ctxBg2d );
-
-/// Create Solar System Stage
-var solarSystem = new Stage();
-solarSystem.enable3D = true;
-
-
-
 /// Set Current Rendering Stage
 game.setStage( universe );
 
 
 
-
-
+/// LogicViews:
+var univLogicView = new UniverseLogicView( logic );
 
 
 /// Create Universe Map

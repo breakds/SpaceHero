@@ -24,42 +24,6 @@ var HexagonMap = function( cols, rows ) {
     this.dv = [ -2, -1, 1, 2, 1, -1 ];
 
 
-    /// Map
-    /*
-      0 - no objects on current cell
-      otherwise - the object
-     */
-    this.map = new Array();
-    for ( var i=0; i<this.cols; i++ ) {
-	this.map[i] = new Array();
-	for ( var j=0; j<(this.rows<<1)+1; j++ ) {
-	    this.map[i][j] = 0;
-	}
-    }
-
-    /// Terran
-    /*
-      0 - Ordinary Space
-     */
-    this.terran = new Array();
-    for ( var i=0; i<this.cols; i++ ) {
-	this.terran[i] = new Array();
-	for ( var j=0; j<(this.rows<<1)+1; j++ ) {
-	    this.terran[i][j] = 0;
-	}
-    }
-
-
-    /// Auxilary Map
-    this.auxMap = new Array();
-    for ( var i=0; i<this.cols; i++ ) {
-	this.auxMap[i] = new Array();
-	for ( var j=0; j<(this.rows<<1)+1; j++ ) {
-	    this.auxMap[i][j] = 0;
-	}
-    }
-    
-
     /*
       lower bound and upper bound of v coordinates
       for ecah u.
@@ -73,6 +37,45 @@ var HexagonMap = function( cols, rows ) {
 	this.upper[i] = iTmp + ( this.rows << 1 );
 	iTmp = 1 - iTmp;
     }
+
+
+    /// Map
+    /*
+      0 - no objects on current cell
+      otherwise - the object
+     */
+    this.map = new Array();
+    for ( var i=0; i<this.cols; i++ ) {
+	this.map[i] = new Array();
+	for ( var j=this.lower[i]; j<=this.upper[i]; j++ ) {
+	    this.map[i][j] = 0;
+	}
+    }
+
+    /// Terran
+    /*
+      0 - Ordinary Space
+     */
+    this.terran = new Array();
+    for ( var i=0; i<this.cols; i++ ) {
+	this.terran[i] = new Array();
+	for ( var j=this.lower[i]; j<=this.upper[i]; j++ ) {
+	    this.terran[i][j] = 0;
+	}
+    }
+
+
+    /// Auxilary Map
+    this.auxMap = new Array();
+    for ( var i=0; i<this.cols; i++ ) {
+	this.auxMap[i] = new Array();
+	for ( var j=this.lower[i]; j<=this.upper[i]; j++ ) {
+	    this.auxMap[i][j] = 0;
+	}
+    }
+    
+
+   
       
     
     this.init();
