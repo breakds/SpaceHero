@@ -102,4 +102,21 @@ var Stage = function()
 	}
     }
     
+    dispatcher.addListener( "KeyDown", this );
+    this.onKeyDown = function( e ) {
+	if ( this == game.stage ) {
+	    for ( idx in this.viewObjs ) {
+		this.viewObjs[idx].onKeyDown.apply( this.viewObjs[idx], [e.key] );
+	    }
+	}
+    }
+
+    dispatcher.addListener( "KeyUp", this );
+    this.onKeyUp = function( e ) {
+	if ( this == game.stage ) {
+	    for ( idx in this.viewObjs ) {
+		this.viewObjs[idx].onKeyUp.apply( this.viewObjs[idx], [e.key] );
+	    }
+	}
+    }
 }

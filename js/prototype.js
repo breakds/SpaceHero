@@ -1,5 +1,5 @@
 /// Set Current Rendering Stage
-game.setStage( solarSystem );
+game.setStage( universe );
 
 
 

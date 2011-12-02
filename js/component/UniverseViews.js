@@ -174,7 +174,7 @@ CommanderUniverseView.prototype = new View;
 var CommanderMoveAnimation = function( commanderObj, lifetime ) {
     this.objs = new Array();
     this.objs.push( commanderObj );
-    this.lifetime = lifetime * 5;
+    this.lifetime = lifetime * 3;
     this.onStart = function() {
 	dispatcher.broadcast( "BlockAll" );
     }
@@ -182,7 +182,7 @@ var CommanderMoveAnimation = function( commanderObj, lifetime ) {
 	dispatcher.broadcast( "UnblockAll" );
     }
     this.next = function() {
-	if ( 0 == this.tick % 5 ) {
+	if ( 0 == this.tick % 3 ) {
 	    var status = logic.getStatus();
 	    univMap.setMap( this.objs[0].u + univMap.du[status.arrowPath[0]],
 			    this.objs[0].v + univMap.dv[status.arrowPath[0]],

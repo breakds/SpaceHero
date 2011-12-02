@@ -3,7 +3,7 @@
     Do not create duplicated instance.
 ***/
 
-var fps = 60;
+var fps = 100;
 
 var Game = function() {
     this.status = "pause";

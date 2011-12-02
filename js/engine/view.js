@@ -39,4 +39,10 @@ var View = function( m ) {
     this.onMouseMove = function( x, y ) {
 	return ;
     }
+    this.onKeyDown = function( key ) {
+	return ;
+    }
+    this.onKeyUp = function( key ) {
+	return ;
+    }
 }
