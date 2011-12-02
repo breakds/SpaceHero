@@ -12,7 +12,6 @@ var StarView = function( m ) {
 }
 StarView.prototype = new View();
 
-
 var Star = function(texture, x, y, z, radius) {
     this.x = x;
     this.y = y;

@@ -6,6 +6,7 @@ resources.addImage( "img/target.png", "targetImg" );
 /// Create Universe Stage
 var universe = new Stage();
 universe.addContext( ctxBg2d );
+universe.addContext( ctx2d[0] );
 universe.addContext( ctx2d[1] );
 
 /// Create Solar System Stage

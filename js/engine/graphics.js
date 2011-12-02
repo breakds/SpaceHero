@@ -14,6 +14,7 @@ var GameScreen = { width: bg2d.width, height: bg2d.height };
 /// 2d Context
 /// if not enabled, this canvas will not be rendered
 var ctxBg2d = bg2d.getContext( "2d" );
+ctxBg2d.fillColor = "#000000";
 var ctxMenu = menu2d.getContext( "2d" );
 var ctx2d = new Array();
 ctx2d.push( ani2d1.getContext( "2d" ) );
