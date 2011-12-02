@@ -35,6 +35,7 @@ commanderUnivViews.push( new CommanderUniverseView( commanders[0] ) );
 commanders.push( new Commander( 0, 7, 10 ) )
 commanderUnivViews.push( new CommanderUniverseView( commanders[1] ) );
 
+
 game.play();
 
 

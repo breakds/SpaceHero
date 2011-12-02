@@ -40,14 +40,14 @@ var Stage = function()
 		this.clear();
 		if(this.enable3D)
 		{
-			cam.update();
+		    cam.update();
 		}
 		for ( idx in this.viewObjs )
 		{
-			if ( this.viewObjs[idx].visible )
-			{
-				this.viewObjs[idx].draw();
-			}
+		    if ( this.viewObjs[idx].visible )
+		    {
+			this.viewObjs[idx].draw();
+		    }
 		}
     }
     this.remove = function( view )
