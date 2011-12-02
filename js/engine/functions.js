@@ -12,7 +12,7 @@ function mvPushMatrix() {
     }
 
     function setMatrixUniforms(program) {
-        gl.uniformMatrix4fv(program.pMatrixUniform, false, pMatrix);
+		cam.setProjectionMatrix(program);
         gl.uniformMatrix4fv(program.mvMatrixUniform, false, mvMatrix);
 		
 	var normalMatrix = mat3.create();

@@ -29,7 +29,6 @@ var currentShader;
 
 var mvMatrix = mat4.create();
 var mvMatrixStack = [];
-var pMatrix = mat4.create();
 
 
 var ambientLight = [0.0, 0.0, 0.0];
