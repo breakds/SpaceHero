@@ -20,13 +20,14 @@ var HexagonMap = function( cols, rows ) {
 
 
     /// The adjecent relative coordinates
-    this.du = [ -1, 0, 1, 1, 0, -1 ];
-    this.dv = [ -1, -2, -1, 1, 2, 1 ];
+    this.du = [ 0, 1, 1, 0, -1, -1 ];
+    this.dv = [ -2, -1, 1, 2, 1, -1 ];
 
 
     /// Map
     /*
       0 - no objects on current cell
+      otherwise - the object
      */
     this.map = new Array();
     for ( var i=0; i<this.cols; i++ ) {
@@ -35,6 +36,29 @@ var HexagonMap = function( cols, rows ) {
 	    this.map[i][j] = 0;
 	}
     }
+
+    /// Terran
+    /*
+      0 - Ordinary Space
+     */
+    this.terran = new Array();
+    for ( var i=0; i<this.cols; i++ ) {
+	this.terran[i] = new Array();
+	for ( var j=0; j<(this.rows<<1)+1; j++ ) {
+	    this.terran[i][j] = 0;
+	}
+    }
+
+
+    /// Auxilary Map
+    this.auxMap = new Array();
+    for ( var i=0; i<this.cols; i++ ) {
+	this.auxMap[i] = new Array();
+	for ( var j=0; j<(this.rows<<1)+1; j++ ) {
+	    this.auxMap[i][j] = 0;
+	}
+    }
+    
 
     /*
       lower bound and upper bound of v coordinates
@@ -57,16 +81,93 @@ var HexagonMap = function( cols, rows ) {
     }
     
 
-    /// Check wether (u,v) is in the map
+    /// Check whether (u,v) is in the map
     this.inMap = function( u, v ) {
 	if ( u < 0 || u >= this.cols ) {
 	    return false;
 	} else if ( v < this.lower[u] || v > this.upper[u] ) {
 	    return false;
-	} else if ( 0 == ( u + v ) & 1 ) {
+	} else if ( 0 == ( u + v ) % 2 ) {
 	    return false;
 	}
 	return true;
+    }
+    
+    
+    /// Check whether (u,v) is suitable for placing an object
+    this.available = function( u, v ) {
+	if ( this.inMap( u, v ) && 0 == this.map[u][v] ) {
+	    return true;
+	}
+	return false;
+    }
+
+    this.setMap = function( u, v, obj ) {
+	if ( this.available( u, v ) ) {
+	    this.map[u][v] = obj;
+	    obj.u = u;
+	    obj.v = v;
+	    return true;
+	}
+	return false;
+    }
+    this.getMap = function( u, v ) {
+	if ( this.inMap( u, v ) ) {
+	    return this.map[u][v];
+	}
+	return -1;
+    }
+    
+    this.initAuxMap = function() {
+	for ( var i=0; i<this.cols; i++ ) {
+	    for ( var j=0; j<(this.rows<<1)+1; j++ ) {
+		this.auxMap[i][j] = 0;
+	    }
+	}
+    }
+    this.floodFill = function( u0, v0, u1, v1 ) {
+	if ( this.inMap( u0, v0 ) && this.available( u1, v1 ) ) {
+	    this.initAuxMap();
+	    var q = new Array();
+	    q.push( { u: u0, v: v0, dir: -1, pre: -1 } );
+	    this.auxMap[u0][v0] = 1;
+	    var i = 0;
+	    var nu = 0;
+	    var nv = 0;
+	    var j = 0;
+	    var flag = false;
+	    while ( i < q.length ) {
+		for ( j=0; j<6; j++ ) {
+		    nu = q[i].u + this.du[j];
+		    nv = q[i].v + this.dv[j];
+		    if ( this.available( nu, nv ) &&
+			 0 == this.auxMap[nu][nv] ) {
+			this.auxMap[nu][nv] = 1;
+			q.push( { u: nu, v: nv, dir: j, pre: i } );
+			if ( nu == u1 && nv == v1 ) {
+			    flag = true;
+			    break;
+			}
+		    }
+		}
+		if ( flag ) {
+		    break;
+		}
+		i++;
+	    }
+	    if ( flag ) {
+		var path = new Array();
+		i = q.length-1;
+		do {
+		    path.push( q[i].dir );
+		    i = q[i].pre;
+		} while ( 0 != i );
+		path.reverse();
+		return path;
+	    }
+	    return null;
+	}
+	return null;
     }
 }
 HexagonMap.prototype = new GameObject;

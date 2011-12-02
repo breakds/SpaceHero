@@ -104,14 +104,6 @@ var Warrior = new BattleUnitTemplate( "Warrior", 3,
 				    );
 Warrior.setAttackStyle( "Surounding" );
 
-
-
-
-
-
-
-
-
 /*
  * BattleUnit won't get init()
  * unless necessary
@@ -127,20 +119,48 @@ var BattleUnit = function( template ) {
 BattleUnit.prototype = new GameObject;
 
 
-var Commander = function() {
+var Commander = function( group ) {
+    /* gourp:
+     * 0 : Player
+     * 1 .. n : AI
+     */
+    this.group = group;
+    this.type = "Commander";
     this.maxLen = 5;
     this.curLen = 0;
     this.units = new Array();
 
-    /// Coordinates
-    this.u = 0;
-    this.v = 1;
+    /// Properties
+    this.orientation = 0;
 
     
     this.init();
+    this.tick = 0;
+
+    this.setPos = function( u, v ) {
+	if ( ! univMap.setMap( u, v, this ) ) {
+	    trace ( "[ERROR] setPos() of Commander." );
+	}
+    }
     this.addUnit = function( unit ) {
 	this.units.push( unit );
     }
+    this.setOrientation = function( ort ) {
+	this.orientation = ort;
+    }
+    this.turnRight = function() {
+	this.orientation = ( this.orientation + 1 ) % 6;
+    }
+    this.turnLeft = function() {
+	this.orientation = ( this.orientation - 1 ) % 6;
+    }
+    this.update = function() {
+	return ;
+    }
+
+
+    /// Coordinates
+    this.setPos( 0, 1 );
 }
 Commander.prototype = new GameObject;
 

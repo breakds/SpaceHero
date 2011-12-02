@@ -88,7 +88,7 @@ var HexagonGridView = function( m, top, left, radius ) {
 
     this.getXYFromUV = function( u, v ) {
 	return  { x: this.radius * 1.5 * u + this.left, 
-		  y: this.radius * Math.sqrt(3) * ( v - 0.5 ) + this.top };
+		  y: this.radius * Math.sqrt(3) * 0.5 * v + this.top };
     }
 
     /// Implement mouse related functions
@@ -102,9 +102,24 @@ var HexagonGridView = function( m, top, left, radius ) {
 	return true;
     }
     this.onMouseMove = function( x, y ) {
-	uv = this.getUVFromXY( x, y );
+	var uv = this.getUVFromXY( x, y );
 	this.highlightCoor.u = uv.u;
 	this.highlightCoor.v = uv.v;
+    }
+    this.onLeftMouseDown = function( x, y ) {
+	var uv = this.getUVFromXY( x, y );
+	var obj = this.model.getMap( uv.u, uv.v );
+	var status = logic.getStatus();
+	if ( obj.type == "Commander" ) {
+	    dispatcher.broadcast( { name: "SelectCommander",
+				    obj: obj } );
+	} else if ( status.onSelect != null ) {
+	    obj = status.onSelect;
+	    if ( "Commander" == obj.type && 0 == obj.group ) {
+		var path = univMap.floodFill( obj.u, obj.v, uv.u, uv.v );
+		trace( path );
+	    }
+	}
     }
 }
 HexagonGridView.prototype = new View();
@@ -118,8 +133,15 @@ var CommanderUniverseView = function( commander ) {
     
     this.draw = function() {
 	c = univMapView.getXYFromUV( this.model.u, this.model.v );
-	ctxBg2d.drawImage( resources.getResource( "commanderImg" ), 
-			   c.x, c.y, 50, 50 );
+	var size = univMapView.radius * 1.90;
+	drawRotatedImage( ctxBg2d,
+			  resources.getResource( "commanderImg" ),
+			  Math.PI * 2 / 6 * this.model.orientation,
+			  c.x,
+			  c.y,
+			  size,
+			  size,
+			  true );
     }
 }
 CommanderUniverseView.prototype = new View;
