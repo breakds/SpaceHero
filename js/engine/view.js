@@ -4,6 +4,7 @@ var View = function( m ) {
     this.visible = true;
     this.setModel = function( m ) {
 	this.model = m;
+	m.addView( this );
     }
     this.register = function( s ) {
 	this.stage = s;
@@ -16,8 +17,10 @@ var View = function( m ) {
 	this.stage.remove( this );
     }
     /// virtual methods
-    this.draw = function() {
+    this.draw = function( ctx ) {
 	return ;
+    }
+    this.requestUpdate = function() {
     }
     /// hitTest() returns true when (x,y) is within its 
     /// hitArea.

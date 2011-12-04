@@ -134,23 +134,23 @@ var HexagonMap = function( rows, cols ) {
 	
 	// returns the object in a map space
     this.getMap = function( u, v )
+    {
+	if ( this.inMap( u, v ) )
 	{
-		if ( this.inMap( u, v ) )
-		{
-			return this.map[u][v];
-		}
-		return -1;
+	    return this.map[u][v];
+	}
+	return -1;
     }
     
     this.initAuxMap = function()
+    {
+	for ( var i=0; i<this.cols; i++ )
 	{
-		for ( var i=0; i<this.cols; i++ )
-		{
-			for ( var j=0; j<(this.rows<<1)+1; j++ )
-			{
-				this.auxMap[i][j] = 0;
-			}
-		}
+	    for ( var j=this.lower[i]; j<=this.upper[i]; j++ )
+	    {
+		this.auxMap[i][j] = 0;
+	    }
+	}
     }
 	
     this.floodFill = function( u0, v0, u1, v1 ) {

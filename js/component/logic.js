@@ -18,6 +18,13 @@ var Logic = function() {
 	return this.status;
     }
 
+    this.spliceArrow = function() {
+	if ( this.status.arrowPath.length > 0 ) {
+	    this.status.arrowPath.splice(0,1);
+	    this.requestUpdate();
+	}
+    }
+
 
     dispatcher.addListener( "SelectCommander", this );
     this.onSelectCommander = function( e ) {
@@ -33,6 +40,7 @@ var Logic = function() {
 	    this.status.target.u = e.target.u;
 	    this.status.target.v = e.target.v;
 	    this.status.showArrows = true;
+	    this.requestUpdate();
 	}
     }
     

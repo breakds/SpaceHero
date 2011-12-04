@@ -8,8 +8,8 @@ var univLogicView = new UniverseLogicView( logic );
 
 
 /// Create Universe Map
-var univMap = new HexagonMap( 10, 16 );
-var univMapView = new HexagonGridView( univMap, 768, 1024, 50 );
+var univMap = new HexagonMap( 14, 16 );
+var univMapView = new HexagonGridView( univMap, 750, 750, 50 );
 
 var stars = new Array();
 

@@ -140,7 +140,9 @@ var Commander = function( group, u ,v  ) {
     this.v = 1;
     
     this.setPos = function( u, v ) {
-	if ( !univMap.setMap( u, v, this ) ) {
+	if ( univMap.setMap( u, v, this ) ) {
+	    this.requestUpdate();
+	} else {
 	    trace ( "[ERROR] setPos() of Commander." );
 	}
     }

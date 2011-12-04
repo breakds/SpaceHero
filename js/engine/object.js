@@ -16,6 +16,11 @@ var GameObject = function() {
     this.update = function() {
 	return ;
     }
+    this.requestUpdate = function() {
+	for ( idx in this.views ) {
+	    this.views[idx].requestUpdate();
+	}
+    }
 }
 
 

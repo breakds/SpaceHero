@@ -6,53 +6,84 @@ var Stage = function()
     this.addContext = function( ctx ) {
 	this.contexts.push( ctx );
     }
+    this.resetUpdated = function() {
+	for ( idx in this.contexts ) {
+	    this.contexts[idx].updated = false;
+	}
+    }
     this.clear = function()
+    {
+	if ( this.enable3D )
 	{
-		if ( this.enable3D )
-		{
-			gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-			gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-			var camTranslate = vec3.create();
-			vec3.negate(cam.position, camTranslate);
-			mat4.identity(mvMatrix);
-			var quatMat = mat4.create();
-			quat4.toMat4(cam.orientation, quatMat);
-			mat4.multiply(mvMatrix, quatMat);
-			mat4.translate(mvMatrix, camTranslate);
-			setShader(lightShaderProgram);
-			gl.useProgram(currentShader);
-		}
-		for ( idx in this.contexts )
-		{
-			if(this.contexts[idx].fillColor)
-			{
-				this.contexts[idx].fillStyle=this.contexts[idx].fillColor;
-				this.contexts[idx].fillRect( 0, 0, GameScreen.width, GameScreen.height );
-			}
-			else
-			{
-				this.contexts[idx].clearRect( 0, 0, GameScreen.width, GameScreen.height );
-			}
-		}
+	    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+	    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+	    var camTranslate = vec3.create();
+	    vec3.negate(cam.position, camTranslate);
+	    mat4.identity(mvMatrix);
+	    var quatMat = mat4.create();
+	    quat4.toMat4(cam.orientation, quatMat);
+	    mat4.multiply(mvMatrix, quatMat);
+	    mat4.translate(mvMatrix, camTranslate);
+	    setShader(lightShaderProgram);
+	    gl.useProgram(currentShader);
+	}
+	/*
+	for ( idx in this.contexts )
+	{
+	    if(this.contexts[idx].fillColor)
+	    {
+		this.contexts[idx].fillStyle=this.contexts[idx].fillColor;
+		this.contexts[idx].fillRect( 0, 0, GameScreen.width, GameScreen.height );
+	    }
+	    else
+	    {
+		this.contexts[idx].clearRect( 0, 0, GameScreen.width, GameScreen.height );
+	    }
+	}
+	*/
     }
     this.drawAll = function()
+    {
+	this.clear();
+	if(this.enable3D)
 	{
-		this.clear();
-		if(this.enable3D)
-		{
-		    cam.update();
-		}
-		for ( idx in this.viewObjs )
-		{
-		    if ( this.viewObjs[idx].visible )
-		    {
-			this.viewObjs[idx].draw();
-		    }
-		}
+	    cam.update();
+	}
+	/*
+	for ( idx in this.viewObjs )
+	{
+	    if ( this.viewObjs[idx].visible )
+	    {
+		this.viewObjs[idx].draw();
+	    }
+	}
+	*/
     }
+
+    
+    dispatcher.addListener( "UpdateContext", this );
+    this.onUpdateContext = function(e) {
+	if ( game.stage == this ) {
+	    var ctx = this.contexts[this.contexts.indexOf( e.ctx )];
+	    if ( ctx.updated ) return;
+	    if ( ctx.fillColor ) {
+		ctx.fillStyle = ctx.fillColor;
+		ctx.fillRect( 0, 0, GameScreen.width, GameScreen.height );
+	    } else {
+		ctx.clearRect( 0, 0, GameScreen.width, GameScreen.height );
+	    }
+	    for ( var idx in this.viewObjs ) {
+		if ( this.viewObjs[idx].visible ) {
+		    this.viewObjs[idx].draw( ctx );
+		}
+	    }
+	    ctx.updated = true;
+	}
+    }
+
     this.remove = function( view )
-	{
-		this.viewObjs.splice( this.viewObjs.indexOf(obj), 1 );
+    {
+	this.viewObjs.splice( this.viewObjs.indexOf(obj), 1 );
     }
 
 
