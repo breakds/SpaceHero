@@ -3,8 +3,12 @@ var cam = new Camera();
 
 /// Resources
 resources.addImage( "img/commander.png", "commanderImg" );
+resources.addImage( "img/commanderSelect.png", "commanderSelectImg" );
 resources.addImage( "img/greenarrow.png", "greenArrowImg" );
 resources.addImage( "img/target.png", "targetImg" );
+resources.addImage( "img/shieldicon.png", "shieldIcon" );
+resources.addImage( "img/swordicon.png", "swordIcon" );
+
 
 /// Create Universe Stage
 var universe = new Stage();

@@ -128,15 +128,23 @@ var Commander = function( title, name, group, u ,v  ) {
     this.title = title;
     this.name = name;
     this.type = "Commander";
+
     this.maxLen = 5;
     this.curLen = 0;
-    this.level = 1;
-    this.AP = 4;
-    this.units = new Array();
 
     /// Properties
-    this.orientation = 0;
+    this.level = 1;
+    this.maxAP = 4;
+    this.AP = 4;
+    this.att = 1;
+    this.def = 0;
+    this.units = new Array();
 
+    
+    /// Appearance Parameters
+    this.orientation = 0;
+    this.path = null;
+    this.target = { u:-1, v:-1 };
     
     this.init();
     this.tick = 0;
@@ -165,8 +173,17 @@ var Commander = function( title, name, group, u ,v  ) {
     this.update = function() {
 	return ;
     }
-
-
+    this.setAttack = function( att ) {
+	this.att = att;
+	this.requestUpdate();
+    }
+    this.setDefence = function( def ) {
+	this.def = def;
+	this.requestUpdate();
+    }
+    this.updatePath = function() {
+	this.path = univMap.floodFill( this.u, this.v, this.target.u, this.target.v );
+    }
     /// Coordinates
     this.setPos( u, v );
 }

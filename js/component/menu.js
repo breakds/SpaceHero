@@ -31,7 +31,7 @@ var CommanderMenu = function( commander, right, top ) {
 			      this.top + 45 );
 	    
 	    ctxMenu.strokeStyle = "#00AABB";
-	    ctxMenu.font = "22px Arial";
+	    ctxMenu.font = "20px Arial";
 	    ctxMenu.textBaseline = "left";
 	    ctxMenu.strokeText( this.model.name,
 				this.right - this.width - 2 + 145,
@@ -60,6 +60,28 @@ var CommanderMenu = function( commander, right, top ) {
 	    ctxMenu.fillText( "AP " + this.model.AP, this.right - 60,
 			      this.top + 160 );
 
+	    /// Draw Attack and Defence
+	    ctxMenu.drawImage( resources.getResource("swordIcon"),
+			       this.right - this.width - 2 + 20,
+			       this.top + 200,
+			       40, 40 );
+	    ctxMenu.fillStyle = "#FF4444";
+	    ctxMenu.font = "25px Arial";
+	    ctxMenu.textBaseline = "top";
+	    ctxMenu.fillText( this.model.att,
+			      this.right - this.width - 2 + 80,
+			      this.top + 205 );
+
+	    ctxMenu.drawImage( resources.getResource("shieldIcon"),
+			       this.right - 120,
+			       this.top + 200,
+			       40, 40 );
+	    ctxMenu.fillStyle = "#4444FF";
+	    ctxMenu.font = "25px Arial";
+	    ctxMenu.textBaseline = "top";
+	    ctxMenu.fillText( this.model.def,
+			      this.right - 60,
+			      this.top + 205 );
 	}
     }
 

@@ -149,7 +149,7 @@ var HexagonGridView = function( m, height, width, margin )
 	} else if ( status.onSelect != null ) {
 	    obj = status.onSelect;
 	    if ( "Commander" == obj.type && 0 == obj.group ) {
-		if ( uv.u == status.target.u && uv.v == status.target.v ) {
+		if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v ) {
 		    dispatcher.broadcast( { name: "CommanderMove" } );
 		} else {
 		    dispatcher.broadcast( { name: "RequestArrowPath", 
@@ -173,14 +173,25 @@ var CommanderUniverseView = function( commander ) {
 	if ( ctx == ctx2d[0] ) {
 	    c = univMapView.getXYFromUV( this.model.u, this.model.v );
 	    var size = univMapView.radius * 1.90;
-	    drawRotatedImage( ctx2d[0],
-			      resources.getResource( "commanderImg" ),
-			      Math.PI * 2 / 6 * this.model.orientation,
-			      c.x,
-			      c.y,
-			      size,
-			      size,
-			      true );
+	    if ( this.model == logic.status.onSelect ) {
+		drawRotatedImage( ctx2d[0],
+				  resources.getResource( "commanderSelectImg" ),
+				  Math.PI * 2 / 6 * this.model.orientation,
+				  c.x,
+				  c.y,
+				  size,
+				  size,
+				  true );
+	    } else {
+		drawRotatedImage( ctx2d[0],
+				  resources.getResource( "commanderImg" ),
+				  Math.PI * 2 / 6 * this.model.orientation,
+				  c.x,
+				  c.y,
+				  size,
+				  size,
+				  true );
+	    }
 	}
     }
     this.requestUpdate = function() {
@@ -191,10 +202,10 @@ var CommanderUniverseView = function( commander ) {
 CommanderUniverseView.prototype = new View;
 
 
-var CommanderMoveAnimation = function( commanderObj, lifetime ) {
+var CommanderMoveAnimation = function( commanderObj ) {
     this.objs = new Array();
     this.objs.push( commanderObj );
-    this.lifetime = lifetime * 3;
+    this.lifetime = commanderObj.path.length * 3;
     this.onStart = function() {
 	dispatcher.broadcast( "BlockAll" );
     }
@@ -203,11 +214,11 @@ var CommanderMoveAnimation = function( commanderObj, lifetime ) {
     }
     this.next = function() {
 	if ( 0 == this.tick % 3 ) {
-	    var status = logic.getStatus();
-	    this.objs[0].setPos( this.objs[0].u + univMap.du[status.arrowPath[0]],
-				 this.objs[0].v + univMap.dv[status.arrowPath[0]] );
-	    this.objs[0].setOrientation( status.arrowPath[0] );
-	    logic.spliceArrow();
+	    this.objs[0].setPos( this.objs[0].u + univMap.du[this.objs[0].path[0]],
+				 this.objs[0].v + univMap.dv[this.objs[0].path[0]] );
+	    this.objs[0].setOrientation( this.objs[0].path[0] );
+	    this.objs[0].path.splice(0,1);
+	    logic.requestUpdate();
 	}
     }
     this.init();
@@ -226,19 +237,20 @@ var UniverseLogicView = function( logicModel ) {
 	var status = this.model.getStatus();
 	if ( status.onSelect != null ) {
 	    var obj = status.onSelect;
+
 	    if ( obj.type == "Commander" && 0 == obj.group ) {
-		if ( status.arrowPath != null && status.showArrows) {
+		if ( obj.path != null && status.showArrows) {
 		    var u = obj.u;
 		    var v = obj.v;
 		    var size = univMapView.radius * 1.40;
-		    for ( var i=0; i<status.arrowPath.length; i++ ) {
-			u += univMap.du[status.arrowPath[i]];
-			v += univMap.dv[status.arrowPath[i]];
+		    for ( var i=0; i<obj.path.length; i++ ) {
+			u += univMap.du[obj.path[i]];
+			v += univMap.dv[obj.path[i]];
 			var c = univMapView.getXYFromUV( u, v );
-			if ( i != status.arrowPath.length-1 ) {
+			if ( i != obj.path.length-1 ) {
 			    drawRotatedImage( ctx2d[1],
 					      resources.getResource( "greenArrowImg" ),
-					      Math.PI * 2 / 6 * status.arrowPath[i+1],
+					      Math.PI * 2 / 6 * obj.path[i+1],
 					      c.x,
 					      c.y,
 					      size,

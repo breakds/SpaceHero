@@ -1,9 +1,7 @@
 var GameStatus = function() {
     this.onSelect = null;
     this.showArrows = false;
-    this.arrowPath = null;
     this.block = false;
-    this.target = { u:-1, v:-1 };
     this.commanderMenu = null;
 }
 
@@ -18,15 +16,7 @@ var Logic = function() {
     this.getStatus = function() {
 	return this.status;
     }
-
-    this.spliceArrow = function() {
-	if ( this.status.arrowPath.length > 0 ) {
-	    this.status.arrowPath.splice(0,1);
-	    this.requestUpdate();
-	}
-    }
-
-
+    
     dispatcher.addListener( "SelectCommander", this );
     this.onSelectCommander = function( e ) {
 	if ( !this.status.block ) {
@@ -34,11 +24,15 @@ var Logic = function() {
 		if ( this.status.onSelect != null ) {
 		    this.status.onSelect.removeView( this.status.commanderMenu );
 		    this.status.commanderMenu = null;
+		    this.status.onSelect.requestUpdate();
 		}
 		this.status.onSelect = e.obj;
 		this.status.commanderMenu = new CommanderMenu( e.obj, 
 							       GameScreen.width,
 							       300 );
+		e.obj.updatePath();
+		e.obj.requestUpdate();
+		this.requestUpdate();
 	    }
 	}
     }
@@ -46,9 +40,9 @@ var Logic = function() {
     dispatcher.addListener( "RequestArrowPath", this );
     this.onRequestArrowPath = function( e ) {
 	if ( !this.status.block ) {
-	    this.status.arrowPath = univMap.floodFill( e.obj.u, e.obj.v, e.target.u, e.target.v );
-	    this.status.target.u = e.target.u;
-	    this.status.target.v = e.target.v;
+	    this.status.onSelect.target.u = e.target.u;
+	    this.status.onSelect.target.v = e.target.v;
+	    this.status.onSelect.updatePath();
 	    this.status.showArrows = true;
 	    this.requestUpdate();
 	}
@@ -66,8 +60,7 @@ var Logic = function() {
 
     dispatcher.addListener( "CommanderMove", this );
     this.onCommanderMove = function( e ) {
-	var tween = new CommanderMoveAnimation( this.status.onSelect, 
-						this.status.arrowPath.length );
+	var tween = new CommanderMoveAnimation( this.status.onSelect );
     }
     
 }
