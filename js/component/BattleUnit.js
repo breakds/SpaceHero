@@ -133,6 +133,7 @@ var Commander = function( title, name, group, u ,v  ) {
     this.curLen = 0;
 
     /// Properties
+    this.horizon = 1;
     this.level = 1;
     this.maxAP = 4;
     this.AP = 4;
@@ -154,6 +155,7 @@ var Commander = function( title, name, group, u ,v  ) {
     this.setPos = function( u, v ) {
 	if ( univMap.setMap( u, v, this ) ) {
 	    this.requestUpdate();
+	    univMap.unveilArea( u, v, this.horizon );
 	} else {
 	    trace ( "[ERROR] setPos() of Commander." );
 	}

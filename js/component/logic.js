@@ -39,7 +39,7 @@ var Logic = function() {
 
     dispatcher.addListener( "RequestArrowPath", this );
     this.onRequestArrowPath = function( e ) {
-	if ( !this.status.block ) {
+	if ( (!this.status.block) && (!univMap.veil[e.target.u][e.target.v]) ) {
 	    this.status.onSelect.target.u = e.target.u;
 	    this.status.onSelect.target.v = e.target.v;
 	    this.status.onSelect.updatePath();
@@ -60,7 +60,7 @@ var Logic = function() {
 
     dispatcher.addListener( "CommanderMove", this );
     this.onCommanderMove = function( e ) {
-	var tween = new CommanderMoveAnimation( this.status.onSelect );
+	new CommanderMoveAnimation( this.status.onSelect );
     }
     
 }

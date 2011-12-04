@@ -53,6 +53,29 @@ var HexagonGridView = function( m, height, width, margin )
 	ctxBg2d.fill();
     }
 
+    this.drawHalfVeiledHexagon = function( x, y, angle ) {
+	var ang = 0.0;
+	var step = Math.PI / 3.0;
+	var r = this.radius;
+	var smallerRaidus = this.radius * Math.sqrt(3) * 0.5;
+	var dx = 0.5 * ( 1.0- Math.cos(angle) ) * smallerRaidus;
+	var dy = Math.sqrt(3) * 0.5 * ( 1.0 - Math.cos(angle) ) * smallerRaidus;
+	ctxBg2d.moveTo( x + r - dx , y - dy );
+	for ( var i=0; i<6; i++ )
+	{
+	    ang += step;
+	    if ( 0 == i || 5 == i ) {
+		ctxBg2d.lineTo( x + r * Math.cos( ang ) - dx, 
+				y + r * Math.sin( ang ) - dy );
+	    } else if ( 2 == i || 3 == i ) {
+		ctxBg2d.lineTo( x + r * Math.cos( ang ) + dx, 
+				y + r * Math.sin( ang ) + dy );
+	    } else {
+		ctxBg2d.lineTo( x + r * Math.cos( ang ), y + r * Math.sin( ang ) );
+	    }
+	}
+    }
+
     this.highlightCoor = { u: -1, v: -1 };
     
     
@@ -84,6 +107,48 @@ var HexagonGridView = function( m, height, width, margin )
 	    }
 	    ctxBg2d.closePath();
 	    ctxBg2d.stroke();
+
+	    
+	    /* 
+	     * To Jefferson:
+	     * Draw Terran Here
+	     * Please be aware that 
+	     * if veil[u][v], don't draw terran for (u,v)
+	     */
+	    
+
+	    /// draw Veils
+	    var x = this.left;
+	    var y = this.top;
+	    ctxBg2d.fillStyle = "rgba(255,255,255,0.4)";
+	    ctxBg2d.beginPath();
+	    for ( var u=0; u<this.model.cols; u++ ) 
+	    {
+		y = this.top + this.model.lower[u] * smallerRadius;
+		for ( var v=this.model.lower[u]; v<=this.model.upper[u]; v+=2 )
+		{
+		    if ( this.model.veil[u][v] ) {
+			this.drawHexagon( x, y );
+		    }
+		    y += smallerRadius * 2;
+		}
+		x += this.radius * 1.5;
+	    }
+	    ctxBg2d.closePath();
+	    ctxBg2d.fill();
+
+	    
+	    /// draw Half-Veiled Cells
+	    ctxBg2d.fillStyle = "rgba(255,255,255,0.4)";
+	    ctxBg2d.beginPath();
+	    for ( var i=0; i<this.model.unveilAnimations.length; i++ ) {
+		var c = this.getXYFromUV( this.model.unveilAnimations[i].u,
+					  this.model.unveilAnimations[i].v );
+		this.drawHalfVeiledHexagon( c.x, c.y, this.model.unveilAnimations[i].angle );
+	    }
+	    ctxBg2d.closePath();
+	    ctxBg2d.fill();
+	    
 	    
 	    // draw highlighted cell last
 	    if ( this.highlightCoor.u > -1 )
@@ -149,12 +214,15 @@ var HexagonGridView = function( m, height, width, margin )
 	} else if ( status.onSelect != null ) {
 	    obj = status.onSelect;
 	    if ( "Commander" == obj.type && 0 == obj.group ) {
-		if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v ) {
+		if ( uv.u == status.onSelect.target.u && 
+		     uv.v == status.onSelect.target.v ) {
 		    dispatcher.broadcast( { name: "CommanderMove" } );
 		} else {
-		    dispatcher.broadcast( { name: "RequestArrowPath", 
-					    obj: obj,
-					    target: uv } );
+		    if ( this.model.inMap( uv.u, uv.v ) ) {
+			dispatcher.broadcast( { name: "RequestArrowPath", 
+						obj: obj,
+						target: uv } );
+		    }
 		}
 	    }
 	}
@@ -205,7 +273,7 @@ CommanderUniverseView.prototype = new View;
 var CommanderMoveAnimation = function( commanderObj ) {
     this.objs = new Array();
     this.objs.push( commanderObj );
-    this.lifetime = commanderObj.path.length * 3;
+    this.lifetime = commanderObj.path.length * 5;
     this.onStart = function() {
 	dispatcher.broadcast( "BlockAll" );
     }
@@ -213,7 +281,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
 	dispatcher.broadcast( "UnblockAll" );
     }
     this.next = function() {
-	if ( 0 == this.tick % 3 ) {
+	if ( 0 == this.tick % 5 ) {
 	    this.objs[0].setPos( this.objs[0].u + univMap.du[this.objs[0].path[0]],
 				 this.objs[0].v + univMap.dv[this.objs[0].path[0]] );
 	    this.objs[0].setOrientation( this.objs[0].path[0] );

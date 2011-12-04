@@ -41,6 +41,10 @@ var HexagonMap = function( rows, cols ) {
     }
 
 
+    /// Unveil Animation
+    this.unveilAnimations = new Array();
+
+
     /// Map
     /*
       0 - no objects on current cell
@@ -69,6 +73,21 @@ var HexagonMap = function( rows, cols ) {
     }
 
 
+    /// Veil
+    /*
+     * veil[u][v] = true 
+     * means that cell is not visible to the player
+     */
+    this.veil = new Array();
+    for ( var i=0; i<this.cols; i++ ) {
+	this.veil[i] = new Array();
+	for ( var j=this.lower[i]; j<=this.upper[i]; j++ ) {
+	    this.veil[i][j] = true;
+	}
+    }
+
+
+
     /// Auxilary Map
     this.auxMap = new Array();
     for ( var i=0; i<this.cols; i++ ) {
@@ -77,6 +96,8 @@ var HexagonMap = function( rows, cols ) {
 	    this.auxMap[i][j] = 0;
 	}
     }
+    
+    
     
 
    
@@ -141,6 +162,36 @@ var HexagonMap = function( rows, cols ) {
 	}
 	return -1;
     }
+
+
+    this.unveilArea = function( u, v, horizon ) {
+	var q = new Array();
+	this.unveil( u, v );
+	q.push( { u:u, v:v, dist:0 } );
+	var i = 0;
+	var nu = 0;
+	var nv = 0;
+	do {
+	    if ( q[i].dist < horizon ) {
+		for ( var j=0; j<6; j++ ) {
+		    nu = q[i].u + this.du[j];
+		    nv = q[i].v + this.dv[j];
+		    this.unveil( nu, nv );
+		    if ( q[i].dist + 1 < horizon ) {
+			q.push( {u:nu, v:nv, dist:q[i].dist+1} );
+		    }
+		}
+	    }
+	    i = i + 1;
+	} while ( i < q.length );
+    }
+
+    this.unveil = function( u, v ) {
+	if ( this.inMap( u, v ) && this.veil[u][v] ) {
+	    this.veil[u][v] = false;
+	    new HexCellUnveilAnimation( this, u, v );
+	}
+    }
     
     this.initAuxMap = function()
     {
@@ -200,3 +251,31 @@ var HexagonMap = function( rows, cols ) {
 }
 
 HexagonMap.prototype = new GameObject;
+
+
+
+
+
+var HexCellUnveilAnimation = function( hexmap, u, v ) {
+    this.objs = new Array();
+    this.objs.push( hexmap );
+    this.lifetime = 20;
+    this.objs[0].unveilAnimations.push( this );
+    this.angle = 0.0;
+    this.u = u;
+    this.v = v;
+    
+    this.onTerminate = function() {
+	this.objs[0].unveilAnimations.splice(
+	    this.objs[0].unveilAnimations.indexOf( this ), 1
+	);
+	this.objs[0].requestUpdate();
+    }
+    
+    this.next = function() {
+	this.angle += Math.PI / 40.0;
+	this.objs[0].requestUpdate();
+    }
+    this.init();
+}
+HexCellUnveilAnimation.prototype = new Tween;
