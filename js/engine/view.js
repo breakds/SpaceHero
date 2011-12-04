@@ -14,6 +14,7 @@ var View = function( m ) {
 	this.visible = boolVal;
     }
     this.removeInstance = function() {
+	this.requestUpdate();
 	this.stage.remove( this );
     }
     /// virtual methods

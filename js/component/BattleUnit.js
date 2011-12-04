@@ -119,15 +119,19 @@ var BattleUnit = function( template ) {
 BattleUnit.prototype = new GameObject;
 
 
-var Commander = function( group, u ,v  ) {
-    /* gourp:
+var Commander = function( title, name, group, u ,v  ) {
+    /* group:
      * 0 : Player
      * 1 .. n : AI
      */
     this.group = group;
+    this.title = title;
+    this.name = name;
     this.type = "Commander";
     this.maxLen = 5;
     this.curLen = 0;
+    this.level = 1;
+    this.AP = 4;
     this.units = new Array();
 
     /// Properties

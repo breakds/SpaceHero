@@ -83,7 +83,7 @@ var Stage = function()
 
     this.remove = function( view )
     {
-	this.viewObjs.splice( this.viewObjs.indexOf(obj), 1 );
+	this.viewObjs.splice( this.viewObjs.indexOf(view), 1 );
     }
 
 

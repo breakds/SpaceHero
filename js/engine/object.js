@@ -6,6 +6,10 @@ var GameObject = function() {
     this.addView = function( viewObj ) {
 	this.views.push( viewObj );
     }
+    this.removeView = function( viewObj ) {
+	this.views.splice( this.views.indexOf(viewObj), 1 );
+	viewObj.removeInstance();
+    }
     this.removeInstance = function() {
 	for ( idx in this.views ) {
 	    this.views[idx].removeInstance();

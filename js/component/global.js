@@ -11,6 +11,7 @@ var universe = new Stage();
 universe.addContext( ctxBg2d );
 universe.addContext( ctx2d[0] );
 universe.addContext( ctx2d[1] );
+universe.addContext( ctxMenu );
 
 /// Create Solar System Stage
 var solarSystem = new Stage();

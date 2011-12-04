@@ -4,6 +4,7 @@ var GameStatus = function() {
     this.arrowPath = null;
     this.block = false;
     this.target = { u:-1, v:-1 };
+    this.commanderMenu = null;
 }
 
 
@@ -29,7 +30,16 @@ var Logic = function() {
     dispatcher.addListener( "SelectCommander", this );
     this.onSelectCommander = function( e ) {
 	if ( !this.status.block ) {
-	    this.status.onSelect = e.obj;
+	    if ( this.status.onSelect != e.obj ) {
+		if ( this.status.onSelect != null ) {
+		    this.status.onSelect.removeView( this.status.commanderMenu );
+		    this.status.commanderMenu = null;
+		}
+		this.status.onSelect = e.obj;
+		this.status.commanderMenu = new CommanderMenu( e.obj, 
+							       GameScreen.width,
+							       300 );
+	    }
 	}
     }
 
