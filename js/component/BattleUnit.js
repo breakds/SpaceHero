@@ -160,6 +160,10 @@ var Commander = function( title, name, group, u ,v  ) {
 	    trace ( "[ERROR] setPos() of Commander." );
 	}
     }
+    this.restoreAP = function() {
+	this.AP = this.maxAP;
+	this.requestUpdate();
+    }
     this.addUnit = function( unit ) {
 	this.units.push( unit );
     }
@@ -185,6 +189,13 @@ var Commander = function( title, name, group, u ,v  ) {
     }
     this.updatePath = function() {
 	this.path = univMap.floodFill( this.u, this.v, this.target.u, this.target.v );
+    }
+
+    dispatcher.addListener( "NewTurn", this );
+    this.onNewTurn = function( e ) {
+	if ( e.group == this.group ) {
+	    this.restoreAP();
+	}
     }
     /// Coordinates
     this.setPos( u, v );

@@ -273,7 +273,11 @@ CommanderUniverseView.prototype = new View;
 var CommanderMoveAnimation = function( commanderObj ) {
     this.objs = new Array();
     this.objs.push( commanderObj );
-    this.lifetime = commanderObj.path.length * 5;
+    if ( commanderObj.AP >= commanderObj.path.length ) {
+	this.lifetime = commanderObj.path.length * 5;
+    } else {
+	this.lifetime = commanderObj.AP * 5;
+    }
     this.onStart = function() {
 	dispatcher.broadcast( "BlockAll" );
     }
@@ -282,6 +286,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
     }
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
+	    this.objs[0].AP--;
 	    this.objs[0].setPos( this.objs[0].u + univMap.du[this.objs[0].path[0]],
 				 this.objs[0].v + univMap.dv[this.objs[0].path[0]] );
 	    this.objs[0].setOrientation( this.objs[0].path[0] );
@@ -299,6 +304,19 @@ CommanderMoveAnimation.prototype = new Tween;
  */
 
 var UniverseLogicView = function( logicModel ) {
+    this.months = [ "Nothing", 
+		    "Jan",
+		    "Feb",
+		    "Mar",
+		    "Apr",
+		    "May",
+		    "Jun",
+		    "Jul",
+		    "Oct",
+		    "Sep",
+		    "Oct",
+		    "Nov",
+		    "Dec" ];
     this.setModel( logicModel );
     this.register( universe );
     this.drawArrows = function() {
@@ -342,11 +360,21 @@ var UniverseLogicView = function( logicModel ) {
     this.draw = function( ctx ) {
 	if ( ctx == ctx2d[1] ) {
 	    this.drawArrows();
+	} else if ( ctx == ctxMenu ) {
+	    ctxMenu.fillStyle = "#0000FF";
+	    ctxMenu.font = "20px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "middle";
+	    ctxMenu.fillText( this.months[this.model.status.month] 
+			      + ", " + this.model.status.year + " B.C.",
+			      850, 20 );
 	}
     }
     this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
 				ctx: ctx2d[1] } );
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxMenu } );
     }
 }
 UniverseLogicView.prototype = new View;

@@ -10,6 +10,18 @@ menu2d.onmousedown = function(e) {
     }
 }
 
+menu2d.onmouseup = function(e) {
+    if ( 1 == e.which ) {
+	dispatcher.broadcast( { name: "LeftMouseUp", 
+				x: e.offsetX,
+				y: e.offsetY } );
+    } else if ( 3 == e.which ) {
+	dispatcher.broadcast( { name: "RightMouseUp", 
+				x: e.offsetX,
+				y: e.offsetY } );
+    }
+}
+
 menu2d.onmousemove = function(e) {
     dispatcher.broadcast( { name: "MouseMove", 
 			    x: e.offsetX,

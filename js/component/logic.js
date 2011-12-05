@@ -3,6 +3,17 @@ var GameStatus = function() {
     this.showArrows = false;
     this.block = false;
     this.commanderMenu = null;
+    this.turn = 1;
+    this.month = 1;
+    this.year = 3000;
+    this.nextTurn = function() {
+	this.turn++;
+	this.month++;
+	if( 13 == this.month) {
+	    this.month = 1;
+	    this.year++;
+	}
+    }
 }
 
 
@@ -10,7 +21,6 @@ var GameStatus = function() {
  * Logic Singleton
  */
 var Logic = function() {
-
     this.status = new GameStatus();
 
     this.getStatus = function() {
@@ -61,6 +71,13 @@ var Logic = function() {
     dispatcher.addListener( "CommanderMove", this );
     this.onCommanderMove = function( e ) {
 	new CommanderMoveAnimation( this.status.onSelect );
+    }
+    
+
+    dispatcher.addListener( "EndTurn", this );
+    this.onEndTurn = function( e ) {
+	this.status.nextTurn();
+	dispatcher.broadcast( { name:"NewTurn", group:0 } );
     }
     
 }

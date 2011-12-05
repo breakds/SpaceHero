@@ -17,6 +17,8 @@ universe.addContext( ctx2d[0] );
 universe.addContext( ctx2d[1] );
 universe.addContext( ctxMenu );
 
+
+
 /// Create Solar System Stage
 var solarSystem = new Stage();
 solarSystem.enable3D = true;
@@ -35,4 +37,14 @@ cam.rotateGlobal(initialRotation);
 
 /// Create Logic
 var logic = new Logic();
+
+/// button for turns
+var btnEndTurn = new Button( "End Turn", "#005599", 
+			     880, 50, 80, 30, universe, ctxMenu );
+btnEndTurn.onRelease = function() {
+    dispatcher.broadcast( { name:"EndTurn" } );
+}
+
+
+
 
