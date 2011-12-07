@@ -26,7 +26,7 @@ var testStar = new Star("star1.png", 0, 0, -20, 2);
 cam.viewMode = "star";
 cam.viewObject = testStar;
 initialRotation = quat4.create();
-initialRotation[0] = -0.5;
+initialRotation[0] = -.6;
 initialRotation[1] = 0;
 initialRotation[2] = 0;
 quat4.calculateW(initialRotation);

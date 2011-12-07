@@ -1,6 +1,6 @@
 /// Set Current Rendering Stage
-game.setStage( universe );
-//solar system / universe
+game.setStage( solarSystem );
+//solarSystem / universe
 
 
 /// LogicViews:
