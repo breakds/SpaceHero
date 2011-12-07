@@ -220,7 +220,8 @@ var HexagonMap = function( rows, cols ) {
 		    nu = q[i].u + this.du[j];
 		    nv = q[i].v + this.dv[j];
 		    if ( this.available( nu, nv ) &&
-			 0 == this.auxMap[nu][nv] ) {
+			 0 == this.auxMap[nu][nv] && 
+			 (!this.veil[nu][nv]) ) {
 			this.auxMap[nu][nv] = 1;
 			q.push( { u: nu, v: nv, dir: j, pre: i } );
 			if ( nu == u1 && nv == v1 ) {
