@@ -1,4 +1,7 @@
-var StarView = function( m ) {
+var starImage = new Image();
+starImage.src = "img/star.png";
+
+var StarSolarView = function( m ) {
     this.setModel( m );
 	this.that = this;
     /// Do register a view on stage !!!
@@ -10,7 +13,22 @@ var StarView = function( m ) {
     }
 	
 }
-StarView.prototype = new View();
+StarSolarView.prototype = new View();
+
+var StarUniverseView = function( m )
+{
+	this.setModel(m);
+	this.that = this;
+	this.register(universe);
+	
+	this.draw = function()
+	{
+		var scale = univMapView.radius * 1.5;
+		ctxBg2d.drawImage(starImage, this.model.position[0] - scale / 2, this.model.position[1] - scale / 2, scale, scale);
+	}
+}
+StarUniverseView.prototype = new View();
+
 
 
 var Star = function(texture, x, y, z, radius) {
@@ -25,13 +43,35 @@ var Star = function(texture, x, y, z, radius) {
 	this.starModel.setScale(this.radius, this.radius, this.radius);
 	this.starModel.useLighting(false);
 
-    /// Add a View:
-    this.addView( new StarView( this ) );
+    /// Add views:
+    this.addView( new StarSolarView( this ) );
+    this.addView( new StarUniverseView( this ) );
 	
     /// do init a game object before using it
     this.init();
     this.update = function()
 	{
+		for(var i = 0; i < this.planets.length; i++)
+		{
+			this.planets[i].update();
+		}
     }
+	
+	this.planets = new Array();
+	var radii = [4.0, 8.0, 12.0, 16.0];
+	var textures = ["testPlanet.png", "planet2.png", "planet3.png", "planet4.png", "planet5.png"];
+	for(var i = 0; i < radii.length; i++)
+	{
+		var x = Math.random();
+		console.log(x);
+		if(x > 0.0) // 50% chance of a planet in each orbit
+		{
+			var planet = new Planet(textures[Math.floor(Math.random()*textures.length)], "clouds.png", -8, 0, -20, 1);
+			planet.orbitRadius = radii[i];
+			planet.orbitVelocity = 0.003 / planet.orbitRadius;
+			planet.orbitAround = this;
+			this.planets.push(planet);
+		}
+	}
 }
 Star.prototype = new GameObject();

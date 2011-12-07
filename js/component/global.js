@@ -23,7 +23,6 @@ universe.addContext( ctxMenu );
 var solarSystem = new Stage();
 solarSystem.enable3D = true;
 var testStar = new Star("star1.png", 0, 0, -20, 2);
-var testPlanet = new Planet("testPlanet.png", "clouds.png", -8, 0, -20, 1);
 cam.viewMode = "star";
 cam.viewObject = testStar;
 initialRotation = quat4.create();

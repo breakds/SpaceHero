@@ -41,9 +41,7 @@ var Planet = function(pTexture, aTexture, x, y, z, radius)
     /// do init a game object before using it
     this.init();
 	
-	this.orbitRadius = 8.0; // distance from star
-	this.orbitCenter; // set this equal to the star around which the planet orbits
-	this.orbitVelocity = 0.003 / this.orbitRadius;
+	this.orbitAround; // set this equal to the star around which the planet orbits
 	this.orbitPosition = Math.random() * Math.PI * 2; // start the planet at a random point around the star
     this.update = function()
 	{

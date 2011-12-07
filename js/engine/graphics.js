@@ -97,3 +97,8 @@ gl.disable(gl.CULL_FACE);
 ////
 
 gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+//set up viewport
+gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+	    setShader(lightShaderProgram);
+	    gl.useProgram(currentShader);

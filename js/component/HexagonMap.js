@@ -63,6 +63,7 @@ var HexagonMap = function( rows, cols ) {
     /// Terran
     /*
       0 - Ordinary Space
+	  otherwise - the object
      */
     this.terran = new Array();
     for ( var i=0; i<this.cols; i++ ) {

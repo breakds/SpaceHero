@@ -11,22 +11,6 @@ var univLogicView = new UniverseLogicView( logic );
 var univMap = new HexagonMap( 14, 18 );
 var univMapView = new HexagonGridView( univMap, 750, 750, 50 );
 
-var stars = new Array();
-
-// Populate map with stars
-/*
-for(var i = 0; i < univMap.rows; i++)
-{
-	for(var j = 0; j < univMap.cols; j++)
-	{
-		if(Math.random() < 0.1 && univMap.available(i, j))
-		{
-			stars.push(new Star("star1.png"), 0, 0, -20, 2);
-		}
-	}
-}
-*/
-
 /// Player Commander
 var commanders = new Array();
 var commanderUnivViews = new Array();
@@ -35,6 +19,17 @@ commanders.push( new Commander( "General", "Button", 0, 2, 5 ) )
 commanderUnivViews.push( new CommanderUniverseView( commanders[0] ) );
 commanders.push( new Commander( "General", "Rommel", 0, 7, 10 ) )
 commanderUnivViews.push( new CommanderUniverseView( commanders[1] ) );
+
+/// Star systems
+var stars = new Array();
+for(var i = 0; i < commanders.length; i++)
+{
+	var u = commanders[i].u + univMap.du[0];
+	var v = commanders[i].v + univMap.dv[0];
+	var xy = univMapView.getXYFromUV(u, v);
+	univMap.terran[u][v] = new Star("star1.png", xy.x, xy.y, -20, 2);
+}
+
 
 
 

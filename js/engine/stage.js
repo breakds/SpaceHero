@@ -15,7 +15,13 @@ var Stage = function()
     {
 	if ( this.enable3D )
 	{
-	    gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+	}
+    }
+    this.drawAll = function()
+    {
+	this.clear();
+	if(this.enable3D)
+	{
 	    gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 	    var camTranslate = vec3.create();
 	    vec3.negate(cam.position, camTranslate);
@@ -26,44 +32,23 @@ var Stage = function()
 	    mat4.translate(mvMatrix, camTranslate);
 	    setShader(lightShaderProgram);
 	    gl.useProgram(currentShader);
-	}
-	/*
-	for ( idx in this.contexts )
-	{
-	    if(this.contexts[idx].fillColor)
-	    {
-		this.contexts[idx].fillStyle=this.contexts[idx].fillColor;
-		this.contexts[idx].fillRect( 0, 0, GameScreen.width, GameScreen.height );
-	    }
-	    else
-	    {
-		this.contexts[idx].clearRect( 0, 0, GameScreen.width, GameScreen.height );
-	    }
-	}
-	*/
-    }
-    this.drawAll = function()
-    {
-	this.clear();
-	if(this.enable3D)
-	{
 	    cam.update();
+		for ( idx in this.viewObjs )
+		{
+			if ( this.viewObjs[idx].visible )
+			{
+			this.viewObjs[idx].draw();
+			}
+		}
 	}
-	/*
-	for ( idx in this.viewObjs )
-	{
-	    if ( this.viewObjs[idx].visible )
-	    {
-		this.viewObjs[idx].draw();
-	    }
-	}
-	*/
     }
 
     
     dispatcher.addListener( "UpdateContext", this );
     this.onUpdateContext = function(e) {
 	if ( game.stage == this ) {
+	if(!this.enable3D)
+	{
 	    var ctx = this.contexts[this.contexts.indexOf( e.ctx )];
 	    if ( ctx.updated ) return;
 	    if ( ctx.fillColor ) {
@@ -72,12 +57,13 @@ var Stage = function()
 	    } else {
 		ctx.clearRect( 0, 0, GameScreen.width, GameScreen.height );
 	    }
+	    ctx.updated = true;
+	}
 	    for ( var idx in this.viewObjs ) {
 		if ( this.viewObjs[idx].visible ) {
 		    this.viewObjs[idx].draw( ctx );
 		}
 	    }
-	    ctx.updated = true;
 	}
     }
 

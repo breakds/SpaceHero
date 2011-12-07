@@ -2,7 +2,7 @@ var Camera = function()
 {
 	this.viewMode = "galaxy"; // possible options are "galaxy", "star"
 	this.viewObject; // if viewMode is "star", this is the star to look at
-	this.viewDistance = 20; // if viewMode is "star", this is how far the camera is from the star
+	this.viewDistance = 50; // if viewMode is "star", this is how far the camera is from the star
 	this.interpolating = false; // set to "true" if camera is interpolating between viewModes
 	
 	// record last used orientations for the galaxy map and for star mode
