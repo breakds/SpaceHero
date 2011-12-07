@@ -1,0 +1,32 @@
+newmtl odyssey1:Material_001
+illum 4
+Kd 0.17 0.19 0.28
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 96.08
+newmtl odyssey1:Material_002
+illum 4
+Kd 0.12 0.13 0.24
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 96.08
+newmtl odyssey1:Material_003
+illum 4
+Kd 0.07 0.08 0.12
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 96.08
+newmtl odyssey1:Material_005
+illum 4
+Kd 0.10 0.10 0.18
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.00
+Ks 0.50 0.50 0.50
+Ns 96.08
