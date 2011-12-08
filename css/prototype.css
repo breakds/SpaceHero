@@ -28,7 +28,7 @@ canvas {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index: 5;
+    z-index: 55;
 }
 
 #BackGround2d {
@@ -42,14 +42,14 @@ canvas {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index: 51;
+    z-index: 61;
 }
 
 #Animation2d2 {
     position: absolute;
     left: 0px;
     top: 0px;
-    z-index: 52;
+    z-index: 62;
 }
 
 #Menu {
