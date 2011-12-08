@@ -10,6 +10,7 @@ resources.addImage( "img/shieldicon.png", "shieldIcon" );
 resources.addImage( "img/swordicon.png", "swordIcon" );
 resources.addImage( "img/redtarget.png", "redTargetImg" );
 resources.addImage( "img/redarrow.png", "redArrowImg" );
+resources.addImage( "img/solaronmap.png", "solarIconImg" );
 
 
 /// Create Universe Stage

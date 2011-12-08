@@ -17,11 +17,15 @@ var GameStatus = function() {
 }
 
 
+
+
 /*
  * Logic Singleton
  */
 var Logic = function() {
     this.status = new GameStatus();
+
+
 
     this.getStatus = function() {
 	return this.status;

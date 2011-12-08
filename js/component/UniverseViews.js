@@ -108,13 +108,30 @@ var HexagonGridView = function( m, height, width, margin )
 	    ctxBg2d.closePath();
 	    ctxBg2d.stroke();
 
-	    
-	    /* 
-	     * To Jefferson:
-	     * Draw Terran Here
-	     * Please be aware that 
-	     * if veil[u][v], don't draw terran for (u,v)
-	     */
+
+
+	    /// Draw Terrans
+	    var x = this.left;
+	    var y = this.top;
+	    for ( var u=0; u<this.model.cols; u++ ) 
+	    {
+		y = this.top + this.model.lower[u] * smallerRadius;
+		for ( var v=this.model.lower[u]; v<=this.model.upper[u]; v+=2 )
+		{
+		    if ( 1 == this.model.terran[u][v] ) {
+			ctxBg2d.drawImage( resources.getResource( "solarIconImg" ), 
+					   x - this.radius, 
+					   y - this.radius * 0.625, 
+					   this.radius * 2.0,
+					   this.radius * 1.25 );
+		    }
+		    y += smallerRadius * 2;
+		}
+		x += this.radius * 1.5;
+	    }
+
+
+
 	    
 
 	    /// draw Veils
