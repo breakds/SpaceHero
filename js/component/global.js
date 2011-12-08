@@ -38,6 +38,13 @@ cam.rotateGlobal(initialRotation);
 
 
 
+/// Create Battle Field
+var battlefield = new Stage();
+battlefield.enable3D = true;
+
+
+
+
 /// Create Logic
 var logic = new Logic();
 

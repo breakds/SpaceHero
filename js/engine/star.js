@@ -43,8 +43,10 @@ var Star = function(texture, x, y, z, radius) {
 	this.starModel.useLighting(false);
 
     /// Add views:
-    this.addView( new StarSolarView( this ) );
+    new StarSolarView( this );
+    /*
     this.addView( new StarUniverseView( this ) );
+    */
 	
     /// do init a game object before using it
     this.init();

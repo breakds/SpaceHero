@@ -17,6 +17,14 @@ var univMap = new HexagonMap( 14, 18 );
 var univMapView = new HexagonGridView( univMap, 750, 750, 50 );
 univMap.addSolarSystem( 2, 3);
 
+
+
+/// Create Battle Map
+var batMap = new HexagonMap( 10,10 );
+
+
+
+
 /// Player Commander
 forces[0].createCommander( "General", "Lionheart", 2, 5 );
 forces[1].createCommander( "General", "Luther", 7, 10 );
