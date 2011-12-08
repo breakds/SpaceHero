@@ -13,12 +13,14 @@ function mvPushMatrix() {
 
     function setMatrixUniforms(program) {
 		cam.setProjectionMatrix(program);
-        gl.uniformMatrix4fv(program.mvMatrixUniform, false, mvMatrix);
-		
-	var normalMatrix = mat3.create();
-        mat4.toInverseMat3(mvMatrix, normalMatrix);
-        mat3.transpose(normalMatrix);
-        gl.uniformMatrix3fv(program.nMatrixUniform, false, normalMatrix);
+		gl.uniformMatrix4fv(program.mvMatrixUniform, false, mvMatrix);
+		if(program == lightShaderProgram)
+		{
+			var normalMatrix = mat3.create();
+			mat4.toInverseMat3(mvMatrix, normalMatrix);
+			mat3.transpose(normalMatrix);
+			gl.uniformMatrix3fv(program.nMatrixUniform, false, normalMatrix);
+		}
     }
 
     function degToRad(degrees) {

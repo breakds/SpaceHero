@@ -12,6 +12,10 @@ var StarSolarView = function( m ) {
 		this.model.starModel.draw();
     }
 	
+	this.onMouseClick = function(e)
+	{
+		console.log("hello");
+	}
 }
 StarSolarView.prototype = new View();
 
@@ -62,15 +66,14 @@ var Star = function(texture, x, y, z, radius) {
 	for(var i = 0; i < radii.length; i++)
 	{
 		var x = Math.random();
-		console.log(x);
 		if(x > 0.0) // 50% chance of a planet in each orbit
 		{
-			var planet = new Planet(textures[Math.floor(Math.random()*textures.length)], "clouds.png", -8, 0, -20, 1);
-			planet.orbitRadius = radii[i];
+			var planet = new Planet(textures[Math.floor(Math.random()*textures.length)], "clouds.png", -8, 0, -20, 1, radii[i], this);
 			planet.orbitVelocity = 0.003 / planet.orbitRadius;
-			planet.orbitAround = this;
 			this.planets.push(planet);
 		}
 	}
+	
+	this.miners; // number of miners in the system
 }
 Star.prototype = new GameObject();

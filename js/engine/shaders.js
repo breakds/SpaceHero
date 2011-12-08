@@ -35,13 +35,15 @@ function getShader(gl, id) {
         return shader;
     }
     
-    function setShader(shaderProgram) {
+    function setShader(shaderProgram)
+	{
 		currentShader = shaderProgram;
+		gl.useProgram(currentShader);
     }
 
-    function initShaders() {
-		
-        // Light Shaders
+    function initShaders()
+	{
+        // Light Shader
         var lightFragmentShader = getShader(gl, "light-shader-fs");
         var lightVertexShader = getShader(gl, "light-shader-vs");
         
@@ -74,4 +76,24 @@ function getShader(gl, id) {
 		lightShaderProgram.lightingSpecularColorUniform = gl.getUniformLocation(lightShaderProgram, "uLightingSpecularColor");
 		lightShaderProgram.isLitUniform = gl.getUniformLocation(lightShaderProgram, "uIsLit");
 		setShader(lightShaderProgram);
+		
+		// Not Light Shader
+		var notVertexShader = getShader(gl, "shader-vs");
+		var notFragmentShader = getShader(gl, "shader-fs");
+		
+		notShaderProgram = gl.createProgram();
+		gl.attachShader(notShaderProgram, notVertexShader);
+		gl.attachShader(notShaderProgram, notFragmentShader);
+		gl.linkProgram(notShaderProgram);
+		
+        if (!gl.getProgramParameter(lightShaderProgram, gl.LINK_STATUS)) {
+            console.log("Could not initialise shaders");
+        }
+		
+		notShaderProgram.vertexPositionAttribute = gl.getAttribLocation(notShaderProgram, "aVertexPosition");
+		gl.enableVertexAttribArray(notShaderProgram.vertexPositionAttribute);
+		notShaderProgram.vertexColorAttribute = gl.getAttribLocation(notShaderProgram, "aVertexColor");
+		gl.enableVertexAttribArray(notShaderProgram.vertexColorattribute);
+		notShaderProgram.pMatrixUniform = gl.getUniformLocation(notShaderProgram, "uPMatrix");
+		notShaderProgram.mvMatrixUniform = gl.getUniformLocation(notShaderProgram, "uMVMatrix");
     }

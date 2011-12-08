@@ -60,6 +60,7 @@ ctx2d[0].updated = false;
 
 
 var lightShaderProgram;
+var notShaderProgram; // not the light shader
 var currentShader;
 
 var mvMatrix = mat4.create();
@@ -100,5 +101,5 @@ gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
 
 //set up viewport
 gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-	    setShader(lightShaderProgram);
-	    gl.useProgram(currentShader);
+
+setShader(lightShaderProgram);
