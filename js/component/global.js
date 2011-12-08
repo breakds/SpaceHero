@@ -26,7 +26,7 @@ universe.addContext( ctxMenu );
 /// Create Solar System Stage
 var solarSystem = new Stage();
 solarSystem.enable3D = true;
-var testStar = new Star("star1.png", 0, 0, 0, 2);
+var testStar = new Star("star1.png", 0, 0, -20, 2);
 cam.viewMode = "star";
 cam.viewObject = testStar;
 initialRotation = quat4.create();
@@ -36,14 +36,9 @@ initialRotation[2] = 0;
 quat4.calculateW(initialRotation);
 cam.rotateGlobal(initialRotation);
 
-
-
 /// Create Battle Field
 var battlefield = new Stage();
 battlefield.enable3D = true;
-
-
-
 
 /// Create Logic
 var logic = new Logic();

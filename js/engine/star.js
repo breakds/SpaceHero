@@ -11,11 +11,6 @@ var StarSolarView = function( m ) {
 		//lightPos = [this.model.x, this.model.y, this.model.z];
 		this.model.starModel.draw();
     }
-	
-	this.onMouseClick = function(e)
-	{
-		console.log("hello");
-	}
 }
 StarSolarView.prototype = new View();
 
