@@ -8,6 +8,8 @@ resources.addImage( "img/greenarrow.png", "greenArrowImg" );
 resources.addImage( "img/target.png", "targetImg" );
 resources.addImage( "img/shieldicon.png", "shieldIcon" );
 resources.addImage( "img/swordicon.png", "swordIcon" );
+resources.addImage( "img/redtarget.png", "redTargetImg" );
+resources.addImage( "img/redarrow.png", "redArrowImg" );
 
 
 /// Create Universe Stage

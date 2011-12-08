@@ -77,6 +77,7 @@ var Logic = function() {
     dispatcher.addListener( "EndTurn", this );
     this.onEndTurn = function( e ) {
 	this.status.nextTurn();
+	this.requestUpdate();
 	dispatcher.broadcast( { name:"NewTurn", group:0 } );
     }
     

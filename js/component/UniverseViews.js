@@ -333,24 +333,46 @@ var UniverseLogicView = function( logicModel ) {
 			u += univMap.du[obj.path[i]];
 			v += univMap.dv[obj.path[i]];
 			var c = univMapView.getXYFromUV( u, v );
-			if ( i != obj.path.length-1 ) {
-			    drawRotatedImage( ctx2d[1],
-					      resources.getResource( "greenArrowImg" ),
-					      Math.PI * 2 / 6 * obj.path[i+1],
-					      c.x,
-					      c.y,
-					      size,
-					      size,
-					      true );
+			if ( i < obj.AP ) {
+			    if ( i != obj.path.length-1 ) {
+				drawRotatedImage( ctx2d[1],
+						  resources.getResource( "greenArrowImg" ),
+						  Math.PI * 2 / 6 * obj.path[i+1],
+						  c.x,
+						  c.y,
+						  size,
+						  size,
+						  true );
+			    } else {
+				drawRotatedImage( ctx2d[1],
+						  resources.getResource( "targetImg" ),
+						  0,
+						  c.x,
+						  c.y,
+						  size,
+						  size,
+						  true );
+			    }
 			} else {
-			    drawRotatedImage( ctx2d[1],
-					      resources.getResource( "targetImg" ),
-					      0,
-					      c.x,
-					      c.y,
-					      size,
-					      size,
-					      true );
+			    if ( i != obj.path.length-1 ) {
+				drawRotatedImage( ctx2d[1],
+						  resources.getResource( "redArrowImg" ),
+						  Math.PI * 2 / 6 * obj.path[i+1],
+						  c.x,
+						  c.y,
+						  size,
+						  size,
+						  true );
+			    } else {
+				drawRotatedImage( ctx2d[1],
+						  resources.getResource( "redTargetImg" ),
+						  0,
+						  c.x,
+						  c.y,
+						  size,
+						  size,
+						  true );
+			    }
 			}
 		    }
 		}

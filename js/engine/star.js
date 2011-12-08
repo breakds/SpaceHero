@@ -38,7 +38,6 @@ var Star = function(texture, x, y, z, radius) {
 	this.position[2] = z;
     this.radius = radius;
 	this.starModel = new Model("ball.obj", texture);
-	
 	this.starModel.setPosition(this.position[0], this.position[1], this.position[2]);
 	this.starModel.setScale(this.radius, this.radius, this.radius);
 	this.starModel.useLighting(false);
