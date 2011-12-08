@@ -29,12 +29,6 @@ solarSystem.enable3D = true;
 var testStar = new Star("star1.png", 0, 0, -20, 2);
 cam.viewMode = "star";
 cam.viewObject = testStar;
-initialRotation = quat4.create();
-initialRotation[0] = -.6;
-initialRotation[1] = 0;
-initialRotation[2] = 0;
-quat4.calculateW(initialRotation);
-cam.rotateGlobal(initialRotation);
 
 /// Create Battle Field
 var battlefield = new Stage();

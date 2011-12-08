@@ -31,17 +31,17 @@ var Camera = function()
 	this.position[2] = 0;
 	
 	this.orientation = quat4.create(); // orientation of camera
-	this.orientation[0] = 0;
+	this.orientation[0] = 0.5;
 	this.orientation[1] = 0;
 	this.orientation[2] = 0;
-	this.orientation[3] = 1;
+	quat4.calculateW(this.orientation);
 	
 	this.originalForward = vec3.create(); // forward vector when the camera's orientation is (0, 0, 0, 1)
 	this.originalForward[0] = 0;
 	this.originalForward[1] = 0;
 	this.originalForward[2] = -1;
 	
-	var turnrate = 0.01; // how quickly the camera turns when using the rotateX and tiltX functions
+	var turnrate = -0.01; // how quickly the camera turns when using the rotateX and tiltX functions
 	// dx, ndx, dy, ndy, dz, and ndz are used to increment the camera's orientation
 	this.dx = quat4.create();
 	this.dx[0] = turnrate;
@@ -60,7 +60,7 @@ var Camera = function()
 	quat4.calculateW(this.dy, this.dy);
 	this.ndy = quat4.create();
 	this.ndy[0] = 0;
-	this.ndy[1] = turnrate;
+	this.ndy[1] = -turnrate;
 	this.ndy[2] = 0;
 	quat4.calculateW(this.ndy, this.ndy);
 	this.dz = quat4.create();
@@ -71,7 +71,7 @@ var Camera = function()
 	this.ndz = quat4.create();
 	this.ndz[0] = 0;
 	this.ndz[1] = 0;
-	this.ndz[2] = turnrate;
+	this.ndz[2] = -turnrate;
 	quat4.calculateW(this.ndz, this.ndz);
 	
 	// the following functions increment the camera's rotation using the quats given above.

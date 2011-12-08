@@ -7,10 +7,76 @@ var StarSolarView = function( m ) {
     /// Do register a view on stage !!!
     this.register( solarSystem );
     
-    this.draw = function() {
-		//lightPos = [this.model.x, this.model.y, this.model.z];
+    this.draw = function()
+	{
+		//tilt camera and then draw
+		if(this.left == 1)
+		{
+			cam.circleZ();
+		}
+		if(this.right == 1)
+		{
+			cam.circleNZ();
+		}
+		if(this.up == 1)
+		{
+			cam.rotateUp();
+		}
+		if(this.down == 1)
+		{
+			cam.rotateDown();
+		}
+		cam.update();
 		this.model.starModel.draw();
     }
+	
+	this.onKeyDown = function(key)
+	{
+		switch(key)
+		{
+			// When one direction is set to 1, the other direction is set to 0
+			// This ameliorates an issue where javascript lags a little and the keyUp event is never fired
+			case 37: // left arrow
+				this.left = 1;
+				this.right = 0;
+				break;
+			case 38: // up arrow
+				this.up = 1;
+				this.down = 0;
+				break;
+			case 39: // right arrow
+				this.right = 1;
+				this.left = 0;
+				break;
+			case 40: // down arrow
+				this.down = 1;
+				this.up = 0;
+				break;
+		}
+	}
+	this.onKeyUp = function(key)
+	{
+		switch(key)
+		{
+			case 37: // left arrow
+				this.left = 0;
+				break;
+			case 38: // up arrow
+				this.up = 0;
+				break;
+			case 39: // right arrow
+				this.right = 0;
+				break;
+			case 40: // down arrow
+				this.down = 0;
+				break;
+		}
+	}
+	
+	this.onLeftMouseDown = function(x, y)
+	{
+		console.log("hello");
+	}
 }
 StarSolarView.prototype = new View();
 

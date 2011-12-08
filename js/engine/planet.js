@@ -11,8 +11,8 @@ var PlanetView = function( m ) {
 	for(var i = 0.0; i < resolution; i++)
 	{
 		vertices.push(this.model.orbitAround.position[0] + this.model.orbitRadius * Math.sin(2.0 * Math.PI * i / resolution));
-		vertices.push(this.model.orbitAround.position[1]);
-		vertices.push(this.model.orbitAround.position[2] + this.model.orbitRadius * Math.cos(2.0 * Math.PI * i / resolution));
+		vertices.push(this.model.orbitAround.position[1] + this.model.orbitRadius * Math.cos(2.0 * Math.PI * i / resolution));
+		vertices.push(this.model.orbitAround.position[2]);
 		colors.push(1.0);
 		colors.push(1.0);
 		colors.push(1.0);
@@ -84,8 +84,8 @@ var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAro
 		if(this.orbitAround)
 		{
 			this.position[0] = this.orbitAround.position[0] - this.orbitRadius * Math.sin(this.orbitPosition);
-			this.position[1] = this.orbitAround.position[1];
-			this.position[2] = this.orbitAround.position[2] + this.orbitRadius * Math.cos(this.orbitPosition);
+			this.position[1] = this.orbitAround.position[1] + this.orbitRadius * Math.cos(this.orbitPosition);
+			this.position[2] = this.orbitAround.position[2];
 			this.planetModel.setPosition(this.position[0],this.position[1],this.position[2]);
 			this.orbitPosition += this.orbitVelocity;
 			if(this.hasAtmos)
