@@ -225,7 +225,7 @@ var HexagonGridView = function( m, height, width, margin )
 	var uv = this.getUVFromXY( x, y );
 	var obj = this.model.getMap( uv.u, uv.v );
 	var status = logic.getStatus();
-	if ( obj.type == "Commander" ) {
+	if ( obj.type == "Commander" && 0 == obj.group ) {
 	    dispatcher.broadcast( { name: "SelectCommander",
 				    obj: obj } );
 	} else if ( status.onSelect != null ) {
@@ -269,7 +269,7 @@ var CommanderUniverseView = function( commander ) {
 				  true );
 	    } else {
 		drawRotatedImage( ctx2d[0],
-				  resources.getResource( "commanderImg" ),
+				  resources.getResource( "commander"+this.model.group+"Img" ),
 				  Math.PI * 2 / 6 * this.model.orientation,
 				  c.x,
 				  c.y,
@@ -303,10 +303,13 @@ var CommanderMoveAnimation = function( commanderObj ) {
     }
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
+	    /*
 	    this.objs[0].AP--;
 	    this.objs[0].setPos( this.objs[0].u + univMap.du[this.objs[0].path[0]],
 				 this.objs[0].v + univMap.dv[this.objs[0].path[0]] );
+	    */
 	    this.objs[0].setOrientation( this.objs[0].path[0] );
+	    this.objs[0].stepForward();
 	    this.objs[0].path.splice(0,1);
 	    logic.requestUpdate();
 	}

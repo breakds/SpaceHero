@@ -19,7 +19,7 @@ univMap.addSolarSystem( 2, 3);
 
 /// Player Commander
 forces[0].createCommander( "General", "Lionheart", 2, 5 );
-forces[0].createCommander( "General", "Luther", 7, 10 );
+forces[1].createCommander( "General", "Luther", 7, 10 );
 
 
 

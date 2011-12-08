@@ -155,9 +155,13 @@ var Commander = function( title, name, group, u ,v  ) {
     this.setPos = function( u, v ) {
 	if ( univMap.setMap( u, v, this ) ) {
 	    this.requestUpdate();
-	    univMap.unveilArea( u, v, this.horizon );
+	    if ( 0 == this.group ) {
+		univMap.unveilArea( u, v, this.horizon );
+	    }
+	    return true;
 	} else {
-	    trace ( "[ERROR] setPos() of Commander." );
+	    trace ( "[Warning] Invalid setPos() of Commander." );
+	    return false;
 	}
     }
     this.restoreAP = function() {
@@ -176,6 +180,19 @@ var Commander = function( title, name, group, u ,v  ) {
     this.turnLeft = function() {
 	this.orientation = ( this.orientation - 1 ) % 6;
     }
+    this.stepForward = function() {
+	if ( this.AP <= 0 ) {
+	    return false;
+	}
+	if ( this.setPos( this.u + univMap.du[this.orientation],
+			  this.v + univMap.dv[this.orientation],
+			  this ) ) {
+	    this.AP--;
+	    return true;
+	} else {
+	    return false;
+	}
+    }
     this.update = function() {
 	return ;
     }
@@ -191,12 +208,7 @@ var Commander = function( title, name, group, u ,v  ) {
 	this.path = univMap.floodFill( this.u, this.v, this.target.u, this.target.v );
     }
 
-    dispatcher.addListener( "NewTurn", this );
-    this.onNewTurn = function( e ) {
-	if ( e.group == this.group ) {
-	    this.restoreAP();
-	}
-    }
+
     /// Coordinates
     this.setPos( u, v );
 }

@@ -14,6 +14,7 @@ var GameStatus = function() {
 	    this.year++;
 	}
     }
+    this.onTurn = forces[0];
 }
 
 
@@ -80,9 +81,17 @@ var Logic = function() {
 
     dispatcher.addListener( "EndTurn", this );
     this.onEndTurn = function( e ) {
-	this.status.nextTurn();
-	this.requestUpdate();
-	dispatcher.broadcast( { name:"NewTurn", group:0 } );
+	if ( e.groupID + 1 < forces.length ) {
+	    this.status.onTurn = e.groupID + 1;
+	    if ( "AI" == forces[e.groupID+1].type ) {
+		forces[e.groupID+1].go();
+	    }
+	} else {
+	    this.status.nextTurn();
+	    this.status.onTurn = 0;
+	    this.requestUpdate();
+	    dispatcher.broadcast( { name:"NewTurn" } );
+	}
     }
     
 }

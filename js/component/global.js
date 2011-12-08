@@ -2,7 +2,8 @@
 var cam = new Camera();
 
 /// Resources
-resources.addImage( "img/commander.png", "commanderImg" );
+resources.addImage( "img/commander.png", "commander0Img" );
+resources.addImage( "img/commander1.png", "commander1Img" );
 resources.addImage( "img/commanderSelect.png", "commanderSelectImg" );
 resources.addImage( "img/greenarrow.png", "greenArrowImg" );
 resources.addImage( "img/target.png", "targetImg" );
@@ -44,7 +45,8 @@ var logic = new Logic();
 var btnEndTurn = new Button( "End Turn", "#005599", 
 			     880, 50, 80, 30, universe, ctxMenu );
 btnEndTurn.onRelease = function() {
-    dispatcher.broadcast( { name:"EndTurn" } );
+    dispatcher.broadcast( { name:"EndTurn", 
+			    groupID:0 } );
 }
 
 
