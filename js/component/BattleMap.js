@@ -111,6 +111,25 @@ var BattleUnitView = function( unit, side ) {
 			      size,
 			      size,
 			      true );
+
+	    ctx2d[0].fillStyle = "#AA00AA";
+	    ctx2d[0].fillRect( c.x - batMapView.radius * 0.8,
+			       c.y + batMapView.radius * 0.8,
+			       batMapView.radius * 0.8,
+			       batMapView.radius * 0.4 );
+	    ctx2d[0].strokeStyle = "#FFFFFF";
+	    ctx2d[0].strokeRect( c.x - batMapView.radius * 0.8,
+				 c.y + batMapView.radius * 0.8,
+				 batMapView.radius * 0.8,
+				 batMapView.radius * 0.4 );
+
+	    ctx2d[0].fillStyle = "#FFFFFF";
+	    ctx2d[0].font = "10px Arial";
+	    ctx2d[0].textBaseline = "top";
+	    ctx2d[0].textAlign = "center";
+	    ctx2d[0].fillText( this.model.quantity, 
+			       c.x - batMapView.radius * 0.4,
+			       c.y + batMapView.radius * 0.82 );
 	}
     }
     this.requestUpdate = function() {
