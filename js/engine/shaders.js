@@ -37,6 +37,22 @@ function getShader(gl, id) {
     
     function setShader(shaderProgram)
 	{
+		if(shaderProgram == lightShaderProgram)
+		{
+			gl.enableVertexAttribArray(lightShaderProgram.vertexPositionAttribute);
+			gl.enableVertexAttribArray(lightShaderProgram.vertexNormalAttribute);
+			gl.enableVertexAttribArray(lightShaderProgram.textureCoordAttribute);
+			gl.disableVertexAttribArray(notShaderProgram.vertexPositionAttribute);
+			gl.disableVertexAttribArray(notShaderProgram.vertexColorAttribute);
+		}
+		if(shaderProgram == notShaderProgram)
+		{
+			gl.disableVertexAttribArray(lightShaderProgram.vertexPositionAttribute);
+			gl.disableVertexAttribArray(lightShaderProgram.vertexNormalAttribute);
+			gl.disableVertexAttribArray(lightShaderProgram.textureCoordAttribute);
+			gl.enableVertexAttribArray(notShaderProgram.vertexPositionAttribute);
+			gl.enableVertexAttribArray(notShaderProgram.vertexColorAttribute);
+		}
 		currentShader = shaderProgram;
 		gl.useProgram(currentShader);
     }
@@ -93,7 +109,7 @@ function getShader(gl, id) {
 		notShaderProgram.vertexPositionAttribute = gl.getAttribLocation(notShaderProgram, "aVertexPosition");
 		gl.enableVertexAttribArray(notShaderProgram.vertexPositionAttribute);
 		notShaderProgram.vertexColorAttribute = gl.getAttribLocation(notShaderProgram, "aVertexColor");
-		gl.enableVertexAttribArray(notShaderProgram.vertexColorattribute);
+		gl.enableVertexAttribArray(notShaderProgram.vertexColorAttribute);
 		notShaderProgram.pMatrixUniform = gl.getUniformLocation(notShaderProgram, "uPMatrix");
 		notShaderProgram.mvMatrixUniform = gl.getUniformLocation(notShaderProgram, "uMVMatrix");
     }
