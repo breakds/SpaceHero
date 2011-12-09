@@ -68,9 +68,9 @@ var PlanetMenuView = function( m ) {
 	this.shipYardWidgets.push(new planetMenuButton("Miner                          50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50));
 	
 	this.factoryWidgets.push(new planetMenuButton("ShipYard                      50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50));
-	this.factoryWidgets.push(new planetMenuButton("Defense System         50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 50));
-	this.factoryWidgets.push(new planetMenuButton("Refinery                       50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 50));
-	this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant   50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",50));
+	this.factoryWidgets.push(new planetMenuButton("Defense System         0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 0));
+	this.factoryWidgets.push(new planetMenuButton("Refinery                       0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 0));
+	this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant   0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",0));
 	
 	
 		
