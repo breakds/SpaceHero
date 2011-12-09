@@ -134,6 +134,7 @@ var BattleHexagonView = function( m, radius ) {
 BattleHexagonView.prototype = new View;
 
 
+
 var BattleUnitView = function( unit, side ) {
     this.setModel( unit );
     this.register( battlefield );
@@ -198,6 +199,34 @@ var BattleUnitView = function( unit, side ) {
     this.requestUpdate();
 }
 BattleUnitView.prototype = new View;
+
+
+
+
+
+/// Ad Hoc Tweens
+var UnitMoveAnimation = function( obj, path ) {
+    this.objs = new Array();
+    this.objs.push( obj );
+    this.path = path;
+    this.lifetime = this.path.length * 20;
+    this.onStart = function() {
+	logic.battle.onAnimation = true;
+    }
+    this.next = function() {
+	if ( 0 == this.tick % 20 ) {
+	    this.objs[0].setPos( path[path.length-1].u,
+				 path[path.length-1].v );
+	    this.path.splice( path.length-1, 1 );
+	}
+    }
+    this.onTerminate = function() {
+	logic.battle.onAnimation = false;
+	dispatcher.broadcast( { name: "NextUnit" } );
+    }
+    this.init();
+}
+UnitMoveAnimation.prototype = new Tween;
 
 
 

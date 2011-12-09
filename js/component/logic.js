@@ -165,6 +165,15 @@ var Logic = function() {
 	obj.requestUpdate();
 	this.battle.reachable = batMap.getReachable( obj.u, obj.v, obj.template.spd );
 	batMapView.requestUpdate();
+
+	/// Temporary AI:
+	if ( 0 != obj.leader.group ) {
+	    var pick = Math.floor( Math.random() * this.battle.reachable.length );
+	    dispatcher.broadcast( { name: "UnitMove",
+				    obj: obj,
+				    u: this.battle.reachable[pick].u,
+				    v: this.battle.reachable[pick].v } );
+	}
     }
 
     dispatcher.addListener( "UnitMove", this );
@@ -173,11 +182,17 @@ var Logic = function() {
 	    for ( var i=0; i<this.battle.reachable.length; i++ ) {
 		if ( this.battle.reachable[i].u == e.u &&
 		     this.battle.reachable[i].v == e.v ) {
-		    trace( "go!" );
+		    var path = new Array();
+		    var j = i;
+		    while ( this.battle.reachable[j].pre != -1 ) {
+			path.push( { u: this.battle.reachable[j].u,
+				     v: this.battle.reachable[j].v } );
+			j = this.battle.reachable[j].pre;
+		    }
+		    new UnitMoveAnimation( e.obj, path );
 		    return;
 		}
 	    }
-	    trace( "not go!" );
 	}
     }
 }
