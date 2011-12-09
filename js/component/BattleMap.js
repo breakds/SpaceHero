@@ -103,14 +103,25 @@ var BattleUnitView = function( unit, side ) {
 	if ( ctx == ctx2d[0] ) {
 	    c = batMapView.getXYFromUV( this.model.u, this.model.v );
 	    var size = batMapView.radius * 1.90;
-	    drawRotatedImage( ctx2d[0],
-			      this.model.template.image,
-			      this.rotation,
-			      c.x,
-			      c.y,
-			      size,
-			      size,
-			      true );
+	    if ( this.model == logic.battle.units[logic.battle.currentUnitID] ) {
+		drawRotatedImage( ctx2d[0],
+				  this.model.template.imageOnSelect,
+				  this.rotation,
+				  c.x,
+				  c.y,
+				  size,
+				  size,
+				  true );
+	    } else {
+		drawRotatedImage( ctx2d[0],
+				  this.model.template.image,
+				  this.rotation,
+				  c.x,
+				  c.y,
+				  size,
+				  size,
+				  true );
+	    }
 
 	    ctx2d[0].fillStyle = "#AA00AA";
 	    ctx2d[0].fillRect( c.x - batMapView.radius * 0.8,

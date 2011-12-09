@@ -123,10 +123,11 @@ Warrior.setAttackStyle( "Surounding" );
  * BattleUnit won't get init()
  * unless necessary
  */
-var BattleUnit = function( template, quantity ) {
+var BattleUnit = function( template, quantity, leader ) {
     this.template = template;
     this.curHp = template.hp;
     this.quantity = quantity;
+    this.leader = leader;
     this.u = 0;
     this.v = 0;
     this.setQuantity = function( num ) {
@@ -202,7 +203,7 @@ var Commander = function( title, name, group, u ,v  ) {
 		return;
 	    }
 	}
-	this.units.push( new BattleUnit( template, 1 ) );
+	this.units.push( new BattleUnit( template, 1, this ) );
     }
     this.setOrientation = function( ort ) {
 	this.orientation = ort;

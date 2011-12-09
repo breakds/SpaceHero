@@ -21,6 +21,9 @@ var BattleStatus = function() {
     this.commander0 = null;
     this.commander1 = null;
     this.unitViews = new Array();
+    this.units = new Array();
+    this.turn = 0;
+    this.currentUnitID = 0;
 }
 
 
@@ -121,8 +124,11 @@ var Logic = function() {
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
 	
+	this.battle.units = new Array();
+	// Init Units and Units View for the Attacker Commander
 	var units = this.battle.commander0.units;
 	for ( var i=0; i<units.length; i++ ) {
+	    this.battle.units.push( units[i] );
 	    if ( i < 5 ) {
 		units[i].setPos( i * 2 + 1, 0 );
 	    } else {
@@ -131,11 +137,29 @@ var Logic = function() {
 	    this.battle.unitViews.push( new BattleUnitView( units[i], 0 ) );
 	}
 
+	// Init Units and Units View for the Defender Commander
 	units = this.battle.commander1.units;
 	for ( var i=0; i<units.length; i++ ) {
+	    this.battle.units.push( units[i] );
 	    units[i].setPos( i * 2, 31 );
 	    this.battle.unitViews.push( new BattleUnitView( units[i], 1 ) );
 	}
+
+
+	this.battle.currentUnitID = -1;
+	dispatcher.broadcast( { name: "NextUnit" } );
+    }
+
+    dispatcher.addListener( "NextUnit", this );
+    this.onNextUnit = function() {
+	if ( -1 != this.battle.currentUnitID ) {
+	    this.battle.units[this.battle.currentUnitID].requestUpdate();
+	}
+	this.battle.currentUnitID++;
+	if ( this.battle.units.length == this.battle.currentUnitID ) {
+	    this.battle.currentUnitID = 0;
+	}
+	this.battle.units[this.battle.currentUnitID].requestUpdate();
     }
 }
 Logic.prototype = new GameObject;
