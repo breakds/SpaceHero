@@ -1,5 +1,7 @@
 menu2d.onmousedown = function(e) {
     if ( 1 == e.which ) {
+	console.log(e.offsetX);
+	console.log(e.offsetY);
 	dispatcher.broadcast( { name: "LeftMouseDown", 
 				x: e.offsetX,
 				y: e.offsetY } );
@@ -27,7 +29,6 @@ menu2d.onmousemove = function(e) {
 			    x: e.offsetX,
 			    y:e.offsetY } );
 }
-
 
 /// Disable Right-Click Menu
 menu2d.oncontextmenu = function() {

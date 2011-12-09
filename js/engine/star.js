@@ -26,8 +26,9 @@ var StarSolarView = function( m ) {
 		{
 			cam.rotateDown();
 		}
-		cam.update();
 		this.model.starModel.draw();
+		starfield.draw();
+		cam.update();
     }
 	
 	this.onKeyDown = function(key)
