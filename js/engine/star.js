@@ -98,6 +98,16 @@ StarUniverseView.prototype = new View();
 
 
 var Star = function(texture, x, y, z, radius) {
+
+    /// new added
+    this.visiting = null;
+    this.group = 0;
+    this.quantities = new Array();
+    for ( var i=0; i<UnitTypes.length; i++ ){
+	this.quantities[i] = 1;
+    }
+
+    
     this.position = vec3.create();
 	this.position[0] = x;
 	this.position[1] = y;

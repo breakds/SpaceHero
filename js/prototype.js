@@ -27,14 +27,21 @@ var batMapView = new BattleHexagonView( batMap, 0.25 );
 
 /// Player Commander
 forces[0].createCommander( "General", "Lionheart", 2, 5 );
-forces[0].commanders[0].addUnit( new BattleUnit( Warship, 4 ) );
+forces[0].commanders[0].addUnit( Warship );
+forces[0].commanders[0].addUnit( Gunboat );
+forces[0].commanders[0].addUnit( Warship );
+trace( forces[0].commanders[0].units );
 forces[1].createCommander( "General", "Luther", 7, 10 );
 
 
 
 
 game.play();
-
+/*
+dispatcher.broadcast( {name: "StartBattle",
+		       commander0: forces[0].commanders[0],
+		       commander1: forces[1].commanders[0] } );
+*/
 
 
 

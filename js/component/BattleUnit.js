@@ -1,8 +1,7 @@
 var UnitTypes = new Array();
 var BattleUnitTemplate = function( typeName, level, hp, att, def, spd, 
-				   price, dmgMax, dmgMin, production, value, modelObj ) {
+				   price, dmgMax, dmgMin, production, value ) {
     this.type = typeName;
-    this.modelObj = modelObj;
     this.level = level;
     this.hp = hp;
     this.att = att;
@@ -169,8 +168,14 @@ var Commander = function( title, name, group, u ,v  ) {
 	this.AP = this.maxAP;
 	this.requestUpdate();
     }
-    this.addUnit = function( unit ) {
-	this.units.push( unit );
+    this.addUnit = function( template ) {
+	for ( var i=0; i<this.units.length; i++ ) {
+	    if ( this.units[i].template == template ) {
+		this.units[i].quantity++;
+		return;
+	    }
+	}
+	this.units.push( new BattleUnit( template, 1 ) );
     }
     this.setOrientation = function( ort ) {
 	this.orientation = ort;
