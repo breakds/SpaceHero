@@ -27,6 +27,7 @@ var StarSolarView = function( m ) {
 			cam.rotateDown();
 		}
 		this.model.starModel.draw();
+		this.model.starModel2.draw(); //star cloud
 		starfield.draw();
 		cam.update();
     }
@@ -163,6 +164,18 @@ var Star = function(texture, x, y, z, radius) {
 	this.starModel.setPosition(this.position[0], this.position[1], this.position[2]);
 	this.starModel.setScale(this.radius, this.radius, this.radius);
 	this.starModel.useLighting(false);
+	this.starModel.constantRotation(0,0,0.08);
+	
+	//star clouds
+	this.starModel2 = new Model("ball.obj", "clouds.png");
+	this.starModel2.setPosition(this.position[0], this.position[1], this.position[2]);
+	this.starModel2.setScale(this.radius + 0.1, this.radius + 0.1, this.radius + 0.1);
+	this.starModel2.useLighting(false);
+	this.starModel2.constantRotation(0,0,0.1);
+	
+	//end star clouds "flares"
+	
+	
 	var that = this;
     /// Add views:
     new StarSolarView( this );
@@ -175,6 +188,8 @@ var Star = function(texture, x, y, z, radius) {
     this.active = true;
 	this.update = function()
 	{
+	this.starModel.update(); //star rotations
+	this.starModel2.update(); //star flare rotation
 		for(var i = 0; i < this.planets.length; i++)
 		{
 			this.planets[i].update();
