@@ -13,8 +13,11 @@ var Game = function() {
     {
 		if ( this.stage )
 		{
-			this.stage.clear();
+		    this.stage.clear();
 		}
+	for ( var i=0; i<allContexts.length; i++ ) {
+	    clearContext( allContexts[i] );
+	}
 		this.stage = s;
 		s.init();
 	}

@@ -107,6 +107,18 @@ var Logic = function() {
 	}
     }
 
+
+    dispatcher.addListener( "EnterSolarSystem", this );
+    this.onEnterSolarSystem = function( e ) {
+	testStar.visiting = e.visiting;
+	game.setStage( solarSystem );
+    }
+
+
+
+
+
+    /// Battle Part
     dispatcher.addListener( "StartBattle", this );
     this.onStartBattle = function( e ) {
 	game.setStage( battlefield );

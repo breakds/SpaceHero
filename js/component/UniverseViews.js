@@ -334,6 +334,10 @@ var CommanderMoveAnimation = function( commanderObj ) {
     }
     this.onTerminate = function() {
 	dispatcher.broadcast( "UnblockAll" );
+	if ( 1 == univMap.terran[this.objs[0].u][this.objs[0].v] ) {
+	    dispatcher.broadcast( { name: "EnterSolarSystem",
+				    visiting: this.objs[0] } );
+	}
     }
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
