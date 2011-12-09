@@ -123,6 +123,7 @@ var Logic = function() {
     this.onStartBattle = function( e ) {
 	game.setStage( battlefield );
 	/// Reset the camera
+	/*
 	cam.reset();
 
 	var rotation = quat4.create();
@@ -136,6 +137,7 @@ var Logic = function() {
 	rotation[2] = 0.0;
 	quat4.calculateW( rotation, rotation );
 	cam.rotateLocal( rotation );
+	*/
 
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
@@ -148,7 +150,7 @@ var Logic = function() {
 	    if ( i < 5 ) {
 		units[i].setPos( i * 2 + 1, 0 );
 	    } else {
-		units[i].setPos( 10, 0 );
+		units[i].setPos( 10, 1 );
 	    }
 	    this.battle.unitViews.push( new BattleUnitView( units[i], 0 ) );
 	}
