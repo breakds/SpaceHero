@@ -1,16 +1,26 @@
-var BattleHexagonView = function( m, height, width, margin ) {
+var BattleHexagonView = function( m, radius ) {
     this.setModel( m );
     this.register( battlefield );
 
-    this.left = margin;
-    this.top = margin;
+    
+    this.radius = radius;
+
+
+
     
     
 
+    this.hexagonVertexBuffer = new Array();
+    
+    
+    this.addHexagon = function( x, y ) {
+	
+    }
 
-    /*
+
+    
     this.drawHexagon = function( x, y ) {
-	var r = 2.0;
+	var r = 0.5;
 	var ang = 0.0;
 	var step = Math.PI / 3.0;
 	
@@ -23,13 +33,13 @@ var BattleHexagonView = function( m, height, width, margin ) {
 	var vertices = new Array();
 	vertices.push( x + r );
 	vertices.push( y );
-	vertices.push( 0 );
+	vertices.push( -20 );
 	for ( var i=0; i<5; i++ )
 	{
 	    ang += step;
 	    vertices.push( x + r * Math.cos( ang ) );
 	    vertices.push( y + r * Math.sin( ang ) );
-	    vertices.push( 0 );
+	    vertices.push( -20 );
 	}
 
 	
@@ -70,17 +80,20 @@ var BattleHexagonView = function( m, height, width, margin ) {
 	gl.drawArrays( gl.LINE_LOOP, 0, vertexBuffer.numItems );
     }
     this.draw = function() {
+	/*
+	cam.position[0] = 0.0;
+	cam.position[1] = 0.0;
+	cam.position[2] = 0.0;
+	*/
+
+
 	setShader( notShaderProgram );
-	cam.position[0] = 0;
-	cam.position[1] = -43;
-	cam.position[2] = 5;
-	
 	this.drawHexagon( 0.0, 0.0 );
 	setShader( lightShaderProgram );
     }
-    */
+
     
-    
+    /*
     var resolution = 100.0;
     
     var vertices = new Array();
@@ -90,7 +103,7 @@ var BattleHexagonView = function( m, height, width, margin ) {
     {
 	vertices.push(10 * Math.sin(2.0 * Math.PI * i / resolution));
 	vertices.push(10 * Math.cos(2.0 * Math.PI * i / resolution));
-	vertices.push(0.0);
+	vertices.push(0);
 	colors.push(1.0);
 	colors.push(1.0);
 	colors.push(1.0);
@@ -119,7 +132,8 @@ var BattleHexagonView = function( m, height, width, margin ) {
 	gl.drawArrays(gl.LINE_LOOP, 0, this.circleVertexBuffer.numItems);
 	setShader(lightShaderProgram);
     }
-    
+    */
+
 }
 
 BattleHexagonView.prototype = new View;

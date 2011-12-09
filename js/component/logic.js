@@ -102,6 +102,13 @@ var Logic = function() {
     dispatcher.addListener( "StartBattle", this );
     this.onStartBattle = function( e ) {
 	game.setStage( battlefield );
+	/// Reset the camera
+	cam.viewMode = "something";
+	cam.orientation[0] = 0.0;
+	cam.orientation[1] = 0.0;
+	cam.orientation[2] = 0.0;
+	cam.orientation[3] = 1.0;
+	
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
     }

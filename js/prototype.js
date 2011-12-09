@@ -4,7 +4,7 @@ new Force( "The Empire", "AI" );
 
 
 /// Set Current Rendering Stage
-game.setStage( solarSystem );
+game.setStage( universe );
 //solarSystem / universe
 
 
@@ -21,7 +21,7 @@ univMap.addSolarSystem( 2, 3);
 
 /// Create Battle Map
 var batMap = new HexagonMap( 10,10 );
-var batMapView = new BattleHexagonView( batMap, 100, 100, 5 );
+var batMapView = new BattleHexagonView( batMap, 0.2 );
 
 
 
@@ -36,6 +36,7 @@ game.play();
 dispatcher.broadcast( { name: "StartBattle", 
 			commander0: forces[0].commanders[0],
 			commadner1: forces[1].commanders[0] } );
+
 
 
 
