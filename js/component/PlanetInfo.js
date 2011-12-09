@@ -47,9 +47,11 @@ planetNames.push("Enbrilllag");
 
 var PlanetInfo = function(structureList, owner) {
 	this.name = planetNames[Math.floor(Math.random() * (planetNames.length - 1))];
+	this.structureList;
 	if (this.structureList == null) {
 		this.structureList = new Array();
 		this.structureList.push("Factory");
+		this.structureList.push("Ship Yard");
 	}
 	else {
 		this.structureList = structureList;

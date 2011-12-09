@@ -61,6 +61,7 @@ var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAro
 	else {
 		this.hasFactory = true;
 	}
+	this.planetInfo = planetInfo;
 	this.position = vec3.create();
 	this.position[0] = x;
 	this.position[1] = y;
