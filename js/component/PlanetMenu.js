@@ -77,7 +77,9 @@ var PlanetMenuView = function( m ) {
 	var that = this;
 	this.draw = function( ctx ) {
 		if ( ctx == ctxMenu ) {
-			
+			ctx.lineWidth = defaultLineWidth;
+			ctx.textAlign = defaultTextAlign;
+			ctx.textBaseline = defaultTextBaseline;
 			if (that.state == 2) {
 			
 				if (that.opacity < 1.0)

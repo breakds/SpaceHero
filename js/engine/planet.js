@@ -73,13 +73,15 @@ var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAro
 	this.planetModel = new Model("ball.obj", pTexture);
 	this.planetModel.setPosition(x,y,z);
 	this.planetModel.setScale(radius,radius,radius);
-	this.planetModel.constantRotation(0,0,0.4);
+	
+	this.planetModel.setRotation(90, 0, 0);
+	this.planetModel.constantRotation(0,0.2,0);
 	if (aTexture != null) {
 		this.hasAtmos = true;
 		this.atmosModel = new Model("ball.obj", aTexture);
 		this.atmosModel.setPosition(this.x,this.y,this.z);
-		this.atmosModel.setScale(radius * 1.1, radius * 1.1, radius * 1.1);
-		this.atmosModel.constantRotation(0,0,0.7);
+		this.atmosModel.setScale(radius * 1.2, radius * 1.2, radius * 1.2);
+		this.atmosModel.constantRotation(0,0.05,0.3);
 	}
 
     /// do init a game object before using it

@@ -164,14 +164,16 @@ var Star = function(texture, x, y, z, radius) {
 	this.starModel.setPosition(this.position[0], this.position[1], this.position[2]);
 	this.starModel.setScale(this.radius, this.radius, this.radius);
 	this.starModel.useLighting(false);
-	this.starModel.constantRotation(0,0,0.08);
+	this.starModel.constantRotation(0,0.08,0);
+	this.starModel.setRotation(90, 0, 0);
 	
 	//star clouds
 	this.starModel2 = new Model("ball.obj", "clouds.png");
 	this.starModel2.setPosition(this.position[0], this.position[1], this.position[2]);
 	this.starModel2.setScale(this.radius + 0.1, this.radius + 0.1, this.radius + 0.1);
 	this.starModel2.useLighting(false);
-	this.starModel2.constantRotation(0,0,0.1);
+	this.starModel2.constantRotation(0,0.1,0);
+	this.starModel2.setRotation(90, 0, 0);
 	
 	//end star clouds "flares"
 	
@@ -324,7 +326,7 @@ var planetMenuOpenButton = function(name, xPos, yPos, model) {
 					console.log(that.model.quantities[0]);
 					dispatcher.broadcast( { name: "OpenPlanetMenu",
 						force: forces[that.model.group],
-						commander: forces[0].commanders[0],//that.model.visiting ,
+						commander: that.model.visiting ,
 						planet: that.model.planets[0],
 						ss: that.model} );
 					that.active = false;
@@ -522,7 +524,7 @@ var CommanderInfoPanel = function(xPos, yPos, model) {
 		this.edgeOffset = 10;
 		this.infoSpacing = 25;
 		
-		this.commander = null; //that.model.visiting
+		this.commander = that.model.visiting
 		this.fighters = 0; 
 		this.gunboats = 0;
 		this.warships = 0;
@@ -557,7 +559,10 @@ var CommanderInfoPanel = function(xPos, yPos, model) {
 				
 				
 				
-				if (that.commander != null) {
+				if (that.model.visiting != null) {
+					that.commander = that.model.visiting;
+					dispatcher.broadcast( { name: "UpdateCommanderFleet",
+						commander: that.commander } );
 					ctx.fillStyle = that.shadowColor;
 					ctx.fillText(that.commander.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 					ctx.fillStyle = that.color;
@@ -566,7 +571,8 @@ var CommanderInfoPanel = function(xPos, yPos, model) {
 					ctx.strokeStyle = "#000000";
 					ctx.strokeText(that.commander.name, that.xPos, that.yPos, 1);
 					var numItems = 1;
-					if (that.fighers != 0) {
+					if (that.fighters != 0) {
+						//trace(that.fighters);
 						numItems ++;
 						ctx.fillStyle = that.shadowColor;
 						ctx.fillText("Fighters: " + that.fighters, that.xPos + that.shadowDist, (that.yPos + that.shadowDist + (that.infoSpacing * numItems)));
@@ -636,7 +642,12 @@ var CommanderInfoPanel = function(xPos, yPos, model) {
 		dispatcher.addListener( "UpdateCommanderFleet", this);
 		this.onUpdateCommanderFleet = function(e) {
 			that.commander = e.commander;
-			console.log(that.commander.units.length);
+		    that.fighters = 0;
+		    that.gunboats = 0;
+		    that.warships = 0;
+		    that.snipers = 0;
+		    that.cruisers = 0;
+		    that.warriors = 0;
 			for (var i = 0; i < that.commander.units.length; i++) {
 				if (that.commander.units[i].template == Fighter) {
 					that.fighters = that.commander.units[i].quantity;

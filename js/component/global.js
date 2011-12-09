@@ -29,6 +29,12 @@ cam.viewMode = "star";
 cam.viewObject = testStar;
 solarSystem.addContext( ctxMenu );
 
+
+
+var defaultLineWidth = ctxMenu.lineWidth;
+var defaultTextAlign = ctxMenu.textAlign;
+var defaultTextBaseline = ctxMenu.textBaseline;
+
 /// Create Logic
 var logic = new Logic();
 

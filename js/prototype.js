@@ -37,6 +37,12 @@ forces[0].commanders[0].addUnit( Sniper );
 forces[0].commanders[0].units[3].setQuantity( 5 );
 
 
+
+forces[0].createCommander( "General", "Tester", 2, 1 );
+forces[0].commanders[1].addUnit( Fighter );
+forces[0].commanders[1].units[0].setQuantity( 120 );
+
+
 forces[1].createCommander( "General", "Luther", 7, 10 );
 forces[1].commanders[0].addUnit( Fighter );
 forces[1].commanders[0].units[0].setQuantity( 50 );
