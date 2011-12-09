@@ -213,11 +213,23 @@ var HexagonGridView = function( m, height, width, margin )
 	return true;
     }
     this.onMouseMove = function( x, y ) {
+	var status = logic.getStatus();
 	var uv = this.getUVFromXY( x, y );
 	if ( uv.u != -1 && ( uv.u != this.highlightCoor.u ||
 			     uv.v != this.highlightCoor.v ) ) {
 	    this.highlightCoor.u = uv.u;
 	    this.highlightCoor.v = uv.v;
+		if(status.onSelect && "Commander" == status.onSelect.type && 0 == status.onSelect.group)
+		{
+			status.onSelect.target.u = uv.u;
+			status.onSelect.target.v = uv.v;
+			status.onSelect.updatePath();
+			status.showArrows = true;
+			dispatcher.broadcast( { name: "UpdateContext", ctx: ctx2d[1] } );
+			if(status.onSelect.path == null)
+			{
+			}
+		}
 	    this.requestUpdate();
 	}
     }
@@ -228,19 +240,25 @@ var HexagonGridView = function( m, height, width, margin )
 	if ( obj.type == "Commander" && 0 == obj.group ) {
 	    dispatcher.broadcast( { name: "SelectCommander",
 				    obj: obj } );
-	} else if ( status.onSelect != null ) {
+	}
+	else if ( status.onSelect != null )
+	{
 	    obj = status.onSelect;
-	    if ( "Commander" == obj.type && 0 == obj.group ) {
-		if ( uv.u == status.onSelect.target.u && 
-		     uv.v == status.onSelect.target.v ) {
-		    dispatcher.broadcast( { name: "CommanderMove" } );
-		} else {
-		    if ( this.model.inMap( uv.u, uv.v ) ) {
-			dispatcher.broadcast( { name: "RequestArrowPath", 
+	    if ( "Commander" == obj.type && 0 == obj.group )
+		{
+			if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v )
+			{
+				dispatcher.broadcast( { name: "CommanderMove" } );
+			}	
+			else
+			{
+				if ( this.model.inMap( uv.u, uv.v ) )
+				{
+					dispatcher.broadcast( { name: "RequestArrowPath", 
 						obj: obj,
 						target: uv } );
-		    }
-		}
+				}
+			}
 	    }
 	}
     }
@@ -290,7 +308,7 @@ CommanderUniverseView.prototype = new View;
 var CommanderMoveAnimation = function( commanderObj ) {
     this.objs = new Array();
     this.objs.push( commanderObj );
-    if ( commanderObj.AP >= commanderObj.path.length ) {
+    if (commanderObj.path && commanderObj.AP >= commanderObj.path.length ) {
 	this.lifetime = commanderObj.path.length * 5;
     } else {
 	this.lifetime = commanderObj.AP * 5;
@@ -332,7 +350,7 @@ var UniverseLogicView = function( logicModel ) {
 		    "May",
 		    "Jun",
 		    "Jul",
-		    "Oct",
+		    "Aug",
 		    "Sep",
 		    "Oct",
 		    "Nov",

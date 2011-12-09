@@ -33,9 +33,6 @@ forces[1].createCommander( "General", "Luther", 7, 10 );
 
 
 game.play();
-dispatcher.broadcast( { name: "StartBattle", 
-			commander0: forces[0].commanders[0],
-			commadner1: forces[1].commanders[0] } );
 
 
 

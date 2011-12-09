@@ -25,21 +25,21 @@ var CommanderMenu = function( commander, right, top ) {
 	    /// Draw Title and name
 	    ctxMenu.fillStyle = "#FFFF00";
 	    ctxMenu.font = "18px Arial";
-	    ctxMenu.textBaseline = "left";
+	    ctxMenu.textBaseline = "top";
 	    ctxMenu.fillText( this.model.title, 
 			      this.right - this.width - 2 + 145,
 			      this.top + 45 );
 	    
 	    ctxMenu.strokeStyle = "#00AABB";
 	    ctxMenu.font = "20px Arial";
-	    ctxMenu.textBaseline = "left";
+	    ctxMenu.textBaseline = "top";
 	    ctxMenu.strokeText( this.model.name,
 				this.right - this.width - 2 + 145,
 				this.top + 75 );
 	    /// Draw Level
 	    ctxMenu.fillStyle = "#FFFFFF";
 	    ctxMenu.font = "22px Arial";
-	    ctxMenu.textBaseline = "left";
+	    ctxMenu.textBaseline = "top";
 	    ctxMenu.fillText( "Lv. " + this.model.level, this.right - this.width - 2 + 145,
 			      this.top + 105 );
 
