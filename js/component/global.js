@@ -32,7 +32,7 @@ battlefield.enable3D = true;
 /// Create Solar System Stage
 var solarSystem = new Stage();
 solarSystem.enable3D = true;
-var testStar = new Star("star1.png", 0, 0, -20, 2);
+var testStar = new Star("star1.png", 0, 0, 0, 2);
 var starfield = new StarField();
 cam.viewMode = "star";
 cam.viewObject = testStar;

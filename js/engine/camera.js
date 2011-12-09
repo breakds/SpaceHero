@@ -146,4 +146,15 @@ var Camera = function()
 			this.position[2] = this.viewObject.position[2] - this.viewDistance * forward[2];
 		}
 	}
+	this.reset = function()
+	{
+		this.position[0] = 0;
+		this.position[1] = 0;
+		this.position[2] = 0;
+		this.orientation[0] = 0;
+		this.orientation[1] = 0;
+		this.orientation[2] = 0;
+		this.orientation[3] = 1;
+	}
 }
+
