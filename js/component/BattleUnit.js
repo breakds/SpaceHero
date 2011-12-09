@@ -1,6 +1,7 @@
 var UnitTypes = new Array();
 var BattleUnitTemplate = function( typeName, level, hp, att, def, spd, 
-				   price, dmgMax, dmgMin, production, value ) {
+				   price, dmgMax, dmgMin, production, value,
+				   image, imageOnSelect ) {
     this.type = typeName;
     this.level = level;
     this.hp = hp;
