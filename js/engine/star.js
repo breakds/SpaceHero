@@ -434,7 +434,7 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 		this.onLeftMouseDown = function( e ) {
 			if (that.active) {
 				if (that.hitTest( e.x, e.y ) == true){					
-					// return to solar system!
+					game.setStage( universe );
 				}
 			}
 		}
@@ -483,6 +483,7 @@ exitSolarSystemButton.prototype = new View;
 
 var CommanderInfoPanel = function(xPos, yPos, model) {
 		this.setModel(model);
+		this.model = model;
 		this.register( solarSystem );
 		this.xPos = xPos;
 		this.yPos = yPos;

@@ -11,25 +11,19 @@ var Game = function() {
     this.stage = null;
     this.setStage = function( s )
     {
-	
-	if ( this.stage )
-	{
-	    this.stage.clear();
+		if ( this.stage )
+		{
+			this.stage.clear();
+		}
+		this.stage = s;
+		s.init();
 	}
-	for ( var i=0; i<allContexts.length; i++ ) {
-	    clearContext( allContexts[i] );
-	}
-	this.stage = s;
-	for ( var i=0; i<s.viewObjs.length; i++ ) {
-	    s.viewObjs[i].requestUpdate();
-	}
-    }
-    this.proceed = function()
+	this.proceed = function()
     {
-	this.stage.resetUpdated();
-	dispatcher.check();
-	objectManager.updateAll();
-	this.stage.drawAll();
+		this.stage.resetUpdated();
+		dispatcher.check();
+		objectManager.updateAll();
+		this.stage.drawAll();
     }
     this.pause = function()
     {
