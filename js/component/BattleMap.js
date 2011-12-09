@@ -173,8 +173,8 @@ var BattleUnitView = function( unit, side ) {
 		drawRotatedImage( ctx2d[0],
 				  this.model.template.imageOnSelect,
 				  this.rotation,
-				  c.x,
-				  c.y,
+				  c.x + this.model.offset.x,
+				  c.y + this.model.offset.y,
 				  size,
 				  size,
 				  true );
@@ -182,8 +182,8 @@ var BattleUnitView = function( unit, side ) {
 		drawRotatedImage( ctx2d[0],
 				  this.model.template.image,
 				  this.rotation,
-				  c.x,
-				  c.y,
+				  c.x + this.model.offset.x,
+				  c.y + this.model.offset.y,
 				  size,
 				  size,
 				  true );
@@ -222,11 +222,12 @@ BattleUnitView.prototype = new View;
 
 
 /// Ad Hoc Tweens
-var UnitMoveAnimation = function( obj, path ) {
+var UnitMoveAnimation = function( obj, path, victim ) {
     this.objs = new Array();
     this.objs.push( obj );
     this.path = path;
     this.lifetime = this.path.length * 20;
+    this.victim = victim
     this.onStart = function() {
 	logic.battle.onAnimation = true;
     }
@@ -238,13 +239,41 @@ var UnitMoveAnimation = function( obj, path ) {
 	}
     }
     this.onTerminate = function() {
-	logic.battle.onAnimation = false;
-	dispatcher.broadcast( { name: "NextUnit" } );
+	if ( null != this.victim ) {
+	    new UnitAttackAnimation( this.objs[0], this.victim );
+	} else {
+	    logic.battle.onAnimation = false;
+	    dispatcher.broadcast( { name: "NextUnit" } );
+	}
     }
     this.init();
 }
 UnitMoveAnimation.prototype = new Tween;
 
+
+var UnitAttackAnimation = function( attacker, victim ) {
+    this.objs = new Array();
+    this.objs.push( attacker );
+    this.objs.push( victim );
+    this.shakeOffset = -10;
+    this.lifetime = 30;
+    this.onStart = function() {
+	logic.battle.onAnimation = true;
+    }
+    this.next = function() {
+	if ( 0 == this.tick % 5 ) {
+	    this.objs[1].setOffset( this.shakeOffset, 0 );
+	    this.shakeOffset = -this.shakeOffset;
+	}
+    }
+    this.onTerminate = function() {
+	this.objs[1].setOffset( 0, 0 );
+	logic.battle.onAnimation = false;
+	dispatcher.broadcast( { name: "NextUnit" } );
+    }
+    this.init();
+}
+UnitAttackAnimation.prototype = new Tween;
 
 
 /*

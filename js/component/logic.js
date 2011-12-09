@@ -191,8 +191,7 @@ var Logic = function() {
 			if ( !flag ) {
 			    this.battle.attackable.push( { u: u,
 							   v: v,
-							   nu: this.battle.reachable[i].u,
-							   nv: this.battle.reachable[i].v } );
+							   neighborID: i } );
 			}
 		    }
 		}
@@ -214,6 +213,22 @@ var Logic = function() {
     dispatcher.addListener( "UnitMove", this );
     this.onUnitMove = function( e ) {
 	if ( ! this.battle.onAnimation ) {
+	    
+	    for ( var i=0; i<this.battle.attackable.length; i++ ) {
+		if ( this.battle.attackable[i].u == e.u &&
+		     this.battle.attackable[i].v == e.v ) {
+		    var path = new Array();
+		    var j = this.battle.attackable[i].neighborID;
+		    while ( this.battle.reachable[j].pre != -1 ) {
+			path.push( { u: this.battle.reachable[j].u,
+				     v: this.battle.reachable[j].v } );
+			j = this.battle.reachable[j].pre;
+		    }
+		    new UnitMoveAnimation( e.obj, path, batMap.getMap( e.u, e.v ) );
+		    return;
+		}
+	    }
+	    
 	    for ( var i=0; i<this.battle.reachable.length; i++ ) {
 		if ( this.battle.reachable[i].u == e.u &&
 		     this.battle.reachable[i].v == e.v ) {
@@ -224,7 +239,7 @@ var Logic = function() {
 				     v: this.battle.reachable[j].v } );
 			j = this.battle.reachable[j].pre;
 		    }
-		    new UnitMoveAnimation( e.obj, path );
+		    new UnitMoveAnimation( e.obj, path, null );
 		    return;
 		}
 	    }

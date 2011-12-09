@@ -130,6 +130,12 @@ var BattleUnit = function( template, quantity, leader ) {
     this.leader = leader;
     this.u = 0;
     this.v = 0;
+    this.offset = { x:0, y:0 };
+    this.setOffset = function( dx, dy ) {
+	this.offset.x = dx;
+	this.offset.y = dy;
+	this.requestUpdate();
+    }
     this.setQuantity = function( num ) {
 	this.quantity = num;
     }
