@@ -137,7 +137,7 @@ var HexagonGridView = function( m, height, width, margin )
 	    /// draw Veils
 	    var x = this.left;
 	    var y = this.top;
-	    ctxBg2d.fillStyle = "rgba(255,255,255,0.4)";
+	    ctxBg2d.fillStyle = "rgba(255,255,255,0.2)";
 	    ctxBg2d.beginPath();
 	    for ( var u=0; u<this.model.cols; u++ ) 
 	    {
@@ -156,7 +156,7 @@ var HexagonGridView = function( m, height, width, margin )
 
 	    
 	    /// draw Half-Veiled Cells
-	    ctxBg2d.fillStyle = "rgba(255,255,255,0.4)";
+	    ctxBg2d.fillStyle = "rgba(255,255,255,0.2)";
 	    ctxBg2d.beginPath();
 	    for ( var i=0; i<this.model.unveilAnimations.length; i++ ) {
 		var c = this.getXYFromUV( this.model.unveilAnimations[i].u,
