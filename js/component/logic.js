@@ -25,6 +25,7 @@ var BattleStatus = function() {
     this.turn = 0;
     this.currentUnitID = 0;
     this.reachable = new Array();
+    this.attackable = new Array();
     this.onAnimation = false;
 }
 
@@ -163,7 +164,41 @@ var Logic = function() {
 	}
 	var obj = this.battle.units[this.battle.currentUnitID];
 	obj.requestUpdate();
+
+	/// Acquire Reachable Array
 	this.battle.reachable = batMap.getReachable( obj.u, obj.v, obj.template.spd );
+
+	/// Acquire Attackable Array
+	var u = 0;
+	var v = 0;
+	var enemy = null;
+	this.battle.attackable = new Array();
+	for ( var i=0; i<this.battle.reachable.length; i++ ) {
+	    for ( var j=0; j<6; j++ ) {
+		u = this.battle.reachable[i].u + batMap.du[j];
+		v = this.battle.reachable[i].v + batMap.dv[j];
+		enemy = batMap.getMap( u, v );
+		if ( -1 != enemy && 0 != enemy ) {
+		    if ( enemy.leader.group != obj.leader.group ) {
+			var flag = false;
+			for ( var k=0; k<this.battle.attackable.length; k++ ) {
+			    if ( this.battle.attackable[k].u == u &&
+				 this.battle.attackable[k].v == v ) {
+				flag = true;
+				break;
+			    }
+			}
+			if ( !flag ) {
+			    this.battle.attackable.push( { u: u,
+							   v: v,
+							   nu: this.battle.reachable[i].u,
+							   nv: this.battle.reachable[i].v } );
+			}
+		    }
+		}
+	    }
+	}
+	
 	batMapView.requestUpdate();
 
 	/// Temporary AI:

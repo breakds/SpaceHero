@@ -104,6 +104,23 @@ var BattleHexagonView = function( m, radius ) {
 		ctxBg2d.fill();
 		ctxBg2d.stroke();
 	    }
+
+
+	    /// Draw Attackable
+	    if ( null != logic.battle.reachable ) {
+		ctxBg2d.fillStyle = "#AA0000";
+		ctxBg2d.strokeStyle = "#0000FF"
+		ctxBg2d.beginPath();
+		var c = null;
+		for ( var i=0; i<logic.battle.attackable.length; i++ ) {
+		    c = this.getXYFromUV( logic.battle.attackable[i].u,
+					  logic.battle.attackable[i].v );
+		    this.drawHexagon( c.x, c.y );
+		}
+		ctxBg2d.closePath();
+		ctxBg2d.fill();
+		ctxBg2d.stroke();
+	    }
 	}
     }
 
