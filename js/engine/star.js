@@ -149,9 +149,11 @@ var Star = function(texture, x, y, z, radius) {
 	this.visiting = null;
     this.group = 0;
     this.quantities = new Array();
-    for ( var i=0; i<UnitTypes.length; i++ ){
+    for ( var i=0; i < UnitTypes.length; i++ ){
 		this.quantities[i] = 1;
     }
+	this.monthCount = 0;
+	this.incomeRate = 20;
     this.position = vec3.create();
 	this.position[0] = x;
 	this.position[1] = y;
@@ -161,7 +163,7 @@ var Star = function(texture, x, y, z, radius) {
 	this.starModel.setPosition(this.position[0], this.position[1], this.position[2]);
 	this.starModel.setScale(this.radius, this.radius, this.radius);
 	this.starModel.useLighting(false);
-
+	var that = this;
     /// Add views:
     new StarSolarView( this );
     /*
@@ -192,7 +194,7 @@ var Star = function(texture, x, y, z, radius) {
 	for(var i = 0; i < radii.length; i++)
 	{
 		var x = Math.random();
-		if(x > 2) // 50% chance of a planet in each orbit
+		if(x > 0.3) // 50% chance of a planet in each orbit
 		{
 			var planet = new Planet(textures2[Math.floor(Math.random()*textures2.length)], null, -8, 0, -20, (Math.random() * 1.5) + 0.5, radii[i], this, null);
 			planet.orbitVelocity = 0.003 / planet.orbitRadius;
@@ -205,8 +207,460 @@ var Star = function(texture, x, y, z, radius) {
 		
 	}
 	
+	dispatcher.addListener( "NewTurn", this);
+	this.onNewTurn = function( e ) {
+		forces[that.group].gold += that.miners * that.incomeRate;
+		that.monthCount ++;
+		if (that.monthCount >= 11) {
+			that.monthCount = 0;
+			for ( var i=0; i < UnitTypes.length; i++ ){
+				that.quantities[i] += UnitTypes[i].production;
+			}
+		}
+	}
 	
-	
-	this.miners; // number of miners in the system
+	this.miners = 1; // number of miners in the system
+	var openButton = new planetMenuOpenButton("Open Planet Menu", 50, 670, this);
+	var leaveButton = new exitSolarSystemButton("Leave Solar System", 50, 730, this);
+	var commanderInfoPanel = new CommanderInfoPanel(50,50,this);
 }
 Star.prototype = new GameObject();
+
+var planetMenuOpenButton = function(name, xPos, yPos, model) {
+		this.setModel(model);
+		this.model = model;
+		this.register( solarSystem );
+		this.xPos = xPos;
+		this.yPos = yPos;
+		this.name = name;
+		this.highlighted = false;
+		this.active = true;
+		var that = this;
+		this.shadowDist = 2;
+		this.color = "#FFFFFF";
+		this.shadowColor = "#222222";
+		this.highlightColor = "rgba(255,255,255,0.1)";
+		this.highlightColor2 = "rgba(255,255,255,0.2)";
+		this.strokeStyle = "rgba(50,50,200, 0.5)";
+		this.strokeStyle2 = "rgba(50,50,200, 0.7)";
+		this.font = "28px Eras Bold ITC"
+		this.buttonWidth = 300;
+		this.buttonHeight = 40;
+		this.xOffset = -17;
+		this.yOffset = -30;
+		this.lineWidth = 3;
+		this.edgeOffset = 10;
+		
+		this.draw = function( ctx ) {
+			if (ctx == ctxMenu && that.active) {
+				var ctx = ctxMenu;
+				var originalColor = ctx.fillStyle;
+				var originalFont = ctx.font;
+				
+				ctx.beginPath();
+				ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+				ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
+				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
+				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+				ctx.closePath();
+				var originalWidth = ctx.lineWidth;
+				ctx.lineWidth = that.lineWidth;
+				if (that.highlighted) {
+					ctx.strokeStyle = that.strokeStyle2;
+					ctx.fillStyle = that.highlightColor2;
+				} else {
+					ctx.strokeStyle = that.strokeStyle;
+					ctx.fillStyle = that.highlightColor;
+				}
+				
+				ctx.fill();
+				ctx.stroke();
+				ctx.lineWidth = originalWidth;
+				
+				ctx.font = that.font;
+				ctx.fillStyle = that.shadowColor;
+				ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+				
+				ctx.fillStyle = that.color;
+				ctx.font = that.font;
+				if (that.highlighted) {
+					ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+					ctx.strokeStyle = "#000000";
+					ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+				} else {
+					ctx.fillText(that.name, that.xPos, that.yPos);
+					ctx.strokeStyle = "#000000";
+					ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+				}
+				
+				
+				ctx.fillStyle = originalColor;
+				ctx.font = originalFont;
+			}
+		}
+		
+		dispatcher.addListener( "LeftMouseDown", this );
+		this.onLeftMouseDown = function( e ) {
+			if (that.active) {
+				if (that.hitTest( e.x, e.y ) == true){	
+					console.log(that.model.quantities[0]);
+					dispatcher.broadcast( { name: "OpenPlanetMenu",
+						force: forces[that.model.group],
+						commander: forces[0].commanders[0],//that.model.visiting ,
+						planet: that.model.planets[0],
+						ss: that.model} );
+					that.active = false;
+				}
+			}
+		}
+		
+		dispatcher.addListener("ShowPlanetButton", this);
+		this.onShowPlanetButton = function(e) {
+			if (e.display == true) {
+				that.active = true;
+				}
+			}
+		
+		
+		dispatcher.addListener( "MouseMove", this );
+		this.onMouseMove = function( e ) {
+			if (that.active) {
+				if (that.hitTest( e.x, e.y ) == true){
+					that.highlighted = true;
+				}
+				else {
+					that.highlighted = false;
+				}
+			}
+		}
+		
+		this.hitTest = function( x, y ) {
+			//trace("testing button" );
+			if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
+				 y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
+				return true;
+			} else {
+				return false
+			}
+		}
+	this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxMenu } );
+    }
+    this.requestUpdate();
+}
+planetMenuOpenButton.prototype = new View;
+
+
+var exitSolarSystemButton = function(name, xPos, yPos, model) {
+		this.setModel(model);
+		this.register( solarSystem );
+		this.xPos = xPos;
+		this.yPos = yPos;
+		this.name = name;
+		this.highlighted = false;
+		this.active = true;
+		var that = this;
+		this.shadowDist = 2;
+		this.color = "#FFFFFF";
+		this.shadowColor = "#222222";
+		this.highlightColor = "rgba(255,255,255,0.1)";
+		this.highlightColor2 = "rgba(255,255,255,0.2)";
+		this.strokeStyle = "rgba(50,50,200, 0.5)";
+		this.strokeStyle2 = "rgba(50,50,200, 0.7)";
+		this.font = "28px Eras Bold ITC"
+		this.buttonWidth = 300;
+		this.buttonHeight = 40;
+		this.xOffset = -17;
+		this.yOffset = -30;
+		this.lineWidth = 3;
+		this.edgeOffset = 10;
+		
+		this.draw = function( ctx ) {
+			if (ctx == ctxMenu && that.active) {
+				var ctx = ctxMenu;
+				var originalColor = ctx.fillStyle;
+				var originalFont = ctx.font;
+				
+				ctx.beginPath();
+				ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+				ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
+				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
+				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+				ctx.closePath();
+				var originalWidth = ctx.lineWidth;
+				ctx.lineWidth = that.lineWidth;
+				if (that.highlighted) {
+					ctx.strokeStyle = that.strokeStyle2;
+					ctx.fillStyle = that.highlightColor2;
+				} else {
+					ctx.strokeStyle = that.strokeStyle;
+					ctx.fillStyle = that.highlightColor;
+				}
+				
+				ctx.fill();
+				ctx.stroke();
+				ctx.lineWidth = originalWidth;
+				
+				ctx.font = that.font;
+				ctx.fillStyle = that.shadowColor;
+				ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+				
+				ctx.fillStyle = that.color;
+				ctx.font = that.font;
+				if (that.highlighted) {
+					ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+					ctx.strokeStyle = "#000000";
+					ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+				} else {
+					ctx.fillText(that.name, that.xPos, that.yPos);
+					ctx.strokeStyle = "#000000";
+					ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+				}
+				
+				
+				ctx.fillStyle = originalColor;
+				ctx.font = originalFont;
+			}
+		}
+		
+		dispatcher.addListener( "LeftMouseDown", this );
+		this.onLeftMouseDown = function( e ) {
+			if (that.active) {
+				if (that.hitTest( e.x, e.y ) == true){					
+					// return to solar system!
+				}
+			}
+		}
+		
+		dispatcher.addListener("OpenPlanetMenu", this);
+		this.onOpenPlanetMenu = function(e) {
+			that.active = false;
+		}
+		
+		dispatcher.addListener("ShowPlanetButton", this);
+		this.onShowPlanetButton = function(e) {
+			if (e.display == true) {
+				that.active = true;
+				}
+			}
+		
+		
+		dispatcher.addListener( "MouseMove", this );
+		this.onMouseMove = function( e ) {
+			if (that.active) {
+				if (that.hitTest( e.x, e.y ) == true){
+					that.highlighted = true;
+				}
+				else {
+					that.highlighted = false;
+				}
+			}
+		}
+		
+		this.hitTest = function( x, y ) {
+			//trace("testing button" );
+			if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
+				 y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
+				return true;
+			} else {
+				return false
+			}
+		}
+	this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxMenu } );
+    }
+    this.requestUpdate();
+}
+exitSolarSystemButton.prototype = new View;
+
+var CommanderInfoPanel = function(xPos, yPos, model) {
+		this.setModel(model);
+		this.register( solarSystem );
+		this.xPos = xPos;
+		this.yPos = yPos;
+		this.name = name;
+		this.highlighted = false;
+		this.active = true;
+		var that = this;
+		this.shadowDist = 2;
+		this.color = "#FFFFFF";
+		this.shadowColor = "#222222";
+		this.highlightColor = "rgba(255,255,255,0.1)";
+		this.highlightColor2 = "rgba(255,255,255,0.2)";
+		this.strokeStyle = "rgba(50,50,200, 0.5)";
+		this.strokeStyle2 = "rgba(50,50,200, 0.7)";
+		this.font = "22px Eras Bold ITC"
+		this.buttonWidth = 180;
+		this.buttonHeight = 250;
+		this.xOffset = -17;
+		this.yOffset = -30;
+		this.lineWidth = 3;
+		this.edgeOffset = 10;
+		this.infoSpacing = 25;
+		
+		this.commander = null; //that.model.visiting
+		this.fighters = 0; 
+		this.gunboats = 0;
+		this.warships = 0;
+		this.snipers = 0;
+		this.cruisers = 0;
+		this.warriors = 0;
+		
+		this.draw = function( ctx ) {
+			if (ctx == ctxMenu && that.active) {
+				var ctx = ctxMenu;
+				var originalColor = ctx.fillStyle;
+				var originalFont = ctx.font;
+				var originalWidth = ctx.lineWidth;
+				
+				ctx.beginPath();
+				ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+				ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
+				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
+				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
+				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+				ctx.closePath();
+				
+				ctx.strokeStyle = that.strokeStyle;
+				ctx.fillStyle = that.highlightColor;
+				
+				ctx.fill();
+				ctx.stroke();
+				ctx.lineWidth = originalWidth;
+				ctx.font = that.font;
+				
+				
+				
+				if (that.commander != null) {
+					ctx.fillStyle = that.shadowColor;
+					ctx.fillText(that.commander.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+					ctx.fillStyle = that.color;
+					ctx.font = that.font;
+					ctx.fillText(that.commander.name, that.xPos, that.yPos);
+					ctx.strokeStyle = "#000000";
+					ctx.strokeText(that.commander.name, that.xPos, that.yPos, 1);
+					var numItems = 1;
+					if (that.fighers != 0) {
+						numItems ++;
+						ctx.fillStyle = that.shadowColor;
+						ctx.fillText("Fighters: " + that.fighters, that.xPos + that.shadowDist, (that.yPos + that.shadowDist + (that.infoSpacing * numItems)));
+						ctx.fillStyle = that.color;
+						ctx.font = that.font;
+						ctx.fillText("Fighters: " + that.fighters, that.xPos, (that.yPos) + (that.infoSpacing * numItems));
+						ctx.strokeStyle = "#000000";
+						ctx.strokeText("Fighters: " + that.fighters, that.xPos, (that.yPos) + (that.infoSpacing * numItems), 1);
+					}
+					if (that.gunboats != 0) {
+						numItems ++;
+						ctx.fillStyle = that.shadowColor;
+						ctx.fillText("Gunboats: " + that.gunboats, that.xPos + that.shadowDist, (that.yPos + that.shadowDist + (that.infoSpacing * numItems)));
+						ctx.fillStyle = that.color;
+						ctx.font = that.font;
+						ctx.fillText("Gunboats: " + that.gunboats, that.xPos, (that.yPos) + (that.infoSpacing * numItems));
+						ctx.strokeStyle = "#000000";
+						ctx.strokeText("Gunboats: " + that.gunboats, that.xPos, (that.yPos) + (that.infoSpacing * numItems), 1);
+					}
+					if (that.warships != 0) {
+						numItems ++;
+						ctx.fillStyle = that.shadowColor;
+						ctx.fillText("Warships: " + that.warships, that.xPos + that.shadowDist, (that.yPos + that.shadowDist + (that.infoSpacing * numItems)));
+						ctx.fillStyle = that.color;
+						ctx.font = that.font;
+						ctx.fillText("Warships: " + that.warships, that.xPos, (that.yPos) + (that.infoSpacing * numItems));
+						ctx.strokeStyle = "#000000";
+						ctx.strokeText("Warships: " + that.warships, that.xPos, (that.yPos) + (that.infoSpacing * numItems), 1);
+					}
+					if (that.snipers != 0) {
+						numItems ++;
+						ctx.fillStyle = that.shadowColor;
+						ctx.fillText("Snipers: " + that.snipers, that.xPos + that.shadowDist, (that.yPos + that.shadowDist + (that.infoSpacing * numItems)));
+						ctx.fillStyle = that.color;
+						ctx.font = that.font;
+						ctx.fillText("Snipers: " + that.snipers, that.xPos, (that.yPos) + (that.infoSpacing * numItems));
+						ctx.strokeStyle = "#000000";
+						ctx.strokeText("Snipers: " + that.snipers, that.xPos, (that.yPos) + (that.infoSpacing * numItems), 1);
+					}
+					if (that.cruisers != 0) {
+						numItems ++;
+						ctx.fillStyle = that.shadowColor;
+						ctx.fillText("Cruisers: " + that.cruisers, that.xPos + that.shadowDist, (that.yPos + that.shadowDist + (that.infoSpacing * numItems)));
+						ctx.fillStyle = that.color;
+						ctx.font = that.font;
+						ctx.fillText("Cruisers: " + that.cruisers, that.xPos, (that.yPos) + (that.infoSpacing * numItems));
+						ctx.strokeStyle = "#000000";
+						ctx.strokeText("Cruisers: " + that.cruisers, that.xPos, (that.yPos) + (that.infoSpacing * numItems), 1);
+					}
+					if (that.warriors != 0) {
+						numItems ++;
+						ctx.fillStyle = that.shadowColor;
+						ctx.fillText("Warriors: " + that.warriors, that.xPos + that.shadowDist, (that.yPos + that.shadowDist + (that.infoSpacing * numItems)));
+						ctx.fillStyle = that.color;
+						ctx.font = that.font;
+						ctx.fillText("Warriors: " + that.warriors, that.xPos, (that.yPos) + (that.infoSpacing * numItems));
+						ctx.strokeStyle = "#000000";
+						ctx.strokeText("Warriors: " + that.warriors, that.xPos, (that.yPos) + (that.infoSpacing * numItems), 1);
+					}
+				}
+				
+				ctx.fillStyle = originalColor;
+				ctx.font = originalFont;
+			}
+		}
+		
+		dispatcher.addListener( "UpdateCommanderFleet", this);
+		this.onUpdateCommanderFleet = function(e) {
+			that.commander = e.commander;
+			console.log(that.commander.units.length);
+			for (var i = 0; i < that.commander.units.length; i++) {
+				if (that.commander.units[i].template == Fighter) {
+					that.fighters = that.commander.units[i].quantity;
+				}
+				else if (that.commander.units[i].template == Gunboat) {
+					that.gunboats = that.commander.units[i].quantity;
+				}
+				else if (that.commander.units[i].template == Warship) {
+					that.warships = that.commander.units[i].quantity;
+				}
+				else if (that.commander.units[i].template == Sniper) {
+					that.snipers = that.commander.units[i].quantity;
+				}
+				else if (that.commander.units[i].template == Cruiser) {
+					that.cruisers = that.commander.units[i].quantity;
+				}
+				else if (that.commander.units[i].template == Warrior) {
+					that.warriors = that.commander.units[i].quantity;
+				}
+			
+			}
+			
+		}
+		
+		dispatcher.addListener("OpenPlanetMenu", this);
+		this.onOpenPlanetMenu = function(e) {
+			that.active = false;
+		}
+		
+		dispatcher.addListener("ShowPlanetButton", this);
+		this.onShowPlanetButton = function(e) {
+			if (e.display == true) {
+				that.active = true;
+				}
+			}
+		
+	this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxMenu } );
+    }
+    this.requestUpdate();
+}
+CommanderInfoPanel.prototype = new View;

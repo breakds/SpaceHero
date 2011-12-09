@@ -55,22 +55,22 @@ var PlanetMenuView = function( m ) {
 	this.tabWidgets[0].selected = true;
 	this.widgets.push(new planetMenuLabel("Name            Price ", "30px Eras Bold ITC", "#FFFFFF", this.menu1xPos, this.menu1yPos + 55));
 	this.widgets.push(new planetMenuLabel("___________________", "30px Eras Bold ITC", "#FFFFFF", this.menu1xPos - 14, this.menu1yPos + 60));
-	this.widgets.push(new planetMenuInfoBox(this.menu2xPos, this.menu2yPos, "planet", this.planetName, this.playerName, this.commanderName, this.planetStructures));
+	this.infoWidget = new planetMenuInfoBox(this.menu2xPos, this.menu2yPos, "planet", this.planetName, this.playerName, this.commanderName, this.planetStructures);
 	this.widgets.push(new planetMenuExitButton("Exit", this.menu1xPos + 190, this.menu1yPos + 580));
-	this.widgets.push(new planetMenuCredits("Credits: ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney));
+	this.creditWidget = new planetMenuCredits("Credits: ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney);
 		
-	this.shipYardWidgets.push(new planetMenuButton("Fighter                      90", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter"));
-	this.shipYardWidgets.push(new planetMenuButton("Gunboat                    66", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat"));
-	this.shipYardWidgets.push(new planetMenuButton("Warship                   448", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship"));
-	this.shipYardWidgets.push(new planetMenuButton("Sniper                       331", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper"));
-	this.shipYardWidgets.push(new planetMenuButton("Cruiser                   1720", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser"));
-	this.shipYardWidgets.push(new planetMenuButton("Warrior                  1669", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior"));
-	this.shipYardWidgets.push(new planetMenuButton("Miner                          50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner"));
+	this.shipYardWidgets.push(new planetMenuButton("Fighter                      90", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", 90));
+	this.shipYardWidgets.push(new planetMenuButton("Gunboat                    66", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", 66));
+	this.shipYardWidgets.push(new planetMenuButton("Warship                   448", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", 448));
+	this.shipYardWidgets.push(new planetMenuButton("Sniper                       331", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", 331));
+	this.shipYardWidgets.push(new planetMenuButton("Cruiser                   1720", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", 1720));
+	this.shipYardWidgets.push(new planetMenuButton("Warrior                  1669", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", 1669));
+	this.shipYardWidgets.push(new planetMenuButton("Miner                          50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50));
 	
-	this.factoryWidgets.push(new planetMenuButton("ShipYard                      50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard"));
-	this.factoryWidgets.push(new planetMenuButton("Defense System         50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem"));
-	this.factoryWidgets.push(new planetMenuButton("Refinery                       50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery"));
-	this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant   50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant"));
+	this.factoryWidgets.push(new planetMenuButton("ShipYard                      50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50));
+	this.factoryWidgets.push(new planetMenuButton("Defense System         0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 0));
+	this.factoryWidgets.push(new planetMenuButton("Refinery                       0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 0));
+	this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant   0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",0));
 	
 	
 		
@@ -79,6 +79,7 @@ var PlanetMenuView = function( m ) {
 		if ( ctx == ctxMenu ) {
 			
 			if (that.state == 2) {
+			
 				if (that.opacity < 1.0)
 					that.opacity += that.aniSpeed;
 				if (that.opacity >= 1) 
@@ -111,6 +112,8 @@ var PlanetMenuView = function( m ) {
 				for (var i = 0; i < that.currentWidgetList.length; i++) {
 					that.currentWidgetList[i].draw(ctx);
 				}
+				that.creditWidget.draw(ctx);
+				that.infoWidget.draw(ctx);
 				ctx.globalAlpha = originalAlpha;
 			} else if (that.state == 1) {
 				if (that.projector1x < 0) {
@@ -192,6 +195,8 @@ var PlanetMenuView = function( m ) {
 				if (that.curTime2 >= that.aniTime) {
 					that.state = 0;
 					that.curTime2 = 0;
+					dispatcher.broadcast( { name: "ShowPlanetButton",
+						display: true } );
 				}
 			}
 		}
@@ -205,33 +210,54 @@ var PlanetMenuView = function( m ) {
 	
 	}
 	
-	dispatcher.addListener( "KeyUp", this );
-	this.onKeyUp = function( e ) {
-			
-			if (e.key == 77) {
-				if (that.state == 0) {
-					console.log("request recieved");
-					that.state = 1;
-				}
-				else if (that.state == 2){ 
-					that.state = 3;
-				}
-			}
-	}
-	
 	dispatcher.addListener("OpenPlanetMenu", this);
 	this.onOpenPlanetMenu = function(e) {
-		that.playerMoney = e.force.gold;
-		this.playerName = e.force.name;
-		this.commanderName = e.commander.name;
-		this.planetName = e.planet.name;
-	}
+		that.state = 1;
+		that.creditWidget.money = e.force.gold;
+		that.infoWidget.updatePlanetInfo(e.planet.planetInfo.name, e.planet.planetInfo.structureList, e.force.name, e.commander.name);
+		for (var i = 0; i < that.currentWidgetList.length; i++) {
+					that.currentWidgetList[i].active = true;
+				}
+		for (var i = 0; i < that.tabWidgets.length; i++) {
+					that.tabWidgets[i].active = true;
+				}
+		//console.log("sent: " + e.ss.quantities[0]);
+		dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "fighter",
+				quant: e.ss.quantities[0]} );
+		dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "gunboat",
+				quant: e.ss.quantities[1]} );
+		dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "warship",
+				quant: e.ss.quantities[2]} );
+		dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "sniper",
+				quant: e.ss.quantities[3]} );
+		dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "cruiser",
+				quant: e.ss.quantities[4]} );
+		dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "warrior",
+				quant: e.ss.quantities[5]} );
+		dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "shipyard",
+				quant: 0} );
+    }
+		
+	
 	
 	dispatcher.addListener("ExitPlanetMenu", this);
 	this.onExitPlanetMenu = function(e) {
 		if (e.exit == true) {
 			if (that.state == 2) {
 				that.state = 3;
+				for (var i = 0; i < that.currentWidgetList.length; i++) {
+					that.currentWidgetList[i].active = false;
+				}
+				for (var i = 0; i < that.tabWidgets.length; i++) {
+							that.tabWidgets[i].active = false;
+						}
 			}
 		}
 	}
@@ -271,17 +297,21 @@ var PlanetMenuView = function( m ) {
 }
 PlanetMenuView.prototype = new View;
 
-var planetMenuButton = function(name, xPos, yPos, updateName) {
-		//this.register(universe);
+var planetMenuButton = function(name, xPos, yPos, updateName, cost) {
+		this.force = null;
+
+		this.cost = cost;
 		this.xPos = xPos;
 		this.yPos = yPos;
 		this.name = name;
+		this.quant = 1;
 		this.updateName = updateName;
 		this.highlighted = false;
 		this.active = false;
 		var that = this;
 		this.shadowDist = 2;
 		this.color = "#FFFFFF";
+		this.color2 = "rgba(220,0,0,0.9)";
 		this.shadowColor = "#222222";
 		this.highlightColor = "rgba(0,0,0,0.2)";
 		this.highlightColor2 = "rgba(0,0,0,1)";
@@ -306,7 +336,12 @@ var planetMenuButton = function(name, xPos, yPos, updateName) {
 			ctx.fillStyle = that.shadowColor;
 			ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 			
-			ctx.fillStyle = that.color;
+			if (that.cost <= that.force.gold && that.quant > 0) {
+				ctx.fillStyle = that.color;
+			}
+			else {
+				ctx.fillStyle = that.color2;
+			}
 			ctx.font = that.font;
 			if (that.highlighted) {
 				ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
@@ -336,11 +371,41 @@ var planetMenuButton = function(name, xPos, yPos, updateName) {
 
 		}
 		
+		dispatcher.addListener( "SetShipQuantity", this);
+		this.onSetShipQuantity = function(e) {
+			if (e.type == that.updateName) {
+				that.quant = e.quant;
+			}
+		}
 		
+		dispatcher.addListener( "LeftMouseDown", this);
+		this.onLeftMouseDown = function(e) {
+			if (that.active && that.quant > 0) {
+				if (that.hitTest(e.x,e.y)) {
+					
+					dispatcher.broadcast( { name: "PlanetMenuAction",
+							type: that.updateName,
+							cost: that.cost } );
+				}
+			}
+		}
 		dispatcher.addListener( "MouseMove", this );
 		this.onMouseMove = function( e ) {
 			if (that.active) {
-				that.hitTest( e.x, e.y );
+				if (that.hitTest( e.x, e.y )) {
+					that.highlighted = true;
+					 dispatcher.broadcast( { name: "UpdateSubMenu",
+						type: that.updateName,
+						amount: that.quant} );
+				}
+				
+				else {
+					if (that.highlighted == true) {
+						 dispatcher.broadcast( { name: "UpdateSubMenu",
+							type: "planet"} );
+						that.highlighted = false;
+					}
+				}
 			}
 		}
 		
@@ -348,20 +413,16 @@ var planetMenuButton = function(name, xPos, yPos, updateName) {
 			//trace("testing button" );
 			if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
 				 y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
-					
-					 that.highlighted = true;
-					 dispatcher.broadcast( { name: "UpdateSubMenu",
-						type: that.updateName} );
-				
-			} else {
-				if (that.highlighted == true) {
-					 dispatcher.broadcast( { name: "UpdateSubMenu",
-						type: "planet"} );
-					that.highlighted = false;
-				}
-				
-				
+					return true;
 			}
+			else {
+				return false;
+			}
+		}
+		
+		dispatcher.addListener("OpenPlanetMenu", this);
+		this.onOpenPlanetMenu = function(e) {
+			that.force = e.force;
 		}
 	this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
@@ -636,6 +697,11 @@ var planetMenuCredits = function(name, xPos, yPos, credits) {
 		this.yOffset = -35;
 		this.money = credits;
 		
+		dispatcher.addListener( "UpdateCredits", this );
+		this.onUpdateCredits = function( e ) {
+			that.money = e.value;
+		}
+		
 		this.draw = function( ctx ) {
 			var originalColor = ctx.fillStyle;
 			var originalFont = ctx.font;
@@ -675,8 +741,9 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		this.fighterInfoText.push("Attack:                        2");
 		this.fighterInfoText.push("Defence:                     2");
 		this.fighterInfoText.push("Speed:                         9");
-		this.fighterInfoText.push("Production:             20");
 		this.fighterInfoText.push("Price:                         30");
+		this.fighterInfoText.push("");
+		this.fighterInfoText.push("Quantity:                  1");
 		this.informationList["fighter"] = this.fighterInfoText;
 		this.headerList["fighter"] = "Fighter";
 		this.profilePicList["fighter"] = "pmProfilePic";
@@ -686,8 +753,9 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		this.gunboatInfoText.push("Attack:                        4");
 		this.gunboatInfoText.push("Defence:                     4");
 		this.gunboatInfoText.push("Speed:                         5");
-		this.gunboatInfoText.push("Production:             16");
 		this.gunboatInfoText.push("Price:                         40");
+		this.gunboatInfoText.push("");
+		this.gunboatInfoText.push("Quantity:                  1");
 		this.informationList["gunboat"] = this.gunboatInfoText;
 		this.headerList["gunboat"] = "Gunboat";
 		this.profilePicList["gunboat"] = "pmProfilePic";
@@ -698,8 +766,9 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		this.warshipInfoText.push("Attack:                        9");
 		this.warshipInfoText.push("Defence:                     9");
 		this.warshipInfoText.push("Speed:                         9");
-		this.warshipInfoText.push("Production:               7");
 		this.warshipInfoText.push("Price:                       240");
+		this.warshipInfoText.push("");
+		this.warshipInfoText.push("Quantity:                  1");
 		this.informationList["warship"] = this.warshipInfoText;
 		this.headerList["warship"] = "Warship";
 		this.profilePicList["warship"] = "pmProfilePic";
@@ -710,8 +779,9 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		this.sniperInfoText.push("Attack:                        9");
 		this.sniperInfoText.push("Defence:                     5");
 		this.sniperInfoText.push("Speed:                         7");
-		this.sniperInfoText.push("Production:               7");
 		this.sniperInfoText.push("Price:                       225");
+		this.sniperInfoText.push("");
+		this.sniperInfoText.push("Quantity:                  1");
 		this.informationList["sniper"] = this.sniperInfoText;
 		this.headerList["sniper"] = "Sniper";
 		this.profilePicList["sniper"] = "pmProfilePic";
@@ -722,8 +792,9 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		this.cruiserInfoText.push("Attack:                      15");
 		this.cruiserInfoText.push("Defence:                   14");
 		this.cruiserInfoText.push("Speed:                         6");
-		this.cruiserInfoText.push("Production:               2");
 		this.cruiserInfoText.push("Price:                       820");
+		this.cruiserInfoText.push("");
+		this.cruiserInfoText.push("Quantity:                  1");
 		this.informationList["cruiser"] = this.cruiserInfoText;
 		this.headerList["cruiser"] = "Cruiser";
 		this.profilePicList["cruiser"] = "pmProfilePic";
@@ -733,8 +804,9 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		this.warriorInfoText.push("Attack:                      15");
 		this.warriorInfoText.push("Defence:                   13");
 		this.warriorInfoText.push("Speed:                         7");
-		this.warriorInfoText.push("Production:               2");
 		this.warriorInfoText.push("Price:                       750");
+		this.warriorInfoText.push("");
+		this.warriorInfoText.push("Quantity:                  1");
 		this.informationList["warrior"] = this.warriorInfoText;
 		this.headerList["warrior"] = "Warrior";
 		this.profilePicList["warrior"] = "pmProfilePic";
@@ -801,7 +873,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		this.yPos = yPos;
 		this.headerText = this.headerList[type];
 		var that = this;
-		this.shadowDist = 3;
+		this.shadowDist = 2;
 		this.profilePic = this.profilePicList[type];
 		this.information = this.informationList[type];
 		this.color = "#FFFFFF";
@@ -818,7 +890,23 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 		
 		//this.headerList["planet"] = "Planet Name";
 		//trace(this.headerText);
+		this.updatePlanetInfo = function(planetName, structures, owner, commander) {
+			that.planetInfoText = [];
+			that.planetInfoText.push("Owner: " + owner);
+			that.planetInfoText.push("Commander: " + commander);
+			that.planetInfoText.push("");
+			that.planetInfoText.push("Structures:");
+			for(var i = 0; i < structures.length; i++) {
+				this.planetInfoText.push("- " + structures[i]);
+			}
+			this.informationList["planet"] = that.planetInfoText;
+			this.headerList["planet"] = planetName;
+			//this.profilePicList["planet"] = "pmProfilePic";
+			that.headerText = that.headerList["planet"];
+			that.information = that.informationList["planet"];
+			that.profilePic = that.profilePicList["planet"];
 		
+		}
 		
 		
 		this.draw = function( ctx ) {
@@ -841,8 +929,8 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 			
 			ctx.lineWidth = 1.2;
 			for (var i = 0; i < that.information.length; i++) {
-				//ctx.fillStyle = that.shadowColor;
-				//ctx.fillText(that.information[i], that.xPos + that.infoTextX + that.shadowDist, that.yPos + that.infoTextY + that.shadowDist + (i * that.infoTextSpacing));
+				ctx.fillStyle = that.shadowColor;
+				ctx.fillText(that.information[i], that.xPos + that.infoTextX + that.shadowDist, that.yPos + that.infoTextY + that.shadowDist + (i * that.infoTextSpacing));
 				ctx.fillStyle = that.color;
 				ctx.fillText(that.information[i], that.xPos + that.infoTextX, that.yPos + that.infoTextY + (i * that.infoTextSpacing));
 				ctx.strokeStyle = "#000000";
@@ -860,6 +948,24 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 			that.headerText = that.headerList[e.type];
 			that.information = that.informationList[e.type];
 			that.profilePic = that.profilePicList[e.type];
+			if (e.type == "fighter") {
+				that.informationList["fighter"][that.fighterInfoText.length - 1] = "Quantity:                  " + e.amount;
+			}
+			else if (e.type == "gunboat") {
+				that.informationList["gunboat"][that.gunboatInfoText.length - 1] = "Quantity:                  " + e.amount;
+			}
+			else if (e.type == "warship") {
+				that.informationList["warship"][that.warshipInfoText.length - 1] = "Quantity:                  " + e.amount;
+			}
+			else if (e.type == "sniper") {
+				that.informationList["sniper"][that.sniperInfoText.length - 1] = "Quantity:                  " + e.amount;
+			}
+			else if (e.type == "cruiser") {
+				that.informationList["cruiser"][that.cruiserInfoText.length - 1] = "Quantity:                  " + e.amount;
+			}
+			else if (e.type == "warrior") {
+				that.informationList["warrior"][that.warriorInfoText.length - 1] = "Quantity:                  " + e.amount;
+			}
 			
 		}
 		
@@ -878,7 +984,120 @@ var PlanetMenu = function() {
 		return ;
     }
 
-
+	var planetMenuHandler = new PlanetMenuHandler();
     var planetMenuView = new PlanetMenuView(this);
 }
 PlanetMenu.prototype = new GameObject;
+
+var PlanetMenuHandler = function() {
+	this.force = null;
+	this.commander = null;
+	this.ss = null;
+	var that = this;
+	dispatcher.addListener("OpenPlanetMenu", this);
+	this.onOpenPlanetMenu = function(e) {
+		that.force = e.force;
+		that.commander = e.commander;
+		that.ss = e.ss;
+	}
+	dispatcher.addListener( "PlanetMenuAction", this );
+	this.onPlanetMenuAction = function( e ) {
+		if (e.cost <= that.force.gold) {
+			that.force.gold -= e.cost;
+			dispatcher.broadcast( { name: "UpdateCredits",
+				value: that.force.gold } );
+			if (e.type == "fighter") {
+				that.commander.addUnit(Fighter);
+				dispatcher.broadcast( { name: "UpdateCommanderFleet",
+				commander: that.commander } );
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "fighter",
+				quant: (that.ss.quantities[0] - 1)} );
+				
+				dispatcher.broadcast( { name: "UpdateSubMenu",
+						type: "fighter",
+						amount: that.ss.quantities[0]} );
+				
+			}
+			else if (e.type == "gunboat") {
+				that.commander.addUnit(Gunboat);
+				dispatcher.broadcast( { name: "UpdateCommanderFleet",
+				commander: that.commander } );
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "gunboat",
+				quant: that.ss.quantities[1] - 1} );
+				
+				dispatcher.broadcast( { name: "UpdateSubMenu",
+						type: "gunboat",
+						amount: that.ss.quantities[1]} );
+			}
+			else if (e.type == "warship") {
+				that.commander.addUnit(Warship);
+				dispatcher.broadcast( { name: "UpdateCommanderFleet",
+				commander: that.commander } );
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "warship",
+				quant: that.ss.quantities[2] - 1} );
+				dispatcher.broadcast( { name: "UpdateSubMenu",
+						type: "warship",
+						amount: that.ss.quantities[2]} );
+			}
+			else if (e.type == "sniper") {
+				that.commander.addUnit(Sniper);
+				dispatcher.broadcast( { name: "UpdateCommanderFleet",
+				commander: that.commander } );
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "sniper",
+				quant: that.ss.quantities[3] - 1} );
+				dispatcher.broadcast( { name: "UpdateSubMenu",
+						type: "sniper",
+						amount: that.ss.quantities[3]} );
+			}
+			else if (e.type == "cruiser") {
+				that.commander.addUnit(Cruiser);
+				dispatcher.broadcast( { name: "UpdateCommanderFleet",
+				commander: that.commander } );
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "cruiser",
+				quant: that.ss.quantities[4] - 1} );
+				dispatcher.broadcast( { name: "UpdateSubMenu",
+						type: "cruiser",
+						amount: that.ss.quantities[4]} );
+			}
+			else if (e.type == "warrior") {
+				that.commander.addUnit(Warrior);
+				dispatcher.broadcast( { name: "UpdateCommanderFleet",
+				commander: that.commander } );
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "warrior",
+				quant: that.ss.quantities[5] - 1} );
+				dispatcher.broadcast( { name: "UpdateSubMenu",
+						type: "warrior",
+						amount: that.ss.quantities[5]} );
+			}
+			else if (e.type == "miner") {
+				that.ss.miners ++;
+			}
+			else if (e.type == "shipyard") {
+				
+			}
+			else if (e.type == "defensesystem") {
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "defensesystem",
+				quant: 0} );
+			}
+			else if (e.type == "refinery") {
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "refinery",
+				quant: 0} );
+			}
+			else if (e.type == "powerplant") {
+				dispatcher.broadcast( { name: "SetShipQuantity",
+				type: "powerplant",
+				quant: 0} );
+			}
+		}
+		
+	}
+
+}
