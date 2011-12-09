@@ -140,6 +140,37 @@ var BattleUnit = function( template, quantity, leader ) {
 	this.quantity = num;
     }
 
+    this.underAttack = function( attacker ) {
+	var basicDamage = Math.floor( Math.random() *
+				      ( attacker.template.dmgMax - attacker.template.dmgMin ) ) +
+	    attacker.template.dmgMin;
+
+	    
+	var damage = basicDamage * attacker.quantity;
+	var factor = Math.pow( 1.05, 
+			       attacker.template.att + attacker.leader.att -
+			       this.template.def - this.leader.def );
+	if ( factor > 4.0 ) {
+	    factor = 4.0;
+	}
+	damage = Math.floor( damage * factor );
+	if ( damage < 1 ) {
+	    damage = 1;
+	}
+	
+	if ( this.template.hp * ( this.quantity - 1 ) + this.curHp <= damage ) {
+	    trace( "Death!" );
+	} else if ( damage < this.curHp ) {
+	    this.curHp -= damage;
+	} else {
+	    var deadNum = 1 + Math.floor( ( damage - this.curHp ) / this.template.hp );
+	    this.quantity -= deadNum;
+	    this.curHp = this.template.hp - ( damage - this.curHp - 
+					      deadNum * this.template.hp );
+	}
+	return damage;
+    }
+
     this.setPos = function( u, v ) {
 	if ( batMap.setMap( u, v, this ) ) {
 	    this.requestUpdate();
