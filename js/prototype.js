@@ -20,19 +20,21 @@ univMap.addSolarSystem( 2, 3);
 
 
 /// Create Battle Map
-var batMap = new HexagonMap( 10,10 );
-var batMapView = new BattleHexagonView( batMap, 0.2 );
+var batMap = new HexagonMap( 15,11 );
+var batMapView = new BattleHexagonView( batMap, 0.25 );
 
 
 
 /// Player Commander
 forces[0].createCommander( "General", "Lionheart", 2, 5 );
+forces[0].commanders[0].addUnit( new BattleUnit( Warship, 4 ) );
 forces[1].createCommander( "General", "Luther", 7, 10 );
 
 
 
 
 game.play();
+
 
 
 

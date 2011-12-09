@@ -1,7 +1,8 @@
 var UnitTypes = new Array();
 var BattleUnitTemplate = function( typeName, level, hp, att, def, spd, 
-				   price, dmgMax, dmgMin, production, value ) {
+				   price, dmgMax, dmgMin, production, value, modelObj ) {
     this.type = typeName;
+    this.modelObj = modelObj;
     this.level = level;
     this.hp = hp;
     this.att = att;
@@ -108,10 +109,10 @@ Warrior.setAttackStyle( "Surounding" );
  * BattleUnit won't get init()
  * unless necessary
  */
-var BattleUnit = function( template ) {
+var BattleUnit = function( template, quantity ) {
     this.template = template;
-    this,curHp = template.hp;
-    this.quantity = 1;
+    this.curHp = template.hp;
+    this.quantity = quantity;
     this.setQuantity = function( num ) {
 	this.quantity = num;
     }

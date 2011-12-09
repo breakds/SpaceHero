@@ -104,9 +104,23 @@ var Logic = function() {
 	game.setStage( battlefield );
 	/// Reset the camera
 	cam.reset();
-	
+	/*
+	var rotation = quat4.create();
+	rotation[0] = 0.0;
+	rotation[1] = 0.0;
+	rotation[2] = 0.65;
+	quat4.calculateW( rotation, rotation );
+	cam.rotateLocal( rotation );
+	rotation[0] = 0.3;
+	rotation[1] = 0.0;
+	rotation[2] = 0.0;
+	quat4.calculateW( rotation, rotation );
+	cam.rotateLocal( rotation );
+	*/
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
+
+	new BattleUnitView( e.commander0.units[0] );
     }
 }
 Logic.prototype = new GameObject;
