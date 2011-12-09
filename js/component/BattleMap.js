@@ -61,6 +61,19 @@ var BattleHexagonView = function( m, radius ) {
 }
 BattleHexagonView.prototype = new View;
 
+
+var BattleUnitView = function( unit ) {
+    this.setModel( unit );
+    this.register( battlefield );
+
+    this.draw = function() {
+	
+    }
+}
+BattleUnitView.prototype = new View;
+
+
+
 /*
 var BattleHexagonView = function( m, radius ) {
     this.setModel( m );
