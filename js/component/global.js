@@ -23,6 +23,10 @@ universe.addContext( ctxMenu );
 
 
 
+/// Create Battle Field
+var battlefield = new Stage();
+battlefield.enable3D = true;
+
 /// Create Solar System Stage
 var solarSystem = new Stage();
 solarSystem.enable3D = true;
@@ -30,9 +34,8 @@ var testStar = new Star("star1.png", 0, 0, -20, 2);
 cam.viewMode = "star";
 cam.viewObject = testStar;
 
-/// Create Battle Field
-var battlefield = new Stage();
-battlefield.enable3D = true;
+
+
 
 /// Create Logic
 var logic = new Logic();

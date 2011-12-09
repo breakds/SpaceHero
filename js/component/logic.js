@@ -17,6 +17,11 @@ var GameStatus = function() {
     this.onTurn = forces[0];
 }
 
+var BattleStatus = function() {
+    this.commander0 = null;
+    this.commander1 = null;
+}
+
 
 
 
@@ -25,7 +30,7 @@ var GameStatus = function() {
  */
 var Logic = function() {
     this.status = new GameStatus();
-
+    this.battle = new BattleStatus();
 
 
     this.getStatus = function() {
@@ -93,7 +98,13 @@ var Logic = function() {
 	    dispatcher.broadcast( { name:"NewTurn" } );
 	}
     }
-    
+
+    dispatcher.addListener( "StartBattle", this );
+    this.onStartBattle = function( e ) {
+	game.setStage( battlefield );
+	this.battle.commander0 = e.commander0;
+	this.battle.commander1 = e.commander1;
+    }
 }
 Logic.prototype = new GameObject;
 

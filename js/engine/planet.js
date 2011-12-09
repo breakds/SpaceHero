@@ -40,6 +40,8 @@ var PlanetView = function( m ) {
 		setMatrixUniforms(notShaderProgram);
 		gl.drawArrays(gl.LINE_LOOP, 0, this.circleVertexBuffer.numItems);
 		setShader(lightShaderProgram);
+	    
+
 		this.model.planetModel.update();
 		this.model.planetModel.draw();
 		if (this.model.hasAtmos)
@@ -47,6 +49,8 @@ var PlanetView = function( m ) {
 			this.model.atmosModel.update();
 			this.model.atmosModel.draw();
 		}
+	    
+
     }
 }
 PlanetView.prototype = new View();
