@@ -1,6 +1,9 @@
 var UnitTypes = new Array();
 var BattleUnitTemplate = function( typeName, level, hp, att, def, spd, 
-				   price, dmgMax, dmgMin, production, value ) {
+				   price, dmgMax, dmgMin, production, value,
+				   image, imageOnSelect ) {
+    this.image = image;
+    this.imageOnSelect = imageOnSelect;
     this.type = typeName;
     this.level = level;
     this.hp = hp;
@@ -36,7 +39,9 @@ var Fighter = new BattleUnitTemplate( "Fighter", 1,
 				      3, /// max damage 
 				      1, /// min damage
 				      20, /// Production
-				      95 /// Value 
+				      95, /// Value 
+				      resources.getResource( "fighterImg" ),
+				      resources.getResource( "fighterSelectImg" )
 				    );
 
 var Gunboat = new BattleUnitTemplate( "Gunboat", 1, 
@@ -48,7 +53,9 @@ var Gunboat = new BattleUnitTemplate( "Gunboat", 1,
 				      2, /// max damage 
 				      1, /// min damage
 				      16, /// Production
-				      66 /// Value
+				      66, /// Value
+				      resources.getResource( "gunboatImg" ),
+				      resources.getResource( "gunboatSelectImg" )
 				    );
 Gunboat.setArcher(8);
 
@@ -61,7 +68,9 @@ var Warship = new BattleUnitTemplate( "Warship", 2,
 				      6, /// max damage 
 				      3, /// min damage
 				      7, /// Production
-				      448 /// Value
+				      448, /// Value
+				      resources.getResource( "warshipImg" ),
+				      resources.getResource( "warshipSelectImg" )
 				    );
 
 var Sniper = new BattleUnitTemplate( "Sniper", 2, 
@@ -73,7 +82,9 @@ var Sniper = new BattleUnitTemplate( "Sniper", 2,
 				     9, /// max damage 
 				     5, /// min damage
 				     7, /// Production
-				     331 /// Value
+				     331, /// Value
+				     resources.getResource( "sniperImg" ),
+				     resources.getResource( "sniperSelectImg" )
 				   );
 Sniper.setArcher(24);
 
@@ -87,7 +98,9 @@ var Cruiser = new BattleUnitTemplate( "Cruiser", 3,
 				      22, /// max damage 
 				      18, /// min damage
 				      2, /// Production
-				      1720 /// Value
+				      1720, /// Value
+				      resources.getResource( "cruiserImg" ),
+				      resources.getResource( "cruiserSelectImg" )
 				    );
 
 
@@ -100,7 +113,9 @@ var Warrior = new BattleUnitTemplate( "Warrior", 3,
 				      20, /// max damage 
 				      10, /// min damage
 				      2, /// Production
-				      1669 /// Value
+				      1669, /// Value
+				      resources.getResource( "warriorImg" ),
+				      resources.getResource( "warriorSelectImg" )
 				    );
 Warrior.setAttackStyle( "Surounding" );
 
@@ -108,12 +123,25 @@ Warrior.setAttackStyle( "Surounding" );
  * BattleUnit won't get init()
  * unless necessary
  */
-var BattleUnit = function( template, quantity ) {
+var BattleUnit = function( template, quantity, leader ) {
     this.template = template;
     this.curHp = template.hp;
     this.quantity = quantity;
+    this.leader = leader;
+    this.u = 0;
+    this.v = 0;
     this.setQuantity = function( num ) {
 	this.quantity = num;
+    }
+
+    this.setPos = function( u, v ) {
+	if ( batMap.setMap( u, v, this ) ) {
+	    this.requestUpdate();
+	    return true;
+	} else {
+	    trace ( "[Warning] Invalid setPos() of BattleUnit." );
+	    return false;
+	}
     }
 }
 BattleUnit.prototype = new GameObject;
@@ -175,7 +203,7 @@ var Commander = function( title, name, group, u ,v  ) {
 		return;
 	    }
 	}
-	this.units.push( new BattleUnit( template, 1 ) );
+	this.units.push( new BattleUnit( template, 1, this ) );
     }
     this.setOrientation = function( ort ) {
 	this.orientation = ort;

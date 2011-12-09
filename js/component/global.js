@@ -1,24 +1,7 @@
 /// Camera
 var cam = new Camera();
 
-/// Resources
-resources.addImage( "img/commander.png", "commander0Img" );
-resources.addImage( "img/commander1.png", "commander1Img" );
-resources.addImage( "img/commanderSelect.png", "commanderSelectImg" );
-resources.addImage( "img/greenarrow.png", "greenArrowImg" );
-resources.addImage( "img/target.png", "targetImg" );
-resources.addImage( "img/shieldicon.png", "shieldIcon" );
-resources.addImage( "img/swordicon.png", "swordIcon" );
-resources.addImage( "img/redtarget.png", "redTargetImg" );
-resources.addImage( "img/redarrow.png", "redArrowImg" );
-resources.addImage( "img/solaronmap.png", "solarIconImg" );
-resources.addImage( "img/beam_left.png", "beamLeft" );
-resources.addImage( "img/projector_left.png", "projectorLeft");
-resources.addImage( "img/planetMenu_left.png", "planetMenuLeft");
-resources.addImage( "img/beam_right.png", "beamRight" );
-resources.addImage( "img/projector_right.png", "projectorRight");
-resources.addImage( "img/planetMenu_right.png", "planetMenuRight");
-resources.addImage( "img/planetMenuProfilePic.png", "pmProfilePic");
+
 
 
 /// Create Universe Stage
@@ -34,7 +17,8 @@ battlefield.enable3D = true;
 
 /// Create Battle Field
 var battlefield = new Stage();
-battlefield.enable3D = true;
+battlefield.addContext( ctxBg2d );
+battlefield.addContext( ctx2d[0] );
 
 /// Create Solar System Stage
 var solarSystem = new Stage();
