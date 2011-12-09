@@ -1,6 +1,8 @@
 var StarField = function()
 {
-	var stars = 1000;
+	var stars = 10000;
+	
+	var radius = 100.0;
 	
 	var vertices = new Array();
 	var colors = new Array();
@@ -9,9 +11,9 @@ var StarField = function()
 	{
 		var theta = Math.random() * 2.0 * Math.PI;
 		var phi = Math.random() * Math.PI;
-		vertices.push(Math.sin(phi) * Math.sin(theta));
-		vertices.push(Math.sin(phi) * Math.cos(theta));
-		vertices.push(Math.cos(phi));
+		vertices.push(Math.sin(phi) * Math.sin(theta) * radius);
+		vertices.push(Math.sin(phi) * Math.cos(theta) * radius);
+		vertices.push(Math.cos(phi) * radius);
 		colors.push(1.0);
 		colors.push(1.0);
 		colors.push(1.0);
