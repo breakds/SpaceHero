@@ -1,16 +1,76 @@
 var BattleHexagonView = function( m, radius ) {
     this.setModel( m );
     this.register( battlefield );
+    
+    
+    /*
+     * In this view, the map is rotated 90 degree, so cols will serve 
+     * as rows, and the same goes for rows
+     */
+    
+    this.left = 100;
+    this.top = 250;
+    
+    this.radius = radius;
+    
+    
+    this.drawHexagon = function( x, y )
+    {
+	var ang = -Math.PI * 0.5;
+	var step = Math.PI / 3.0;
+	ctxBg2d.moveTo(x, y - this.radius);
+	for ( var i=0; i<6; i++ )
+	{
+	    ang += step;
+	    ctxBg2d.lineTo( x + this.radius * Math.cos( ang ), y + this.radius * Math.sin( ang ) );
+	}
+    }
+
+    
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxBg2d } );
+    }
+
+    this.requestUpdate();
+
+    this.draw = function( ctx ) {
+	if ( ctx == ctxBg2d ) {
+	    var x = this.left;
+	    var y = this.top;
+	    var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
+	    
+	    ctxBg2d.strokeStyle = "#0000FF"
+	    ctxBg2d.fillStyle = "#223366";
+	    ctxBg2d.beginPath();
+	    for ( var u=0; u<this.model.cols; u++ ) 
+	    {
+		x = this.left + this.model.lower[u] * smallerRadius;
+		for ( var v=this.model.lower[u]; v<=this.model.upper[u]; v+=2 )
+		{
+		    this.drawHexagon( x, y );
+		    x += smallerRadius * 2;
+		}
+		y += this.radius * 1.5;
+	    }
+	    ctxBg2d.closePath();
+	    ctxBg2d.fill();
+	    ctxBg2d.stroke();
+	}
+    }
+}
+BattleHexagonView.prototype = new View;
+
+/*
+var BattleHexagonView = function( m, radius ) {
+    this.setModel( m );
+    this.register( battlefield );
     this.radius = radius;
 
 
     this.sx = -6.0;
     this.sy = -2.7;
 
-    /*
-    this.sx = -3.0;
-    this.sy = -3.0;
-    */
     
 
     this.hexagonVertexBuffers = new Array();
@@ -48,12 +108,6 @@ var BattleHexagonView = function( m, radius ) {
 	this.hexagonVertexBuffers.push( vertexBuffer );
     }
 
-    /*
-    this.initHexagons = function() {
-
-	
-    }
-    */
     this.initHexagons = function() {
 	var x = this.sx;
 	var y = this.sy;
@@ -112,3 +166,4 @@ var BattleUnitView = function( unit ) {
     }
 }
 BattleUnitView.prototype = new View;
+*/

@@ -21,7 +21,7 @@ univMap.addSolarSystem( 2, 3);
 
 /// Create Battle Map
 var batMap = new HexagonMap( 15,11 );
-var batMapView = new BattleHexagonView( batMap, 0.25 );
+var batMapView = new BattleHexagonView( batMap, 30 );
 
 
 
@@ -37,11 +37,10 @@ var planetMenu = new PlanetMenu();
 
 
 game.play();
-/*
 dispatcher.broadcast( {name: "StartBattle",
 		       commander0: forces[0].commanders[0],
 		       commander1: forces[1].commanders[0] } );
-*/
+
 
 
 

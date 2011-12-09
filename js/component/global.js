@@ -34,7 +34,7 @@ battlefield.enable3D = true;
 
 /// Create Battle Field
 var battlefield = new Stage();
-battlefield.enable3D = true;
+battlefield.addContext( ctxBg2d );
 
 /// Create Solar System Stage
 var solarSystem = new Stage();

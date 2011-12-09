@@ -120,7 +120,7 @@ var Logic = function() {
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
 
-	new BattleUnitView( e.commander0.units[0] );
+///	new BattleUnitView( e.commander0.units[0] );
     }
 }
 Logic.prototype = new GameObject;
