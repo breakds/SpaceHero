@@ -16,7 +16,7 @@ var PlanetView = function( m ) {
 		colors.push(1.0);
 		colors.push(1.0);
 		colors.push(1.0);
-		colors.push(0.5);
+		colors.push(0.2);
 	}
 	
 	this.circleVertexBuffer = gl.createBuffer();

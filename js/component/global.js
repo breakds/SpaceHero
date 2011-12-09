@@ -27,6 +27,7 @@ universe.addContext( ctxMenu );
 var solarSystem = new Stage();
 solarSystem.enable3D = true;
 var testStar = new Star("star1.png", 0, 0, -20, 2);
+var starfield = new StarField();
 cam.viewMode = "star";
 cam.viewObject = testStar;
 
