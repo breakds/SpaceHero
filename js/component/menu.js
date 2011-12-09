@@ -82,6 +82,50 @@ var CommanderMenu = function( commander, right, top ) {
 	    ctxMenu.fillText( this.model.def,
 			      this.right - 60,
 			      this.top + 205 );
+
+
+	    /// Draw Units
+	    ctxMenu.lineWidth = 1;
+	    ctxMenu.strokeStyle = "#FFFFFF";
+	    ctxMenu.strokeRect( this.right - this.width + 12 + 15, this.top+250, 60, 60  );
+	    ctxMenu.strokeRect( this.right - this.width + 12 + 75, this.top+250, 60, 60  );
+	    ctxMenu.strokeRect( this.right - this.width + 12 + 135, this.top+250, 60, 60  );
+	    ctxMenu.strokeRect( this.right - this.width + 12 + 15, this.top+310, 60, 60  );
+	    ctxMenu.strokeRect( this.right - this.width + 12 + 75, this.top+310, 60, 60  );
+	    ctxMenu.strokeRect( this.right - this.width + 12 + 135, this.top+310, 60, 60  );
+	    var x = this.right - this.width + 12 + 15;
+	    var y = this.top + 250;
+	    var k = 0;
+	    for ( var i=0; i<2; i++ ) {
+		var x = this.right - this.width + 12 + 15;
+		for ( var j=0; j<3; j++ ) {
+		    if ( k < this.model.units.length ) {
+			drawRotatedImage( ctxMenu,
+					  this.model.units[k].template.image,
+					  0,
+					  x,
+					  y,
+					  50,
+					  50,
+					  false );
+			ctxMenu.fillStyle = "#00AAFF";
+			ctxMenu.font = "15px Arial";
+			ctxMenu.textBaseline = "top";
+			ctxMenu.textAlign = "center";
+			ctxMenu.fillText( this.model.units[k].quantity, 
+					  x + 40,
+					  y + 40 );
+			k++;
+		    } else {
+			break;
+		    }
+		    x += 60;
+		}
+		y+=60;
+	    }
+	    
+	    
+
 	}
     }
 
