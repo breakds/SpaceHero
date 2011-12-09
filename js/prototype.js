@@ -33,7 +33,7 @@ forces[0].commanders[0].addUnit( Warship );
 trace( forces[0].commanders[0].units );
 forces[1].createCommander( "General", "Luther", 7, 10 );
 
-
+var planetMenu = new PlanetMenu();
 
 
 game.play();

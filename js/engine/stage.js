@@ -47,9 +47,10 @@ var Stage = function()
     dispatcher.addListener( "UpdateContext", this );
     this.onUpdateContext = function(e) {
 	if ( game.stage == this ) {
-	if(!this.enable3D)
-	{
+	//if(!this.enable3D)
+	//{
 	    var ctx = this.contexts[this.contexts.indexOf( e.ctx )];
+	    if (ctx == null) return;
 	    if ( ctx.updated ) return;
 	    if ( ctx.fillColor ) {
 		ctx.fillStyle = ctx.fillColor;
@@ -58,7 +59,7 @@ var Stage = function()
 		ctx.clearRect( 0, 0, GameScreen.width, GameScreen.height );
 	    }
 	    ctx.updated = true;
-	}
+	//}
 	    for ( var idx in this.viewObjs ) {
 		if ( this.viewObjs[idx].visible ) {
 		    this.viewObjs[idx].draw( ctx );

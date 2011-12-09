@@ -40,8 +40,6 @@ var PlanetView = function( m ) {
 		setMatrixUniforms(notShaderProgram);
 		gl.drawArrays(gl.LINE_LOOP, 0, this.circleVertexBuffer.numItems);
 		setShader(lightShaderProgram);
-	    
-
 		this.model.planetModel.update();
 		this.model.planetModel.draw();
 		if (this.model.hasAtmos)
@@ -49,20 +47,26 @@ var PlanetView = function( m ) {
 			this.model.atmosModel.update();
 			this.model.atmosModel.draw();
 		}
-	    
-
     }
 }
 PlanetView.prototype = new View();
 
 
-var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAround)
+var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAround, planetInfo)
 {
+	this.hasFactory;
+	if (planetInfo == null) {
+		this.hasFactory = false;
+	}
+	else {
+		this.hasFactory = true;
+	}
 	this.position = vec3.create();
 	this.position[0] = x;
 	this.position[1] = y;
 	this.position[2] = z;
-    this.radius = radius;
+	this.radius = radius;
+	this.orbiting = true;
 	this.hasAtmos = false;
 	this.radius = radius;
 	this.planetModel = new Model("ball.obj", pTexture);
@@ -85,7 +89,7 @@ var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAro
 	this.orbitPosition = Math.random() * Math.PI * 2; // start the planet at a random point around the star
     this.update = function()
 	{
-		if(this.orbitAround)
+		if(this.orbitAround && this.orbiting)
 		{
 			this.position[0] = this.orbitAround.position[0] - this.orbitRadius * Math.sin(this.orbitPosition);
 			this.position[1] = this.orbitAround.position[1] + this.orbitRadius * Math.cos(this.orbitPosition);

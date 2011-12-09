@@ -12,6 +12,13 @@ resources.addImage( "img/swordicon.png", "swordIcon" );
 resources.addImage( "img/redtarget.png", "redTargetImg" );
 resources.addImage( "img/redarrow.png", "redArrowImg" );
 resources.addImage( "img/solaronmap.png", "solarIconImg" );
+resources.addImage( "img/beam_left.png", "beamLeft" );
+resources.addImage( "img/projector_left.png", "projectorLeft");
+resources.addImage( "img/planetMenu_left.png", "planetMenuLeft");
+resources.addImage( "img/beam_right.png", "beamRight" );
+resources.addImage( "img/projector_right.png", "projectorRight");
+resources.addImage( "img/planetMenu_right.png", "planetMenuRight");
+resources.addImage( "img/planetMenuProfilePic.png", "pmProfilePic");
 
 
 /// Create Universe Stage
@@ -36,6 +43,7 @@ var testStar = new Star("star1.png", 0, 0, 0, 2);
 var starfield = new StarField();
 cam.viewMode = "star";
 cam.viewObject = testStar;
+solarSystem.addContext( ctxMenu );
 
 /// Create Logic
 var logic = new Logic();
