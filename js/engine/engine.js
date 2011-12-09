@@ -16,6 +16,9 @@ var Game = function() {
 	    this.stage.clear();
 	}
 	this.stage = s;
+	for ( var i=0; i<s.viewObjs.length; i++ ) {
+	    s.viewObjs[i].requestUpdate();
+	}
     }
     this.proceed = function()
     {

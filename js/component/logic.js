@@ -155,6 +155,25 @@ var Logic = function() {
 
     dispatcher.addListener( "NextUnit", this );
     this.onNextUnit = function( e ) {
+	var num0 = 0;
+	var num1 = 0;
+	for ( var i=0; i<this.battle.units.length; i++ ) {
+	    if ( this.battle.units[i].active ) {
+		if( this.battle.units[i].leader == this.battle.commander0 ) {
+		    num0++;
+		} else {
+		    num1++;
+		}
+	    }
+	}
+
+	if ( 0 == num0 ) {
+	    dispatcher.broadcast( { name: "ExitBattle" } );
+	} else if ( 0 == num1 ) {
+	    dispatcher.broadcast( { name: "ExitBattle" } );
+	}
+
+	
 	if ( -1 != this.battle.currentUnitID ) {
 	    this.battle.units[this.battle.currentUnitID].requestUpdate();
 	}
@@ -256,6 +275,28 @@ var Logic = function() {
 		}
 	    }
 	}
+    }
+
+    dispatcher.addListener( "ExitBattle", this );
+    this.onExitBattle = function( e ) {
+	/// Delete Views
+	for ( var i=0; i<this.battle.unitViews.length; i++ ) {
+	    this.battle.unitViews[i].model.removeView( this.battle.unitViews[i] );
+	}
+	this.battle.unitViews = null;
+	/// Remove Dead Units / restore HP
+	for ( var i=0; i<this.battle.units.length; i++ ) {
+	    if ( ! this.battle.units[i].active ) {
+		trace( "death!" );
+		this.battle.units[i].terminate();
+	    } else {
+		batMap.clearCell( this.battle.units[i].u,
+				  this.battle.units[i].v );
+		this.battle.units[i].restoreHP();
+	    }
+	}
+	this.battle.units = null;
+	game.setStage( universe );
     }
 }
 Logic.prototype = new GameObject;

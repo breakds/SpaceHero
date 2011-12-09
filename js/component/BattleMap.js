@@ -272,7 +272,6 @@ var UnitAttackAnimation = function( attacker, victim ) {
     this.onTerminate = function() {
 	/// Attacking
 	var damage = this.objs[1].underAttack( this.objs[0] );
-	trace( damage );
 	
 	/// Cleaning 
 	this.objs[1].setOffset( 0, 0 );

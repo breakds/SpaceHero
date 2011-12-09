@@ -145,6 +145,14 @@ var BattleUnit = function( template, quantity, leader ) {
 	this.active = false;
 	this.requestUpdate();
     }
+    this.terminate = function() {
+	this.leader.removeUnit( this );
+	this.removeInstance();
+    }
+    this.restoreHP = function() {
+	this.curHp = this.template.hp;
+	this.requestUpdate();
+    }
     this.underAttack = function( attacker ) {
 	var basicDamage = Math.floor( Math.random() *
 				      ( attacker.template.dmgMax - attacker.template.dmgMin ) ) +
