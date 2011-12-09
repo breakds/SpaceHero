@@ -4,7 +4,7 @@ new Force( "The Empire", "AI" );
 
 
 /// Set Current Rendering Stage
-game.setStage( battlefield );
+game.setStage( solarSystem );
 //solarSystem / universe
 
 
