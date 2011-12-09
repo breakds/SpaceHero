@@ -202,11 +202,19 @@ var Logic = function() {
 
 	/// Temporary AI:
 	if ( 0 != obj.leader.group ) {
-	    var pick = Math.floor( Math.random() * this.battle.reachable.length );
-	    dispatcher.broadcast( { name: "UnitMove",
-				    obj: obj,
-				    u: this.battle.reachable[pick].u,
-				    v: this.battle.reachable[pick].v } );
+	    if ( 0 != this.battle.attackable.length ) {
+		var pick = Math.floor( Math.random() * this.battle.attackable.length );
+		dispatcher.broadcast( { name: "UnitMove",
+					obj: obj,
+					u: this.battle.attackable[pick].u,
+					v: this.battle.attackable[pick].v } );
+	    } else {
+		var pick = Math.floor( Math.random() * this.battle.reachable.length );
+		dispatcher.broadcast( { name: "UnitMove",
+					obj: obj,
+					u: this.battle.reachable[pick].u,
+					v: this.battle.reachable[pick].v } );
+	    }
 	}
     }
 

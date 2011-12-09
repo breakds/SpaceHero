@@ -43,11 +43,9 @@ var planetMenu = new PlanetMenu();
 
 
 game.play();
-/*dispatcher.broadcast( {name: "StartBattle",
+dispatcher.broadcast( {name: "StartBattle",
 		       commander0: forces[0].commanders[0],
 		       commander1: forces[1].commanders[0] } );
-
-*/
 
 
 
