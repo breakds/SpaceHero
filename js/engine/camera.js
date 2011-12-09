@@ -149,6 +149,7 @@ var Camera = function()
 	this.reset = function()
 	{
 		this.position[0] = 0;
+	        this.viewMode = "null";
 		this.position[1] = 0;
 		this.position[2] = 0;
 		this.orientation[0] = 0;
