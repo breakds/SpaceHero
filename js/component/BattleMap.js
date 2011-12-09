@@ -58,17 +58,66 @@ var BattleHexagonView = function( m, radius ) {
 	    ctxBg2d.stroke();
 	}
     }
+
+    this.getUVFromXY = function( x, y )
+    {
+	var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
+	var deltaX = x - this.left;
+	var deltaY = y - this.top;
+	var v = Math.ceil( deltaY / smallerRadius );
+	var u = Math.round( deltaX / (1.5 * this.radius) );
+	v -= (( v & 1 ) ^ ( this.model.lower[u] & 1 ) );
+	if ( this.model.inMap( u, v ) )
+	{
+	    return {u:u,v:v};
+	}
+	else
+	{
+	    return {u:-1,v:-1};
+	}
+    }
+
+
+    this.getXYFromUV = function( u, v ) {
+	return  { y: this.radius * 1.5 * u + this.top, 
+		  x: this.radius * Math.sqrt(3) * 0.5 * v + this.left };
+    }
 }
 BattleHexagonView.prototype = new View;
 
 
-var BattleUnitView = function( unit ) {
+var BattleUnitView = function( unit, side ) {
     this.setModel( unit );
     this.register( battlefield );
 
-    this.draw = function() {
-	
+
+    this.side = side;
+    if ( 0 == this.side ) {
+	this.rotation = Math.PI * 0.5;
+    } else {
+	this.rotation = -Math.PI * 0.5;
     }
+
+    
+    this.draw = function( ctx ) {
+	if ( ctx == ctx2d[0] ) {
+	    c = batMapView.getXYFromUV( this.model.u, this.model.v );
+	    var size = batMapView.radius * 1.90;
+	    drawRotatedImage( ctx2d[0],
+			      this.model.template.image,
+			      this.rotation,
+			      c.x,
+			      c.y,
+			      size,
+			      size,
+			      true );
+	}
+    }
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctx2d[0] } );
+    }
+    this.requestUpdate();
 }
 BattleUnitView.prototype = new View;
 

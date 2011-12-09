@@ -20,6 +20,7 @@ var GameStatus = function() {
 var BattleStatus = function() {
     this.commander0 = null;
     this.commander1 = null;
+    this.unitViews = new Array();
 }
 
 
@@ -119,8 +120,22 @@ var Logic = function() {
 
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
+	
+	var units = this.battle.commander0.units;
+	for ( var i=0; i<units.length; i++ ) {
+	    if ( i < 5 ) {
+		units[i].setPos( i * 2 + 1, 0 );
+	    } else {
+		units[i].setPos( 10, 0 );
+	    }
+	    this.battle.unitViews.push( new BattleUnitView( units[i], 0 ) );
+	}
 
-///	new BattleUnitView( e.commander0.units[0] );
+	units = this.battle.commander1.units;
+	for ( var i=0; i<units.length; i++ ) {
+	    units[i].setPos( i * 2, 31 );
+	    this.battle.unitViews.push( new BattleUnitView( units[i], 1 ) );
+	}
     }
 }
 Logic.prototype = new GameObject;

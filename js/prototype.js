@@ -29,9 +29,15 @@ var batMapView = new BattleHexagonView( batMap, 30 );
 forces[0].createCommander( "General", "Lionheart", 2, 5 );
 forces[0].commanders[0].addUnit( Warship );
 forces[0].commanders[0].addUnit( Gunboat );
-forces[0].commanders[0].addUnit( Warship );
-trace( forces[0].commanders[0].units );
+forces[0].commanders[0].addUnit( Cruiser );
+forces[0].commanders[0].addUnit( Sniper );
+
+
 forces[1].createCommander( "General", "Luther", 7, 10 );
+forces[1].commanders[0].addUnit( Fighter );
+forces[1].commanders[0].addUnit( Warrior );
+forces[1].commanders[0].addUnit( Sniper );
+
 
 var planetMenu = new PlanetMenu();
 

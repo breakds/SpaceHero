@@ -9,6 +9,7 @@ var ResourceManager = function() {
 	this.resource[id].onload = function() {
 	    this.ready = true;
 	}
+	
     }
     this.getResource = function( id ) {
 	return this.resource[id];
