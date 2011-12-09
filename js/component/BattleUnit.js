@@ -131,6 +131,7 @@ var BattleUnit = function( template, quantity, leader ) {
     this.u = 0;
     this.v = 0;
     this.offset = { x:0, y:0 };
+    this.active = true;
     this.setOffset = function( dx, dy ) {
 	this.offset.x = dx;
 	this.offset.y = dy;
@@ -139,7 +140,11 @@ var BattleUnit = function( template, quantity, leader ) {
     this.setQuantity = function( num ) {
 	this.quantity = num;
     }
-
+    this.getKilled = function() {
+	batMap.clearCell( this.u, this.v );
+	this.active = false;
+	this.requestUpdate();
+    }
     this.underAttack = function( attacker ) {
 	var basicDamage = Math.floor( Math.random() *
 				      ( attacker.template.dmgMax - attacker.template.dmgMin ) ) +
@@ -159,7 +164,7 @@ var BattleUnit = function( template, quantity, leader ) {
 	}
 	
 	if ( this.template.hp * ( this.quantity - 1 ) + this.curHp <= damage ) {
-	    trace( "Death!" );
+	    this.getKilled();
 	} else if ( damage < this.curHp ) {
 	    this.curHp -= damage;
 	} else {
@@ -241,6 +246,9 @@ var Commander = function( title, name, group, u ,v  ) {
 	    }
 	}
 	this.units.push( new BattleUnit( template, 1, this ) );
+    }
+    this.removeUnit = function( unit ) {
+	this.units.splice( this.units.indexOf( unit ), 1 );
     }
     this.setOrientation = function( ort ) {
 	this.orientation = ort;

@@ -163,6 +163,10 @@ var Logic = function() {
 	    this.battle.currentUnitID = 0;
 	}
 	var obj = this.battle.units[this.battle.currentUnitID];
+	if ( !obj.active ) {
+	    dispatcher.broadcast( { name: "NextUnit" } );
+	    return;
+	}
 	obj.requestUpdate();
 
 	/// Acquire Reachable Array

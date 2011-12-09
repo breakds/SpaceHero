@@ -167,6 +167,9 @@ var BattleUnitView = function( unit, side ) {
     
     this.draw = function( ctx ) {
 	if ( ctx == ctx2d[0] ) {
+	    if ( !this.model.active ) {
+		return ;
+	    }
 	    c = batMapView.getXYFromUV( this.model.u, this.model.v );
 	    var size = batMapView.radius * 1.90;
 	    if ( this.model == logic.battle.units[logic.battle.currentUnitID] ) {

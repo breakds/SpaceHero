@@ -154,6 +154,11 @@ var HexagonMap = function( rows, cols ) {
     }
 
     
+    this.clearCell = function( u, v ) {
+	if ( this.inMap( u, v ) ) {
+	    this.map[u][v] = 0;
+	}
+    }
     this.setMap = function( u, v, obj ) {
 	if ( this.available( u, v ) ) {
 	    this.map[u][v] = obj;
