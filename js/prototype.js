@@ -27,6 +27,7 @@ var batMapView = new BattleHexagonView( batMap, 0.25 );
 
 /// Player Commander
 forces[0].createCommander( "General", "Lionheart", 2, 5 );
+forces[0].commanders[0].addUnit( new BattleUnit( Warship, 4 ) );
 forces[1].createCommander( "General", "Luther", 7, 10 );
 
 

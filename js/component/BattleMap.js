@@ -3,9 +3,12 @@ var BattleHexagonView = function( m, radius ) {
     this.register( battlefield );
     this.radius = radius;
 
-
+    /*
     this.sx = -6.0;
     this.sy = -2.7;
+    */
+    this.sx = -3.0;
+    this.sy = -3.0;
     
     
 
@@ -34,7 +37,7 @@ var BattleHexagonView = function( m, radius ) {
 	    ang += step;
 	    vertices.push( x + r * Math.cos( ang ) );
 	    vertices.push( y + r * Math.sin( ang ) );
-	    vertices.push( -7 );
+	    vertices.push( -10 );
 	}
 	var vertexBuffer = gl.createBuffer();
 	vertexBuffer.itemSize = 3;
@@ -91,5 +94,20 @@ var BattleHexagonView = function( m, radius ) {
 	setShader( lightShaderProgram );
     }
 }
-
 BattleHexagonView.prototype = new View;
+
+
+var BattleUnitView = function( unit ) {
+    this.setModel( unit );
+    this.register( battlefield );
+
+
+    this.unitModel = new Model( "ship_medium.obj", "default.png" );
+    this.unitModel.setPosition( 0.0, 0.0, -5 );
+    this.unitModel.setScale( .01, .01, .01 );
+    this.unitModel.setRotation( 90, 0.0, 0.0 );
+    this.draw = function() {
+	this.unitModel.draw();
+    }
+}
+BattleUnitView.prototype = new View;
