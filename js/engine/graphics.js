@@ -44,6 +44,7 @@ var GameScreen = { width: bg2d.width, height: bg2d.height };
 
 /// 2d Context
 /// if not enabled, this canvas will not be rendered
+
 var ctxBg2d = bg2d.getContext( "2d" );
 ctxBg2d.fillColor = "#000000";
 ctxBg2d.updated = false;
@@ -54,6 +55,22 @@ ctx2d.push( ani2d1.getContext( "2d" ) );
 ctx2d[0].updated = false;
 ctx2d.push( ani2d2.getContext( "2d" ) );
 ctx2d[0].updated = false;
+
+var allContexts = new Array();
+allContexts.push( ctxBg2d );
+allContexts.push( ctxMenu );
+allContexts.push( ctx2d[0] );
+allContexts.push( ctx2d[1]);
+
+function clearContext(ctx) {
+    if ( ctx.fillColor ) {
+	ctx.fillStyle = ctx.fillColor;
+	ctx.fillRect( 0, 0, GameScreen.width, GameScreen.height );
+    } else {
+	ctx.clearRect( 0, 0, GameScreen.width, GameScreen.height );
+    }
+}
+
 
 
 

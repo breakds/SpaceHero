@@ -217,19 +217,27 @@ var HexagonGridView = function( m, height, width, margin )
 	var uv = this.getUVFromXY( x, y );
 	if ( uv.u != -1 && ( uv.u != this.highlightCoor.u ||
 			     uv.v != this.highlightCoor.v ) ) {
+	    status.attackIcon.u = -1;
 	    this.highlightCoor.u = uv.u;
 	    this.highlightCoor.v = uv.v;
+	    if ( univMap.available( uv.u, uv.v ) && 
+		 !univMap.veil[uv.u][uv.v] ) {
 		if(status.onSelect && "Commander" == status.onSelect.type && 0 == status.onSelect.group)
 		{
-			status.onSelect.target.u = uv.u;
-			status.onSelect.target.v = uv.v;
-			status.onSelect.updatePath();
-			status.showArrows = true;
-			dispatcher.broadcast( { name: "UpdateContext", ctx: ctx2d[1] } );
-			if(status.onSelect.path == null)
-			{
-			}
+		    status.onSelect.target.u = uv.u;
+		    status.onSelect.target.v = uv.v;
+		    status.onSelect.updatePath();
+		    status.showArrows = true;
+		    logic.requestUpdate();
 		}
+	    } else if ( !univMap.veil[uv.u][uv.v] ) {
+		obj = univMap.getMap( uv.u, uv.v );
+		if ( "Commander" == obj.type && obj.group != 0 ) {
+		    status.attackIcon.u = uv.u;
+		    status.attackIcon.v = uv.v;
+		    logic.requestUpdate();
+		}
+	    }
 	    this.requestUpdate();
 	}
     }
@@ -245,20 +253,28 @@ var HexagonGridView = function( m, height, width, margin )
 	{
 	    obj = status.onSelect;
 	    if ( "Commander" == obj.type && 0 == obj.group )
+	    {
+		if ( status.attackIcon.u != -1 ) {
+		    var enemy = univMap.getMap( status.attackIcon.u,
+						status.attackIcon.v );
+		    status.attackIcon.u = -1;
+		    dispatcher.broadcast( {name: "StartBattle",
+					   commander0: obj,
+					   commander1: enemy } );
+		}
+		if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v )
 		{
-			if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v )
-			{
-				dispatcher.broadcast( { name: "CommanderMove" } );
-			}	
-			else
-			{
-				if ( this.model.inMap( uv.u, uv.v ) )
-				{
-					dispatcher.broadcast( { name: "RequestArrowPath", 
+		    dispatcher.broadcast( { name: "CommanderMove" } );
+		}	
+		else
+		{
+		    if ( this.model.inMap( uv.u, uv.v ) )
+		    {
+			dispatcher.broadcast( { name: "RequestArrowPath", 
 						obj: obj,
 						target: uv } );
-				}
-			}
+		    }
+		}
 	    }
 	}
     }
@@ -361,8 +377,21 @@ var UniverseLogicView = function( logicModel ) {
 	var status = this.model.getStatus();
 	if ( status.onSelect != null ) {
 	    var obj = status.onSelect;
-
+	    
 	    if ( obj.type == "Commander" && 0 == obj.group ) {
+		if ( -1 != status.attackIcon.u ) {
+		    var size = univMapView.radius * 1.40;
+		    var c = univMapView.getXYFromUV( status.attackIcon.u, 
+						     status.attackIcon.v );
+		    drawRotatedImage( ctx2d[1],
+				      resources.getResource( "swordIcon" ),
+				      0,
+				      c.x,
+				      c.y,
+				      size,
+				      size,
+				      true );
+		}
 		if ( obj.path != null && status.showArrows) {
 		    var u = obj.u;
 		    var v = obj.v;

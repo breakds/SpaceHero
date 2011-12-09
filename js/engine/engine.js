@@ -11,9 +11,13 @@ var Game = function() {
     this.stage = null;
     this.setStage = function( s )
     {
+	
 	if ( this.stage )
 	{
 	    this.stage.clear();
+	}
+	for ( var i=0; i<allContexts.length; i++ ) {
+	    clearContext( allContexts[i] );
 	}
 	this.stage = s;
 	for ( var i=0; i<s.viewObjs.length; i++ ) {

@@ -15,6 +15,7 @@ var GameStatus = function() {
 	}
     }
     this.onTurn = forces[0];
+    this.attackIcon = { u:-1, v:-1 };
 }
 
 var BattleStatus = function() {
