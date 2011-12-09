@@ -12,8 +12,39 @@ var BattleHexagonView = function( m, radius ) {
     this.top = 250;
     
     this.radius = radius;
+
+    this.boundBox = { ymin: this.top - this.radius,
+		      ymax: this.top + this.radius * ( 1.5 * this.model.cols - 0.5 ),
+		      xmin: this.left - this.radius * Math.sqrt(3) * 0.5,
+		      xmax: this.left + this.radius * Math.sqrt(3) * ( this.model.rows + 1 )
+		    };
     
     
+
+    this.getUVFromXY = function( x, y )
+    {
+	var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
+	var deltaX = x - this.left;
+	var deltaY = y - this.top;
+	var v = Math.ceil( deltaX / smallerRadius );
+	var u = Math.round( deltaY / (1.5 * this.radius) );
+	v -= (( v & 1 ) ^ ( this.model.lower[u] & 1 ) );
+	if ( this.model.inMap( u, v ) )
+	{
+	    return {u:u,v:v};
+	}
+	else
+	{
+	    return {u:-1,v:-1};
+	}
+    }
+
+
+    this.getXYFromUV = function( u, v ) {
+	return  { y: this.radius * 1.5 * u + this.top, 
+		  x: this.radius * Math.sqrt(3) * 0.5 * v + this.left };
+    }
+
     this.drawHexagon = function( x, y )
     {
 	var ang = -Math.PI * 0.5;
@@ -56,31 +87,48 @@ var BattleHexagonView = function( m, radius ) {
 	    ctxBg2d.closePath();
 	    ctxBg2d.fill();
 	    ctxBg2d.stroke();
+
+	    
+	    /// Draw Reachable
+	    if ( null != logic.battle.reachable ) {
+		ctxBg2d.fillStyle = "#00AA00";
+		ctxBg2d.strokeStyle = "#0000FF"
+		ctxBg2d.beginPath();
+		var c = null;
+		for ( var i=0; i<logic.battle.reachable.length; i++ ) {
+		    c = this.getXYFromUV( logic.battle.reachable[i].u,
+					  logic.battle.reachable[i].v );
+		    this.drawHexagon( c.x, c.y );
+		}
+		ctxBg2d.closePath();
+		ctxBg2d.fill();
+		ctxBg2d.stroke();
+	    }
 	}
     }
 
-    this.getUVFromXY = function( x, y )
-    {
-	var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
-	var deltaX = x - this.left;
-	var deltaY = y - this.top;
-	var v = Math.ceil( deltaY / smallerRadius );
-	var u = Math.round( deltaX / (1.5 * this.radius) );
-	v -= (( v & 1 ) ^ ( this.model.lower[u] & 1 ) );
-	if ( this.model.inMap( u, v ) )
-	{
-	    return {u:u,v:v};
+
+
+    this.hitTest = function( x, y ) {
+	if ( x < this.boundBox.xmin ||
+	     x > this.boundBox.xmax ||
+	     y < this.boundBox.ymin ||
+	     y > this.boundBox.ymax ) {
+	    return false;
 	}
-	else
-	{
-	    return {u:-1,v:-1};
-	}
+	return true;
     }
 
-
-    this.getXYFromUV = function( u, v ) {
-	return  { y: this.radius * 1.5 * u + this.top, 
-		  x: this.radius * Math.sqrt(3) * 0.5 * v + this.left };
+    
+    this.onLeftMouseDown = function( x, y ) {
+	var obj = logic.battle.units[logic.battle.currentUnitID];
+	if ( 0 == obj.leader.group ) {
+	    var uv = this.getUVFromXY( x, y );
+	    dispatcher.broadcast( { name: "UnitMove",
+				    obj: obj,
+				    u: uv.u,
+				    v: uv.v } );
+	}
     }
 }
 BattleHexagonView.prototype = new View;

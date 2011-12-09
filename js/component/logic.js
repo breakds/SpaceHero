@@ -24,6 +24,8 @@ var BattleStatus = function() {
     this.units = new Array();
     this.turn = 0;
     this.currentUnitID = 0;
+    this.reachable = new Array();
+    this.onAnimation = false;
 }
 
 
@@ -151,7 +153,7 @@ var Logic = function() {
     }
 
     dispatcher.addListener( "NextUnit", this );
-    this.onNextUnit = function() {
+    this.onNextUnit = function( e ) {
 	if ( -1 != this.battle.currentUnitID ) {
 	    this.battle.units[this.battle.currentUnitID].requestUpdate();
 	}
@@ -159,7 +161,24 @@ var Logic = function() {
 	if ( this.battle.units.length == this.battle.currentUnitID ) {
 	    this.battle.currentUnitID = 0;
 	}
-	this.battle.units[this.battle.currentUnitID].requestUpdate();
+	var obj = this.battle.units[this.battle.currentUnitID];
+	obj.requestUpdate();
+	this.battle.reachable = batMap.getReachable( obj.u, obj.v, obj.template.spd );
+	batMapView.requestUpdate();
+    }
+
+    dispatcher.addListener( "UnitMove", this );
+    this.onUnitMove = function( e ) {
+	if ( ! this.battle.onAnimation ) {
+	    for ( var i=0; i<this.battle.reachable.length; i++ ) {
+		if ( this.battle.reachable[i].u == e.u &&
+		     this.battle.reachable[i].v == e.v ) {
+		    trace( "go!" );
+		    return;
+		}
+	    }
+	    trace( "not go!" );
+	}
     }
 }
 Logic.prototype = new GameObject;

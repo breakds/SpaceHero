@@ -263,6 +263,35 @@ var HexagonMap = function( rows, cols ) {
 	}
 	return null;
     }
+
+    this.getReachable = function( u0, v0, range ) {
+	if ( this.inMap( u0, v0 ) ) {
+	    this.initAuxMap();
+	    var q = new Array();
+	    q.push( { u: u0, v: v0, pre: -1, step: 0 } );
+	    this.auxMap[u0][v0] = 1;
+	    var i = 0;
+	    var nu = 0;
+	    var nv = 0;
+	    var j = 0;
+	    while ( i < q.length ) {
+		if ( q[i].step < range ) {
+		    for ( j=0; j<6; j++ ) {
+			nu = q[i].u + this.du[j];
+			nv = q[i].v + this.dv[j];
+			if ( this.available( nu, nv ) &&
+			     0 == this.auxMap[nu][nv] ) {
+			    this.auxMap[nu][nv] = 1;
+			    q.push( { u: nu, v: nv, step: q[i].step+1, pre: i } );
+			}
+		    }
+		}
+		i++;
+	    }
+	    return q;
+	}
+	return null;
+    }
 }
 
 HexagonMap.prototype = new GameObject;
