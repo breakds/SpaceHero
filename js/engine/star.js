@@ -75,10 +75,6 @@ var StarSolarView = function( m ) {
 		}
 	}
 	
-	this.onLeftMouseDown = function(x, y)
-	{
-		console.log("hello");
-	}
 }
 StarSolarView.prototype = new View();
 
@@ -219,10 +215,7 @@ var Star = function(texture, x, y, z, radius) {
 		}
 	}
 	
-	dispatcher.addListener( "MouseMove", this );
-	this.onMouseMove = function( e ) {
-		
-	}
+
 	
 	dispatcher.addListener( "NewTurn", this);
 	this.onNewTurn = function( e ) {
@@ -318,22 +311,20 @@ var planetMenuOpenButton = function(name, xPos, yPos, model) {
 				ctx.font = originalFont;
 			}
 		}
-		
-		dispatcher.addListener( "LeftMouseDown", this );
-		this.onLeftMouseDown = function( e ) {
-			if (that.active) {
-				if (that.hitTest( e.x, e.y ) == true){	
-					console.log(that.model.quantities[0]);
-					dispatcher.broadcast( { name: "OpenPlanetMenu",
-						force: forces[that.model.group],
-						commander: that.model.visiting ,
-						planet: that.model.planets[0],
-						ss: that.model} );
-					that.active = false;
-				}
-			}
-		}
-		
+    
+    this.onLeftMouseDown = function( x, y ) {
+	if (that.active) {
+	    console.log(that.model.quantities[0]);
+	    dispatcher.broadcast( { name: "OpenPlanetMenu",
+				    force: forces[that.model.group],
+				    commander: that.model.visiting ,
+				    planet: that.model.planets[0],
+				    ss: that.model} );
+	    that.active = false;
+
+	}
+    }
+    
 		dispatcher.addListener("ShowPlanetButton", this);
 		this.onShowPlanetButton = function(e) {
 			if (e.display == true) {
@@ -342,17 +333,17 @@ var planetMenuOpenButton = function(name, xPos, yPos, model) {
 			}
 		
 		
-		dispatcher.addListener( "MouseMove", this );
-		this.onMouseMove = function( e ) {
-			if (that.active) {
-				if (that.hitTest( e.x, e.y ) == true){
-					that.highlighted = true;
-				}
-				else {
-					that.highlighted = false;
-				}
-			}
-		}
+    this.onMouseMove = function( x, y ) {
+	if (that.active) {
+	    that.highlighted = true;
+	}
+    }
+    
+    this.onRollOut = function( x, y ) {
+	if ( that.active ) {
+	    that.highlighted = false;
+	}
+    }
 		
 		this.hitTest = function( x, y ) {
 			//trace("testing button" );
@@ -447,21 +438,19 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 			}
 		}
 		
-		dispatcher.addListener( "LeftMouseDown", this );
+
 		this.onLeftMouseDown = function( e ) {
 			if (that.active) {
-				if (that.hitTest( e.x, e.y ) == true){					
-					game.setStage( universe );
-				}
+			    game.setStage( universe );
 			}
 		}
 		
-		dispatcher.addListener("OpenPlanetMenu", this);
+
 		this.onOpenPlanetMenu = function(e) {
 			that.active = false;
 		}
 		
-		dispatcher.addListener("ShowPlanetButton", this);
+
 		this.onShowPlanetButton = function(e) {
 			if (e.display == true) {
 				that.active = true;
@@ -469,17 +458,18 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 			}
 		
 		
-		dispatcher.addListener( "MouseMove", this );
-		this.onMouseMove = function( e ) {
-			if (that.active) {
-				if (that.hitTest( e.x, e.y ) == true){
-					that.highlighted = true;
-				}
-				else {
-					that.highlighted = false;
-				}
-			}
-		}
+    this.onMouseMove = function( x, y ) {
+	if (that.active) {
+	    that.highlighted = true;
+	}
+    }
+
+
+    this.onRollOut = function( x, y ) {
+	if ( that.active ) {
+	    that.highlighted = false;
+	}
+    }
 		
 		this.hitTest = function( x, y ) {
 			//trace("testing button" );

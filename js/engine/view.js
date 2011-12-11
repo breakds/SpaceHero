@@ -43,6 +43,9 @@ var View = function( m ) {
     this.onMouseMove = function( x, y ) {
 	return ;
     }
+    this.onRollOut = function( x, y ) {
+	return ;
+    }
     this.onKeyDown = function( key ) {
 	return ;
     }

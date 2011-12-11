@@ -53,6 +53,7 @@ var Stage = function()
 				    ctx: this.contexts[i] } );
 	}
     }
+    
     dispatcher.addListener( "UpdateContext", this );
     this.onUpdateContext = function(e) {
 	if ( game.stage == this ) {
@@ -131,6 +132,8 @@ var Stage = function()
 	    for ( idx in this.viewObjs ) {
 		if ( this.viewObjs[idx].hitTest( e.x, e.y ) ) {
 		    this.viewObjs[idx].onMouseMove.apply( this.viewObjs[idx], [e.x, e.y] );
+		} else {
+		    this.viewObjs[idx].onRollOut.apply( this.viewObjs[idx], [e.x, e.y] );
 		}
 	    }
 	}
