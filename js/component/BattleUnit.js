@@ -124,6 +124,7 @@ Warrior.setAttackStyle( "Surounding" );
  * unless necessary
  */
 var BattleUnit = function( template, quantity, leader ) {
+    this.views = new Array();
     this.template = template;
     this.curHp = template.hp;
     this.quantity = quantity;
@@ -202,6 +203,7 @@ var Commander = function( title, name, group, u ,v  ) {
      * 0 : Player
      * 1 .. n : AI
      */
+    this.views = new Array();
     this.group = group;
     this.title = title;
     this.name = name;
@@ -224,12 +226,18 @@ var Commander = function( title, name, group, u ,v  ) {
     this.orientation = 0;
     this.path = null;
     this.target = { u:-1, v:-1 };
+    this.scale = 1.0;
     
     this.init();
     this.tick = 0;
     this.u = 0;
     this.v = 1;
+
     
+    this.setScale = function( s ) {
+	this.scale = s;
+	this.requestUpdate();
+    }
     this.setPos = function( u, v ) {
 	if ( univMap.setMap( u, v, this ) ) {
 	    this.requestUpdate();
@@ -294,10 +302,18 @@ var Commander = function( title, name, group, u ,v  ) {
     this.updatePath = function() {
 	this.path = univMap.floodFill( this.u, this.v, this.target.u, this.target.v );
     }
-
+    this.terminate = function() {
+	if ( this == logic.status.onSelect ) {
+	    logic.status.onSelect = null;
+	}
+	univMap.clearCell( this.u, this.v );
+	forces[this.group].removeCommander( this );
+	this.removeInstance();
+    }
 
     /// Coordinates
     this.setPos( u, v );
 }
 Commander.prototype = new GameObject;
+
 

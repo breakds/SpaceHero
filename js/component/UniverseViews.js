@@ -291,7 +291,7 @@ var CommanderUniverseView = function( commander ) {
     this.draw = function( ctx ) {
 	if ( ctx == ctx2d[0] ) {
 	    c = univMapView.getXYFromUV( this.model.u, this.model.v );
-	    var size = univMapView.radius * 1.90;
+	    var size = univMapView.radius * 1.90 * this.model.scale;
 	    if ( this.model == logic.status.onSelect ) {
 		drawRotatedImage( ctx2d[0],
 				  resources.getResource( "commanderSelectImg" ),
@@ -330,10 +330,10 @@ var CommanderMoveAnimation = function( commanderObj ) {
 	this.lifetime = commanderObj.AP * 5;
     }
     this.onStart = function() {
-	dispatcher.broadcast( "BlockAll" );
+	logic.status.onAnimation ++;
     }
     this.onTerminate = function() {
-	dispatcher.broadcast( "UnblockAll" );
+	logic.status.onAnimation --;
 	if ( 1 == univMap.terran[this.objs[0].u][this.objs[0].v] ) {
 	    dispatcher.broadcast( { name: "EnterSolarSystem",
 				    visiting: this.objs[0] } );
@@ -355,6 +355,30 @@ var CommanderMoveAnimation = function( commanderObj ) {
     this.init();
 }
 CommanderMoveAnimation.prototype = new Tween;
+
+
+
+var CommanderDeathAnimation = function( cmder ) {
+    this.objs = new Array();
+    this.objs.push( cmder );
+    this.lifetime = 40;
+    
+    this.onStart = function() {
+	logic.status.onAnimation ++;
+    }
+    this.onTerminate = function() {
+	this.objs[0].terminate();
+	logic.status.onAnimation --;
+    }
+
+    this.next = function() {
+	if ( 0 == this.tick % 2 ) {
+	    this.objs[0].setScale( this.objs[0].scale - 0.04 );
+	}
+    }
+    this.init();
+}
+CommanderDeathAnimation.prototype = new Tween;
 
 
 /*

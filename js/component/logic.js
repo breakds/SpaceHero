@@ -1,7 +1,7 @@
 var GameStatus = function() {
     this.onSelect = null;
     this.showArrows = false;
-    this.block = false;
+    this.onAnimation = 0;
     this.commanderMenu = null;
     this.turn = 1;
     this.month = 1;
@@ -47,7 +47,7 @@ var Logic = function() {
     
     dispatcher.addListener( "SelectCommander", this );
     this.onSelectCommander = function( e ) {
-	if ( !this.status.block ) {
+	if ( 0 == this.status.onAnimation ) {
 	    if ( this.status.onSelect != e.obj ) {
 		if ( this.status.onSelect != null ) {
 		    this.status.onSelect.removeView( this.status.commanderMenu );
@@ -67,7 +67,7 @@ var Logic = function() {
 
     dispatcher.addListener( "RequestArrowPath", this );
     this.onRequestArrowPath = function( e ) {
-	if ( (!this.status.block) && (!univMap.veil[e.target.u][e.target.v]) ) {
+	if ( (0 == this.status.onAnimation) && (!univMap.veil[e.target.u][e.target.v]) ) {
 	    this.status.onSelect.target.u = e.target.u;
 	    this.status.onSelect.target.v = e.target.v;
 	    this.status.onSelect.updatePath();
@@ -76,34 +76,28 @@ var Logic = function() {
 	}
     }
     
-    dispatcher.addListener( "BlockAll", this );
-    this.onBlockAll = function( e ) {
-	this.status.block = true;
-    }
-
-    dispatcher.addListener( "UnblockAll", this );
-    this.onUnblockAll = function( e ) {
-	this.status.block = false;
-    }
-
     dispatcher.addListener( "CommanderMove", this );
     this.onCommanderMove = function( e ) {
-	new CommanderMoveAnimation( this.status.onSelect );
+	if ( 0 == this.status.onAnimation ) {
+	    new CommanderMoveAnimation( this.status.onSelect );
+	}
     }
     
 
     dispatcher.addListener( "EndTurn", this );
     this.onEndTurn = function( e ) {
-	if ( e.groupID + 1 < forces.length ) {
-	    this.status.onTurn = e.groupID + 1;
-	    if ( "AI" == forces[e.groupID+1].type ) {
-		forces[e.groupID+1].go();
+	if ( 0 == this.status.onAnimation ) {
+	    if ( e.groupID + 1 < forces.length ) {
+		this.status.onTurn = e.groupID + 1;
+		if ( "AI" == forces[e.groupID+1].type ) {
+		    forces[e.groupID+1].go();
+		}
+	    } else {
+		this.status.nextTurn();
+		this.status.onTurn = 0;
+		this.requestUpdate();
+		dispatcher.broadcast( { name:"NewTurn" } );
 	    }
-	} else {
-	    this.status.nextTurn();
-	    this.status.onTurn = 0;
-	    this.requestUpdate();
-	    dispatcher.broadcast( { name:"NewTurn" } );
 	}
     }
 
@@ -121,6 +115,9 @@ var Logic = function() {
     /// Battle Part
     dispatcher.addListener( "StartBattle", this );
     this.onStartBattle = function( e ) {
+	if ( 0 != this.status.onAnimation ) {
+	    return ;
+	}
 	game.setStage( battlefield );
 	/// Reset the camera
 	/*
@@ -183,9 +180,9 @@ var Logic = function() {
 	}
 
 	if ( 0 == num0 ) {
-	    dispatcher.broadcast( { name: "ExitBattle" } );
+	    dispatcher.broadcast( { name: "ExitBattle", loser: this.battle.commander0 } );
 	} else if ( 0 == num1 ) {
-	    dispatcher.broadcast( { name: "ExitBattle" } );
+	    dispatcher.broadcast( { name: "ExitBattle", loser: this.battle.commander1 } );
 	}
 
 	
@@ -312,6 +309,7 @@ var Logic = function() {
 	}
 	this.battle.units = null;
 	game.setStage( universe );
+	new CommanderDeathAnimation( e.loser );
     }
 }
 Logic.prototype = new GameObject;

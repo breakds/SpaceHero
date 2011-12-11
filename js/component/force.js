@@ -23,6 +23,10 @@ var Force = function( name, type ) {
 	this.commanders.push( new Commander( title, name, this.groupID, u, v ) );
 	new CommanderUniverseView( this.commanders[this.commanders.length-1] );
     }
+    
+    this.removeCommander = function( cmder ) {
+	this.commanders.splice( this.commanders.indexOf( cmder ), 1 );
+    }
     if ( "AI" == this.type ) {
 	this.thinking = false;
 	this.update = function() {
