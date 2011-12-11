@@ -11,7 +11,7 @@ var GameStatus = function() {
 	this.month++;
 	if( 13 == this.month) {
 	    this.month = 1;
-	    this.year++;
+	    this.year--;
 	}
     }
     this.onTurn = forces[0];
@@ -119,22 +119,6 @@ var Logic = function() {
 	    return ;
 	}
 	game.setStage( battlefield );
-	/// Reset the camera
-	/*
-	cam.reset();
-
-	var rotation = quat4.create();
-	rotation[0] = 0.0;
-	rotation[1] = 0.0;
-	rotation[2] = 0.65;
-	quat4.calculateW( rotation, rotation );
-	cam.rotateLocal( rotation );
-	rotation[0] = 0.3;
-	rotation[1] = 0.0;
-	rotation[2] = 0.0;
-	quat4.calculateW( rotation, rotation );
-	cam.rotateLocal( rotation );
-	*/
 
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
@@ -181,8 +165,10 @@ var Logic = function() {
 
 	if ( 0 == num0 ) {
 	    dispatcher.broadcast( { name: "ExitBattle", loser: this.battle.commander0 } );
+	    return;
 	} else if ( 0 == num1 ) {
 	    dispatcher.broadcast( { name: "ExitBattle", loser: this.battle.commander1 } );
+	    return;
 	}
 
 	
@@ -291,15 +277,15 @@ var Logic = function() {
 
     dispatcher.addListener( "ExitBattle", this );
     this.onExitBattle = function( e ) {
+	trace( "Exit!" );
 	/// Delete Views
 	for ( var i=0; i<this.battle.unitViews.length; i++ ) {
 	    this.battle.unitViews[i].model.removeView( this.battle.unitViews[i] );
 	}
-	this.battle.unitViews = null;
+	this.battle.unitViews = new Array();
 	/// Remove Dead Units / restore HP
 	for ( var i=0; i<this.battle.units.length; i++ ) {
 	    if ( ! this.battle.units[i].active ) {
-		trace( "death!" );
 		this.battle.units[i].terminate();
 	    } else {
 		batMap.clearCell( this.battle.units[i].u,

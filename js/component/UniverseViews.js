@@ -480,11 +480,11 @@ var UniverseLogicView = function( logicModel ) {
 	} else if ( ctx == ctxMenu ) {
 	    ctxMenu.fillStyle = "#0000FF";
 	    ctxMenu.font = "20px Arial";
-	    ctxMenu.textAlign = "left";
-	    ctxMenu.textBaseline = "middle";
+	    ctxMenu.textAlign = "center";
+	    ctxMenu.textBaseline = "top";
 	    ctxMenu.fillText( this.months[this.model.status.month] 
 			      + ", " + this.model.status.year + " B.C.",
-			      850, 20 );
+			      920, 20 );
 	}
     }
     this.requestUpdate = function() {

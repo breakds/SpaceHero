@@ -21,11 +21,12 @@ var ButtonView = function( button, stage, ctx, bgColor ) {
     this.ctx = ctx;
     this.bgColor = bgColor;
     this.pressed = false;
+    this.highlighted = false;
     
     this.draw = function( ctx ) {
 	if ( ctx == this.ctx ) {
 	    ctx.lineWidth = 3;
-	    if ( this.pressed ) {
+	    if ( this.highlighted ) {
 		ctx.strokeStyle = "#FFFFFF";
 	    } else {
 		ctx.strokeStyle = "#888888";
@@ -40,7 +41,7 @@ var ButtonView = function( button, stage, ctx, bgColor ) {
 			 );
 	    
 	    
-	    if ( this.pressed ) {
+	    if ( this.highlighted ) {
 		ctxMenu.fillStyle = "#FF0000";
 	    } else {
 		ctxMenu.fillStyle = "#FFFFFF";
@@ -53,14 +54,24 @@ var ButtonView = function( button, stage, ctx, bgColor ) {
 			      this.model.top + this.model.height * 0.5 );
 	}
     }
-    this.onLeftMouseDown = function( x, y ) {
-	this.pressed = true;
+
+    this.onMouseMove = function( x, y ) {
+	this.highlighted = true;
 	this.requestUpdate();
     }
-    this.onLeftMouseUp = function( x, y ) {
-	this.pressed = false;
+    this.onRollOut = function( x, y ) {
+	this.highlighted = false;
 	this.requestUpdate();
-	this.model.onRelease();
+    }
+    this.onLeftMouseDown = function( x, y ) {
+	this.pressed = true;
+    }
+
+    this.onLeftMouseUp = function( x, y ) {
+	if ( this.pressed ) {
+	    this.pressed = false;
+	    this.model.onRelease();
+	}
     }
     this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",

@@ -91,7 +91,7 @@ var BattleHexagonView = function( m, radius ) {
 	    
 	    /// Draw Reachable
 	    if ( null != logic.battle.reachable ) {
-		ctxBg2d.fillStyle = "#00AA00";
+		ctxBg2d.fillStyle = "#AACC00";
 		ctxBg2d.strokeStyle = "#0000FF"
 		ctxBg2d.beginPath();
 		var c = null;
