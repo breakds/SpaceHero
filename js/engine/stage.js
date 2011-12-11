@@ -47,33 +47,32 @@ var Stage = function()
     }
 
     this.init = function() {
-		for (var i = 0; i < this.contexts.length; i++) {
-			dispatcher.broadcast( { name: "UpdateContext",
-				ctx: this.contexts[i] } );
-		}
+	this.resetUpdated();
+	for (var i = 0; i < this.contexts.length; i++) {
+	    dispatcher.broadcast( { name: "UpdateContext",
+				    ctx: this.contexts[i] } );
 	}
+    }
     dispatcher.addListener( "UpdateContext", this );
     this.onUpdateContext = function(e) {
-		if ( game.stage == this ) {
-		//if(!this.enable3D)
-		//{
-			var ctx = this.contexts[this.contexts.indexOf( e.ctx )];
-			if (ctx == null) return;
-			if ( ctx.updated ) return;
-			if ( ctx.fillColor ) {
-			ctx.fillStyle = ctx.fillColor;
-			ctx.fillRect( 0, 0, GameScreen.width, GameScreen.height );
-			} else {
-			ctx.clearRect( 0, 0, GameScreen.width, GameScreen.height );
-			}
-			ctx.updated = true;
-		//}
-			for ( var idx in this.viewObjs ) {
-			if ( this.viewObjs[idx].visible ) {
-				this.viewObjs[idx].draw( ctx );
-			}
-			}
+	if ( game.stage == this ) {
+	    var ctx = this.contexts[this.contexts.indexOf( e.ctx )];
+	    if (ctx == null) return;
+	    if ( ctx.updated ) return;
+	    if ( ctx.fillColor ) {
+		ctx.fillStyle = ctx.fillColor;
+		ctx.fillRect( 0, 0, GameScreen.width, GameScreen.height );
+	    } else {
+		ctx.clearRect( 0, 0, GameScreen.width, GameScreen.height );
+	    }
+	    ctx.updated = true;
+	    //}
+	    for ( var idx in this.viewObjs ) {
+		if ( this.viewObjs[idx].visible ) {
+		    this.viewObjs[idx].draw( ctx );
 		}
+	    }
+	}
     }
 
     this.remove = function( view )

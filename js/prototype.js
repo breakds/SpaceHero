@@ -44,11 +44,15 @@ forces[0].commanders[1].units[0].setQuantity( 120 );
 
 
 forces[1].createCommander( "General", "Luther", 7, 10 );
+
 forces[1].commanders[0].addUnit( Fighter );
+/*
 forces[1].commanders[0].units[0].setQuantity( 50 );
 forces[1].commanders[0].addUnit( Warrior );
 forces[1].commanders[0].addUnit( Sniper );
 forces[1].commanders[0].units[2].setQuantity( 3 );
+*/
+
 
 
 var planetMenu = new PlanetMenu();
