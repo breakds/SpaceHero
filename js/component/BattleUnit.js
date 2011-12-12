@@ -299,6 +299,12 @@ var Commander = function( title, name, group, u ,v  ) {
 	this.def = def;
 	this.requestUpdate();
     }
+    this.getPower = function( def ) {
+	var power = 0;
+	for ( var i=0; i<this.units.length; i++ ) {
+	    power + this.units[i].template.value * this.units[i].quantity;
+	}
+    }
     this.updatePath = function() {
 	this.path = univMap.floodFill( this.u, this.v, this.target.u, this.target.v );
     }

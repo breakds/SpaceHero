@@ -975,15 +975,22 @@ var PlanetMenu = function() {
     this.visible = true;
     var that = this;
     this.init();
+    
+
     this.update = function() {
-	if (that.visible) {
-	    dispatcher.broadcast( { name: "UpdateContext",
-				    ctx: ctxMenu } );
-	}
-	
-	return ;
+	//	this.requestUpdate();
     }
 
+    this.requestUpdate();
+
+    
+    this.setVisible = function( vis ) {
+	this.visible = vis;
+	this.requestUpdate();
+    }
+    this.setVisible( true );
+    
+    
     var planetMenuHandler = new PlanetMenuHandler();
     var planetMenuView = new PlanetMenuView(this);
 }
@@ -1099,5 +1106,4 @@ var PlanetMenuHandler = function() {
 	}
 	
     }
-
 }

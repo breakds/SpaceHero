@@ -20,7 +20,7 @@ var BattleHexagonView = function( m, radius ) {
 		    };
     
     
-
+    this.mouseOn = { u: -1, v: -1 };
     this.getUVFromXY = function( x, y )
     {
 	var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
@@ -121,6 +121,16 @@ var BattleHexagonView = function( m, radius ) {
 		ctxBg2d.fill();
 		ctxBg2d.stroke();
 	    }
+
+	    // Draw MouseOn
+	    if ( -1 != this.mouseOn.u ) {
+		ctxBg2d.strokeStyle = "#FFFF00";
+		c = this.getXYFromUV( this.mouseOn.u,
+				      this.mouseOn.v );
+		this.drawHexagon( c.x, c.y );
+		ctxBg2d.closePath();
+		ctxBg2d.stroke();
+	    }
 	}
     }
 
@@ -134,6 +144,24 @@ var BattleHexagonView = function( m, radius ) {
 	    return false;
 	}
 	return true;
+    }
+
+    
+    this.onMouseMove = function( x, y ) {
+	var uv = this.getUVFromXY( x, y );
+	if ( this.model.inMap( uv.u, uv.v ) ) {
+	    this.mouseOn.u = uv.u;
+	    this.mouseOn.v = uv.v;
+	    this.requestUpdate();
+
+	    var obj = this.model.getMap( uv.u, uv.v );
+	    if ( 0 != obj ) {
+		if ( logic.battle.commander0 == obj.leader ) {
+		    logic.battle.leftUnitShown = obj;
+		}
+	    }
+	    logic.battle.leftPanel.requestUpdate();
+	}
     }
 
     
@@ -220,6 +248,180 @@ var BattleUnitView = function( unit, side ) {
 }
 BattleUnitView.prototype = new View;
 
+
+
+/// The status bar on the left/right of Battle Stage
+var BattleCommanderView = function( cmder, align ) {
+    this.setModel( cmder );
+    this.register( battlefield );
+    this.width = 375.0;
+    this.height = 185.0;
+    this.scale = 0.6;
+    this.align = align;
+    
+    if ( "left" == this.align ) {
+	this.left = 5;
+	this.top = 5;
+    }
+    this.drawAttackIcon = function( x, y, size ) {
+	ctxMenu.strokeStyle = "#FFFFFF";
+	ctxMenu.beginPath();
+	ctxMenu.moveTo( x, y );
+	ctxMenu.lineTo( x + size, y + size );
+	ctxMenu.moveTo( x + size, y );
+	ctxMenu.lineTo( x, y + size );
+	ctxMenu.moveTo( x, y + 0.8 * size );
+	ctxMenu.lineTo( x + 0.2 * size, y + size);
+	ctxMenu.moveTo( x + size, y + 0.8 * size );
+	ctxMenu.lineTo( x + 0.8 * size , y + size );
+	ctxMenu.closePath();
+	ctxMenu.stroke();
+    }
+    this.drawDefenceIcon = function( x, y, size ) {
+	ctxMenu.strokeStyle = "#FFFFFF";
+	ctxMenu.beginPath();
+	ctxMenu.moveTo( x + 0.1 * size, y + 0.8 * size );
+	ctxMenu.lineTo( x + 0.1 * size, y );
+	ctxMenu.lineTo( x + 0.9 * size, y );
+	ctxMenu.lineTo( x + 0.9 * size, y + 0.8 * size );
+	ctxMenu.lineTo( x + 0.5 * size, y + size );
+	ctxMenu.closePath();
+	ctxMenu.stroke();
+    }
+    this.draw = function( ctx ) {
+	if ( ctx == ctxMenu ) {
+	    if ( "left" == this.align ) {
+		ctxMenu.drawImage( resources.getResource( "panelBgImg" ),
+				   this.left,
+				   this.top,
+				   this.width * this.scale,
+				   this.height * this.scale );
+
+		/// Draw Portrait
+		ctxMenu.lineWidth = 1;
+		ctxMenu.strokeStyle = "#FFFFFF";
+		ctxMenu.strokeRect( this.left + 5, this.top + 15, 40, 40 );
+		ctxMenu.fillStyle = "#FF0000";
+		ctxMenu.fillRect( this.left + 5, this.top + 15, 40, 40 );
+
+
+		/// Draw Attack and Defense
+		this.drawAttackIcon( this.left + 50, this.top + 17, 15 );
+		this.drawDefenceIcon( this.left + 50, this.top + 37, 15 );
+		this.drawDefenceIcon( this.left + 53, this.top + 40, 9 );
+		ctxMenu.fillStyle = "#FFFFFF";
+		ctxMenu.textAlign = "left";
+		ctxMenu.textBaseline = "top";
+		ctxMenu.font = "15px Arial"
+		ctxMenu.fillText( this.model.att,
+				  this.left + 70,
+				  this.top + 17 );
+		ctxMenu.fillText( this.model.def,
+				  this.left + 70,
+				  this.top + 37 );
+
+
+		/// Draw Name
+		ctxMenu.fillStyle = "#FFFF00";
+		ctxMenu.textAlign = "center";
+		ctxMenu.textBaseline = "top";
+		ctxMenu.font = "15px Arial"
+		ctxMenu.fillText( this.model.name,
+				  this.left + 45,
+				  this.top + 80 );
+		
+		if ( null != logic.battle.leftUnitShown ) {
+		    var unit = logic.battle.leftUnitShown;
+		    ctxMenu.drawImage( unit.template.image,
+				       this.left+ 180, 
+				       this.top + 25,
+				       40,
+				       40 );
+
+		    /// Att
+		    ctxMenu.fillStyle = "#FF0000";
+		    ctxMenu.textAlign = "left";
+		    ctxMenu.textBaseline = "top";
+		    ctxMenu.font = "10px Arial"
+		    ctxMenu.fillText( "Attack",
+				      this.left + 105,
+				      this.top + 20 - 2 );
+		    ctxMenu.fillText( "Defense",
+				      this.left + 105,
+				      this.top + 35 - 2 );
+		    ctxMenu.fillText( "Damage",
+				      this.left + 105,
+				      this.top + 50 - 2 );
+		    ctxMenu.fillText( "Speed",
+				      this.left + 105,
+				      this.top + 65 - 2 );
+		    ctxMenu.fillText( "Archer",
+				      this.left + 105,
+				      this.top + 80 - 2 );
+
+		    ctxMenu.fillStyle = "#FFFFFF";
+		    ctxMenu.textAlign = "left";
+		    ctxMenu.textBaseline = "top";
+		    ctxMenu.font = "10px Arial"
+		    ctxMenu.fillText( unit.template.att+"+"+this.model.att,
+				      this.left + 152,
+				      this.top + 20 - 2 );
+		    ctxMenu.fillText( unit.template.def+"+"+this.model.def,
+				      this.left + 152,
+				      this.top + 35 - 2 );
+		    ctxMenu.fillText( unit.template.dmgMin+"-"+unit.template.dmgMax,
+				      this.left + 152,
+				      this.top + 50 - 2 );
+		    ctxMenu.fillText( unit.template.spd,
+				      this.left + 152,
+				      this.top + 65 - 2 );
+		    if ( unit.template.archer ) {
+			ctxMenu.fillText( "Yes",
+					  this.left + 152,
+					  this.top + 80 - 2 );
+		    } else {
+			ctxMenu.fillText( "No",
+					  this.left + 152,
+					  this.top + 80 - 2 );
+		    }
+		    
+
+		    /// Draw HP Bar
+		    if ( unit.curHp * 3 > unit.template.hp ) {
+			ctxMenu.fillStyle = "#00AA00";
+			ctxMenu.fillRect( this.left + 180,
+					  this.top + 70,
+					  30,
+					  10 );
+		    } else {
+			ctxMenu.fillStyle = "#AA0000";
+			ctxMenu.fillRect( this.left + 180,
+					  this.top + 70,
+					  30,
+					  10 );
+		    }
+		    ctxMenu.fillStyle = "#FFFFFF";
+		    ctxMenu.textAlign = "center";
+		    ctxMenu.textBaseline = "top";
+		    ctxMenu.font = "10px Arial"
+		    ctxMenu.fillText( unit.curHp + "/" + unit.template.hp,
+				      this.left + 195,
+				      this.top + 70 );
+		}
+		
+		
+	    }
+	}
+    }
+    this.requestUpdate = function() {
+	this.requestUpdate = function() {
+	    dispatcher.broadcast( { name: "UpdateContext",
+				    ctx: ctxMenu } );
+	}
+    }
+    this.requestUpdate();
+}
+BattleCommanderView.prototype = new View;
 
 
 

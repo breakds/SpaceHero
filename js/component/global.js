@@ -19,6 +19,7 @@ battlefield.enable3D = true;
 var battlefield = new Stage();
 battlefield.addContext( ctxBg2d );
 battlefield.addContext( ctx2d[0] );
+battlefield.addContext( ctxMenu );
 
 /// Create Solar System Stage
 var solarSystem = new Stage();
@@ -34,6 +35,7 @@ solarSystem.addContext( ctxMenu );
 var defaultLineWidth = ctxMenu.lineWidth;
 var defaultTextAlign = ctxMenu.textAlign;
 var defaultTextBaseline = ctxMenu.textBaseline;
+trace( defaultTextBaseline );
 
 /// Create Logic
 var logic = new Logic();

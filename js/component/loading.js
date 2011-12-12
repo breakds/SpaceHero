@@ -29,3 +29,6 @@ resources.addImage( "img/cruiser.png", "cruiserImg" );
 resources.addImage( "img/cruiser_select.png", "cruiserSelectImg" );
 resources.addImage( "img/warrior.png", "warriorImg" );
 resources.addImage( "img/warrior_select.png", "warriorSelectImg" );
+/// Battle Status Panels
+resources.addImage( "img/panel.png", "panelBgImg" );
+resources.addImage( "img/statusbar.png", "statusBgImg" );

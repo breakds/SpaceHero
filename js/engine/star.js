@@ -292,15 +292,21 @@ var planetMenuOpenButton = function(name, xPos, yPos, model) {
 				
 				ctx.font = that.font;
 				ctx.fillStyle = that.shadowColor;
+			    ctx.textBaseline = "alphabetic";
+			    ctx.textAlign = "start";
 				ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 				
 				ctx.fillStyle = that.color;
 				ctx.font = that.font;
 				if (that.highlighted) {
+				    ctx.textBaseline = "alphabetic";
+				    ctx.textAlign = "start";
 					ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
 					ctx.strokeStyle = "#000000";
 					ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
 				} else {
+				    ctx.textBaseline = "alphabetic";
+				    ctx.textAlign = "start";
 					ctx.fillText(that.name, that.xPos, that.yPos);
 					ctx.strokeStyle = "#000000";
 					ctx.strokeText(that.name, that.xPos, that.yPos, 1);
@@ -418,6 +424,8 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 				
 				ctx.font = that.font;
 				ctx.fillStyle = that.shadowColor;
+			    ctx.textBaseline = "alphabetic";
+			    ctx.textAlign = "start";
 				ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 				
 				ctx.fillStyle = that.color;
@@ -554,6 +562,8 @@ var CommanderInfoPanel = function(xPos, yPos, model) {
 					dispatcher.broadcast( { name: "UpdateCommanderFleet",
 						commander: that.commander } );
 					ctx.fillStyle = that.shadowColor;
+				    ctx.textBaseline = "alphabetic";
+				    ctx.textAlign = "start";
 					ctx.fillText(that.commander.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 					ctx.fillStyle = that.color;
 					ctx.font = that.font;

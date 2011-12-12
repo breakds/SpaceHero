@@ -28,6 +28,10 @@ var BattleStatus = function() {
     this.reachable = new Array();
     this.attackable = new Array();
     this.onAnimation = false;
+    this.leftPanel = null;
+    this.rightPanel = null;
+    this.leftUnitShown = null;
+    this.rightUnitShow = null;
 }
 
 
@@ -143,6 +147,11 @@ var Logic = function() {
 	    units[i].setPos( i * 2, 31 );
 	    this.battle.unitViews.push( new BattleUnitView( units[i], 1 ) );
 	}
+
+	// Left Panel and Right Panel
+	this.battle.leftPanel = new BattleCommanderView( this.battle.commander0, "left" );
+
+
 
 
 	this.battle.currentUnitID = -1;
@@ -277,7 +286,8 @@ var Logic = function() {
 
     dispatcher.addListener( "ExitBattle", this );
     this.onExitBattle = function( e ) {
-	trace( "Exit!" );
+	this.battle.leftUnitShown = null;
+	this.battle.rightUnitShown = null;
 	/// Delete Views
 	for ( var i=0; i<this.battle.unitViews.length; i++ ) {
 	    this.battle.unitViews[i].model.removeView( this.battle.unitViews[i] );
