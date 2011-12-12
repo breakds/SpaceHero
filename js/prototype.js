@@ -11,7 +11,7 @@ game.setStage( universe );
 /// LogicViews:
 var univLogicView = new UniverseLogicView( logic );
 var reporter = new BattleReporter( logic );
-
+var reporterAnim = new ReporterAnimation();
 
 /// Create Universe Map
 var univMap = new HexagonMap( 14, 18 );

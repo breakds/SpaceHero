@@ -623,12 +623,21 @@ var BattleReporter = function( logicModel ) {
 	this.curMsgID = this.messages.length - 1;
 	this.requestUpdate();
     }
+    this.angle = 0;
     this.clear = function() {
 	this.messages = new Array();
 	this.curMsgID = -1;
     }
     this.draw = function( ctx ) {
 	if ( ctxMenu == ctx ) {
+	    drawRotatedImage( ctxMenu,
+			      resources.getResource( "scanLineImg" ),
+			      this.angle,
+			      this.left + 81,
+			      this.top + 79,
+			      76,
+			      38
+			    );
 	    ctxMenu.drawImage( resources.getResource( "statusBgImg" ),
 			       this.left,
 			       this.top );
@@ -663,6 +672,26 @@ var BattleReporter = function( logicModel ) {
     }
 }
 BattleReporter.prototype = new View();
+
+
+
+
+var ReporterAnimation = function() {
+    this.lifetime = 20;
+    this.next = function() {
+	if ( game.stage == battlefield ) {
+	    if ( 5 == this.tick ) {
+		this.tick = 0;
+		reporter.angle += Math.PI * 0.02;
+		reporter.requestUpdate();
+	    }
+	} else {
+	    this.tick = 0;
+	}
+    }
+    this.init();
+}
+ReporterAnimation.prototype = new Tween;
 
 /*
 var BattleHexagonView = function( m, radius ) {

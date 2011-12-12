@@ -33,4 +33,5 @@ resources.addImage( "img/warrior_select.png", "warriorSelectImg" );
 resources.addImage( "img/panel.png", "panelBgImg" );
 resources.addImage( "img/panelright.png", "panelBgRightImg" );
 resources.addImage( "img/statusbar.png", "statusBgImg" );
+resources.addImage( "img/scanline.png", "scanLineImg" );
 
