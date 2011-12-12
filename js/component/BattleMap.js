@@ -596,7 +596,8 @@ var UnitAttackAnimation = function( attacker, victim ) {
     this.onTerminate = function() {
 	/// Attacking
 	var damage = this.objs[1].underAttack( this.objs[0] );
-	
+	reporter.append( this.objs[0].template.type + " does " + damage + " damage to "
+			 + this.objs[1].template.type + "." );
 	/// Cleaning 
 	this.objs[1].setOffset( 0, 0 );
 	logic.battle.onAnimation = false;
@@ -606,6 +607,62 @@ var UnitAttackAnimation = function( attacker, victim ) {
 }
 UnitAttackAnimation.prototype = new Tween;
 
+
+
+
+
+var BattleReporter = function( logicModel ) {
+    this.setModel( logicModel );
+    this.register( battlefield );
+    this.left = 260;
+    this.top = 30;
+    this.messages = new Array();
+    this.curMsgID = -1;
+    this.append = function( msg ) {
+	this.messages.push( msg );
+	this.curMsgID = this.messages.length - 1;
+	this.requestUpdate();
+    }
+    this.clear = function() {
+	this.messages = new Array();
+	this.curMsgID = -1;
+    }
+    this.draw = function( ctx ) {
+	if ( ctxMenu == ctx ) {
+	    ctxMenu.drawImage( resources.getResource( "statusBgImg" ),
+			       this.left,
+			       this.top );
+	    if ( this.curMsgID > -1 ) {
+		ctxMenu.fillStyle = "#FFFFFF";
+		ctxMenu.textAlign = "left";
+		ctxMenu.textBaseline = "top";
+		ctxMenu.font = "12px Arial"
+		var y = this.top + 120;
+		ctxMenu.fillStyle = "#00AAFF";
+		ctxMenu.fillText( this.messages[this.curMsgID],
+				  this.left + 180,
+				  y );
+		ctxMenu.fillStyle = "#FFFFFF";
+		for ( var i=1; i<=4; i++ ) {
+		    y = y - 20;
+		    if ( this.curMsgID - i >= 0 ) {
+			ctxMenu.fillText( this.messages[this.curMsgID-i],
+					  this.left + 180,
+					  y );
+		    }
+		}
+
+	    }
+	}
+    }
+    this.requestUpdate = function() {
+	this.requestUpdate = function() {
+	    dispatcher.broadcast( { name: "UpdateContext",
+				    ctx: ctxMenu } );
+	}
+    }
+}
+BattleReporter.prototype = new View();
 
 /*
 var BattleHexagonView = function( m, radius ) {

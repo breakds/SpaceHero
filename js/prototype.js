@@ -10,6 +10,7 @@ game.setStage( universe );
 
 /// LogicViews:
 var univLogicView = new UniverseLogicView( logic );
+var reporter = new BattleReporter( logic );
 
 
 /// Create Universe Map
