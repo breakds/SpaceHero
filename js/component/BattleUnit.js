@@ -182,6 +182,7 @@ var BattleUnit = function( template, quantity, leader ) {
 	    this.curHp = this.template.hp - ( damage - this.curHp - 
 					      deadNum * this.template.hp );
 	}
+	this.leader.requestUpdate();
 	return damage;
     }
 

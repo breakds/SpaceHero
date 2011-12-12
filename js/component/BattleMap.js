@@ -158,6 +158,8 @@ var BattleHexagonView = function( m, radius ) {
 	    if ( 0 != obj ) {
 		if ( logic.battle.commander0 == obj.leader ) {
 		    logic.battle.leftUnitShown = obj;
+		} else if ( logic.battle.commander1 == obj.leader ) {
+		    logic.battle.rightUnitShown = obj;
 		}
 	    }
 	    logic.battle.leftPanel.requestUpdate();
@@ -261,6 +263,9 @@ var BattleCommanderView = function( cmder, align ) {
     
     if ( "left" == this.align ) {
 	this.left = 5;
+	this.top = 5;
+    } else if ( "right" == this.align ) {
+	this.right = GameScreen.width - 5;
 	this.top = 5;
     }
     this.drawAttackIcon = function( x, y, size ) {
@@ -407,8 +412,125 @@ var BattleCommanderView = function( cmder, align ) {
 		    ctxMenu.fillText( unit.curHp + "/" + unit.template.hp,
 				      this.left + 195,
 				      this.top + 70 );
-		}
+		} 
+	    } else if ( "right" == this.align ) {
+		ctxMenu.drawImage( resources.getResource( "panelBgRightImg" ),
+				   this.right - this.width * this.scale,
+				   this.top,
+				   this.width * this.scale,
+				   this.height * this.scale );
+
+		/// Draw Portrait
+		ctxMenu.lineWidth = 1;
+		ctxMenu.strokeStyle = "#FFFFFF";
+		ctxMenu.strokeRect( this.right - 45, this.top + 15, 40, 40 );
+		ctxMenu.fillStyle = "#FF0000";
+		ctxMenu.fillRect( this.right - 45, this.top + 15, 40, 40 );
+
+
+		/// Draw Attack and Defense
+		this.drawAttackIcon( this.right - 50 - 15, this.top + 17, 15 );
+		this.drawDefenceIcon( this.right - 50 - 15, this.top + 37, 15 );
+		this.drawDefenceIcon( this.right - 53 - 9, this.top + 40, 9 );
+		ctxMenu.fillStyle = "#FFFFFF";
+		ctxMenu.textAlign = "right";
+		ctxMenu.textBaseline = "top";
+		ctxMenu.font = "15px Arial"
+		ctxMenu.fillText( this.model.att,
+				  this.right - 70,
+				  this.top + 17 );
+		ctxMenu.fillText( this.model.def,
+				  this.right - 70,
+				  this.top + 37 );
+
+
+		/// Draw Name
+		ctxMenu.fillStyle = "#FFFF00";
+		ctxMenu.textAlign = "center";
+		ctxMenu.textBaseline = "top";
+		ctxMenu.font = "15px Arial"
+		ctxMenu.fillText( this.model.name,
+				  this.right - 47,
+				  this.top + 80 );
 		
+		if ( null != logic.battle.rightUnitShown ) {
+		    var unit = logic.battle.rightUnitShown;
+		    ctxMenu.drawImage( unit.template.image,
+				       this.right - 180 - 40, 
+				       this.top + 25,
+				       40,
+				       40 );
+
+		    /// Att
+		    ctxMenu.fillStyle = "#FF0000";
+		    ctxMenu.textAlign = "right";
+		    ctxMenu.textBaseline = "top";
+		    ctxMenu.font = "10px Arial"
+		    ctxMenu.fillText( "Attack",
+				      this.right - 105,
+				      this.top + 20 - 2 );
+		    ctxMenu.fillText( "Defense",
+				      this.right - 105,
+				      this.top + 35 - 2 );
+		    ctxMenu.fillText( "Damage",
+				      this.right - 105,
+				      this.top + 50 - 2 );
+		    ctxMenu.fillText( "Speed",
+				      this.right - 105,
+				      this.top + 65 - 2 );
+		    ctxMenu.fillText( "Archer",
+				      this.right - 105,
+				      this.top + 80 - 2 );
+
+		    ctxMenu.fillStyle = "#FFFFFF";
+		    ctxMenu.textAlign = "right";
+		    ctxMenu.textBaseline = "top";
+		    ctxMenu.font = "10px Arial"
+		    ctxMenu.fillText( unit.template.att+"+"+this.model.att,
+				      this.right - 152,
+				      this.top + 20 - 2 );
+		    ctxMenu.fillText( unit.template.def+"+"+this.model.def,
+				      this.right - 152,
+				      this.top + 35 - 2 );
+		    ctxMenu.fillText( unit.template.dmgMin+"-"+unit.template.dmgMax,
+				      this.right - 152,
+				      this.top + 50 - 2 );
+		    ctxMenu.fillText( unit.template.spd,
+				      this.right - 152,
+				      this.top + 65 - 2 );
+		    if ( unit.template.archer ) {
+			ctxMenu.fillText( "Yes",
+					  this.right - 152,
+					  this.top + 80 - 2 );
+		    } else {
+			ctxMenu.fillText( "No",
+					  this.right - 152,
+					  this.top + 80 - 2 );
+		    }
+		    
+
+		    /// Draw HP Bar
+		    if ( unit.curHp * 3 > unit.template.hp ) {
+			ctxMenu.fillStyle = "#00AA00";
+			ctxMenu.fillRect( this.right - 180 - 30,
+					  this.top + 70,
+					  30,
+					  10 );
+		    } else {
+			ctxMenu.fillStyle = "#AA0000";
+			ctxMenu.fillRect( this.right - 180 - 30,
+					  this.top + 70,
+					  30,
+					  10 );
+		    }
+		    ctxMenu.fillStyle = "#FFFFFF";
+		    ctxMenu.textAlign = "center";
+		    ctxMenu.textBaseline = "top";
+		    ctxMenu.font = "10px Arial"
+		    ctxMenu.fillText( unit.curHp + "/" + unit.template.hp,
+				      this.right - 195,
+				      this.top + 70 );
+		}
 		
 	    }
 	}

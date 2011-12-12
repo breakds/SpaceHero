@@ -31,4 +31,6 @@ resources.addImage( "img/warrior.png", "warriorImg" );
 resources.addImage( "img/warrior_select.png", "warriorSelectImg" );
 /// Battle Status Panels
 resources.addImage( "img/panel.png", "panelBgImg" );
+resources.addImage( "img/panelright.png", "panelBgRightImg" );
 resources.addImage( "img/statusbar.png", "statusBgImg" );
+

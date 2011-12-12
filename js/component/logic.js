@@ -150,6 +150,7 @@ var Logic = function() {
 
 	// Left Panel and Right Panel
 	this.battle.leftPanel = new BattleCommanderView( this.battle.commander0, "left" );
+	this.battle.rightPanel = new BattleCommanderView( this.battle.commander1, "right" );
 
 
 
@@ -304,6 +305,10 @@ var Logic = function() {
 	    }
 	}
 	this.battle.units = null;
+	this.battle.commander0.removeView( this.battle.leftPanel );
+	this.battle.commander1.removeView( this.battle.rightPanel );
+	this.battle.leftPanel = null;
+	this.battle.rightPanel = null;
 	game.setStage( universe );
 	new CommanderDeathAnimation( e.loser );
     }
