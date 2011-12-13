@@ -122,7 +122,10 @@ var Logic = function() {
 	if ( 0 != this.status.onAnimation ) {
 	    return ;
 	}
+	reporter.clear();
+	reporter.append( "Battle Start!" );
 	game.setStage( battlefield );
+	
 
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;

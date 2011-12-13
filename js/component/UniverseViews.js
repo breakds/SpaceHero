@@ -302,6 +302,10 @@ var CommanderUniverseView = function( commander ) {
     
     this.draw = function( ctx ) {
 	if ( ctx == ctx2d[0] ) {
+	    if ( 0 != this.model.group && 
+		 univMap.veil[this.model.u][this.model.v] ) {
+		return;
+	    }
 	    c = univMapView.getXYFromUV( this.model.u, this.model.v );
 	    var size = univMapView.radius * 1.90 * this.model.scale;
 	    if ( this.model == logic.status.onSelect ) {

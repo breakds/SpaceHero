@@ -208,6 +208,10 @@ var HexagonMap = function( rows, cols ) {
     this.unveil = function( u, v ) {
 	if ( this.inMap( u, v ) && this.veil[u][v] ) {
 	    this.veil[u][v] = false;
+	    var obj = this.map[u][v];
+	    if ( 0 != obj ) {
+		obj.requestUpdate();
+	    }
 	    new HexCellUnveilAnimation( this, u, v );
 	}
     }
