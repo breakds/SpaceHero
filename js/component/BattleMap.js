@@ -396,13 +396,13 @@ var BattleCommanderView = function( cmder, align ) {
 			ctxMenu.fillStyle = "#00AA00";
 			ctxMenu.fillRect( this.left + 180,
 					  this.top + 70,
-					  30,
+					  30.0 * unit.curHp / unit.template.hp,
 					  10 );
 		    } else {
 			ctxMenu.fillStyle = "#AA0000";
 			ctxMenu.fillRect( this.left + 180,
 					  this.top + 70,
-					  30,
+					  30.0 * unit.curHp / unit.template.hp,
 					  10 );
 		    }
 		    ctxMenu.fillStyle = "#FFFFFF";
@@ -514,13 +514,13 @@ var BattleCommanderView = function( cmder, align ) {
 			ctxMenu.fillStyle = "#00AA00";
 			ctxMenu.fillRect( this.right - 180 - 30,
 					  this.top + 70,
-					  30,
+					  30.0 * unit.curHp / unit.template.hp,
 					  10 );
 		    } else {
 			ctxMenu.fillStyle = "#AA0000";
 			ctxMenu.fillRect( this.right - 180 - 30,
 					  this.top + 70,
-					  30,
+					  30.0 * unit.curHp / unit.template.hp,
 					  10 );
 		    }
 		    ctxMenu.fillStyle = "#FFFFFF";
@@ -596,8 +596,6 @@ var UnitAttackAnimation = function( attacker, victim ) {
     this.onTerminate = function() {
 	/// Attacking
 	var damage = this.objs[1].underAttack( this.objs[0] );
-	reporter.append( this.objs[0].template.type + " does " + damage + " damage to "
-			 + this.objs[1].template.type + "." );
 	/// Cleaning 
 	this.objs[1].setOffset( 0, 0 );
 	logic.battle.onAnimation = false;

@@ -142,6 +142,7 @@ var BattleUnit = function( template, quantity, leader ) {
 	this.quantity = num;
     }
     this.getKilled = function() {
+	reporter.append( this.template.type + " perishes." );
 	batMap.clearCell( this.u, this.v );
 	this.active = false;
 	this.requestUpdate();
@@ -171,6 +172,9 @@ var BattleUnit = function( template, quantity, leader ) {
 	if ( damage < 1 ) {
 	    damage = 1;
 	}
+
+	reporter.append( attacker.template.type + " does " + damage + " damage to "
+			 + this.template.type + "." );
 	
 	if ( this.template.hp * ( this.quantity - 1 ) + this.curHp <= damage ) {
 	    this.getKilled();
@@ -180,7 +184,7 @@ var BattleUnit = function( template, quantity, leader ) {
 	    var deadNum = 1 + Math.floor( ( damage - this.curHp ) / this.template.hp );
 	    this.quantity -= deadNum;
 	    this.curHp = this.template.hp - ( damage - this.curHp - 
-					      deadNum * this.template.hp );
+					      (deadNum-1) * this.template.hp );
 	}
 	this.leader.requestUpdate();
 	return damage;
@@ -214,7 +218,7 @@ var Commander = function( title, name, group, u ,v  ) {
     this.curLen = 0;
 
     /// Properties
-    this.horizon = 1;
+    this.horizon = 2;
     this.level = 1;
     this.maxAP = 4;
     this.AP = 4;
