@@ -663,14 +663,14 @@ var BattleReporter = function( logicModel ) {
 		var y = this.top + 120;
 		ctxMenu.fillStyle = "#00AAFF";
 		ctxMenu.fillText( this.messages[this.curMsgID],
-				  this.left + 180,
+				  this.left + 176,
 				  y );
 		ctxMenu.fillStyle = "#FFFFFF";
 		for ( var i=1; i<=4; i++ ) {
 		    y = y - 20;
 		    if ( this.curMsgID - i >= 0 ) {
 			ctxMenu.fillText( this.messages[this.curMsgID-i],
-					  this.left + 180,
+					  this.left + 176,
 					  y );
 		    }
 		}

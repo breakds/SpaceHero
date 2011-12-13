@@ -202,7 +202,7 @@ var Ring = function( x, y ) {
     this.update = function() {
 	this.tick++;
 	if ( 0 == this.tick % 2 ) {
-	    this.radius += 1;
+	    this.radius += 2;
 	    this.requestUpdate();
 	}
     }
@@ -254,7 +254,7 @@ var SurroundingAttackAnimation = function( attacker ) {
 	    }
 	}
     }
-    this.lifetime = 50;
+    this.lifetime = 30;
     this.onTerminate = function() {
 	for ( var i=0; i<this.rings.length; i++ ) {
 	    this.rings[i].removeInstance();
