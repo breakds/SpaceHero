@@ -178,6 +178,15 @@ var FlameAttackAnimation = function( attacker, victim ) {
 	this.flameView = null;
 	this.objs[0].setRotation( 0 );
 	new UnitAttackAnimation( this.objs[0], this.objs[1] );
+	var u = this.objs[1].u + ( this.objs[1].u - this.objs[0].u );
+	var v = this.objs[1].v + ( this.objs[1].v - this.objs[0].v );
+	if ( batMap.inMap( u, v ) ) {
+	    var obj = batMap.getMap( u ,v );
+	    if ( 0 != obj && obj.leader != this.objs[0].leader ) {
+		new UnitAttackAnimation( this.objs[0], obj );
+	    }
+	}
+
     }
     this.init();
 }
