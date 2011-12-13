@@ -126,7 +126,6 @@ var Logic = function() {
 	reporter.append( "Battle Start!" );
 	game.setStage( battlefield );
 	
-
 	this.battle.commander0 = e.commander0;
 	this.battle.commander1 = e.commander1;
 	

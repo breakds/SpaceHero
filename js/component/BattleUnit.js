@@ -117,7 +117,7 @@ var Warrior = new BattleUnitTemplate( "Warrior", 3,
 				      resources.getResource( "warriorImg" ),
 				      resources.getResource( "warriorSelectImg" )
 				    );
-Warrior.setAttackStyle( "Surounding" );
+Warrior.setAttackStyle( "Surrounding" );
 
 
 var Dragon = new BattleUnitTemplate( "Dragon", 6, 

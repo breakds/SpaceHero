@@ -569,6 +569,8 @@ var UnitMoveAnimation = function( obj, path, victim ) {
 	if ( null != this.victim ) {
 	    if ( "flame" == this.objs[0].template.attackStyle ) {
 		new FlameAttackAnimation( this.objs[0], this.victim );
+	    } else if ( "Surrounding" == this.objs[0].template.attackStyle ) { 
+		new SurroundingAttackAnimation( this.objs[0] );
 	    } else {
 		new UnitAttackAnimation( this.objs[0], this.victim );
 	    }

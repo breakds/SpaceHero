@@ -30,7 +30,7 @@ var batMapView = new BattleHexagonView( batMap, 30 );
 forces[0].createCommander( "General", "Lionheart", 2, 5 );
 forces[0].commanders[0].setAttack( 12 );
 forces[0].commanders[0].setDefence( 20 );
-forces[0].commanders[0].addUnit( Warship );
+forces[0].commanders[0].addUnit( Warrior );
 forces[0].commanders[0].units[0].setQuantity( 4 );
 forces[0].commanders[0].addUnit( Gunboat );
 forces[0].commanders[0].units[1].setQuantity( 40 );

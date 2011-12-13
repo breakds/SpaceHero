@@ -160,7 +160,7 @@ var FlameAttackAnimation = function( attacker, victim ) {
     this.objs = new Array();
     this.objs.push( attacker );
     this.objs.push( victim );
-    this.lifetime = 120;
+    this.lifetime = 80;
 
     var atkXY = batMapView.getXYFromUV( attacker.u, attacker.v );
     var vicXY = batMapView.getXYFromUV( victim.u, victim.v );
@@ -182,3 +182,80 @@ var FlameAttackAnimation = function( attacker, victim ) {
     this.init();
 }
 FlameAttackAnimation.prototype = new Tween;
+
+
+var Ring = function( x, y ) {
+    this.views = new Array();
+    this.x = x;
+    this.y = y;
+    this.radius = 2;
+    this.tick = 0;
+    this.update = function() {
+	this.tick++;
+	if ( 0 == this.tick % 2 ) {
+	    this.radius += 1;
+	    this.requestUpdate();
+	}
+    }
+    this.init();
+}
+Ring.prototype = new GameObject;
+
+var RingView = function( m ) {
+    this.setModel( m );
+    this.register( battlefield );
+    this.draw = function( ctx ) {
+	if ( ctx == ctx2d[1] ) {
+	    ctx.strokeStyle = "#FFFFFF";
+	    ctx.lineWidth = 2.0;
+	    ctx.beginPath();
+	    ctx.arc( this.model.x, this.model.y, this.model.radius, 
+		     0, Math.PI * 2 );
+	    ctx.closePath();
+	    ctx.stroke();
+	}
+    }
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctx2d[1] } );	
+    }
+    this.requestUpdate();
+}
+RingView.prototype = new View;
+
+
+
+var SurroundingAttackAnimation = function( attacker ) {
+    this.attacker = attacker;
+    var u = 0;
+    var v = 0;
+    this.rings = new Array();
+    this.ringViews = new Array();
+    this.victims = new Array();
+    for ( var j=0; j<6; j++ ) {
+	u = this.attacker.u + batMap.du[j];
+	v = this.attacker.v + batMap.dv[j];
+	if ( batMap.inMap( u, v ) ) {
+	    var xy = batMapView.getXYFromUV( u, v );
+	    this.rings.push( new Ring( xy.x, xy.y ) );
+	    this.ringViews.push( new RingView( this.rings[this.rings.length-1] ) );
+	    var obj = batMap.getMap( u, v );
+	    if ( 0 != obj && obj.leader != this.attacker.leader ) {
+		this.victims.push( obj );
+	    }
+	}
+    }
+    this.lifetime = 50;
+    this.onTerminate = function() {
+	for ( var i=0; i<this.rings.length; i++ ) {
+	    this.rings[i].removeInstance();
+	    this.rings[i] = null;
+	    this.ringViews[i] = null;
+	}
+	for ( var i=0; i<this.victims.length; i++ ) {
+	    new UnitAttackAnimation( this.attacker, this.victims[i] );
+	}
+    }
+    this.init();
+}
+SurroundingAttackAnimation.prototype = new Tween;
