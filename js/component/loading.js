@@ -34,4 +34,7 @@ resources.addImage( "img/panel.png", "panelBgImg" );
 resources.addImage( "img/panelright.png", "panelBgRightImg" );
 resources.addImage( "img/statusbar.png", "statusBgImg" );
 resources.addImage( "img/scanline.png", "scanLineImg" );
+for ( var i=0; i<24; i++ ) {
+    resources.addImage( "img/missile/missile"+i+".png", "missile"+i+"Anim" );
+}
 

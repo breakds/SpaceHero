@@ -204,25 +204,37 @@ var Logic = function() {
 	var v = 0;
 	var enemy = null;
 	this.battle.attackable = new Array();
-	for ( var i=0; i<this.battle.reachable.length; i++ ) {
-	    for ( var j=0; j<6; j++ ) {
-		u = this.battle.reachable[i].u + batMap.du[j];
-		v = this.battle.reachable[i].v + batMap.dv[j];
-		enemy = batMap.getMap( u, v );
-		if ( -1 != enemy && 0 != enemy ) {
-		    if ( enemy.leader.group != obj.leader.group ) {
-			var flag = false;
-			for ( var k=0; k<this.battle.attackable.length; k++ ) {
-			    if ( this.battle.attackable[k].u == u &&
-				 this.battle.attackable[k].v == v ) {
-				flag = true;
-				break;
+	if ( obj.template.archer ) {
+	    for ( var i=0; i<this.battle.units.length; i++ ) {
+		if ( this.battle.units[i].leader != obj.leader &&
+		     this.battle.units[i].active ) {
+		    this.battle.attackable.push( { 
+			u: this.battle.units[i].u,
+			v: this.battle.units[i].v,
+			neighborID: -1 } );
+		}
+	    }
+	} else {
+	    for ( var i=0; i<this.battle.reachable.length; i++ ) {
+		for ( var j=0; j<6; j++ ) {
+		    u = this.battle.reachable[i].u + batMap.du[j];
+		    v = this.battle.reachable[i].v + batMap.dv[j];
+		    enemy = batMap.getMap( u, v );
+		    if ( -1 != enemy && 0 != enemy ) {
+			if ( enemy.leader.group != obj.leader.group ) {
+			    var flag = false;
+			    for ( var k=0; k<this.battle.attackable.length; k++ ) {
+				if ( this.battle.attackable[k].u == u &&
+				     this.battle.attackable[k].v == v ) {
+				    flag = true;
+				    break;
+				}
 			    }
-			}
-			if ( !flag ) {
-			    this.battle.attackable.push( { u: u,
-							   v: v,
-							   neighborID: i } );
+			    if ( !flag ) {
+				this.battle.attackable.push( { u: u,
+							       v: v,
+							       neighborID: i } );
+			    }
 			}
 		    }
 		}
@@ -258,12 +270,16 @@ var Logic = function() {
 		     this.battle.attackable[i].v == e.v ) {
 		    var path = new Array();
 		    var j = this.battle.attackable[i].neighborID;
-		    while ( this.battle.reachable[j].pre != -1 ) {
-			path.push( { u: this.battle.reachable[j].u,
-				     v: this.battle.reachable[j].v } );
-			j = this.battle.reachable[j].pre;
+		    if ( j != -1 ) {
+			while ( this.battle.reachable[j].pre != -1 ) {
+			    path.push( { u: this.battle.reachable[j].u,
+					 v: this.battle.reachable[j].v } );
+			    j = this.battle.reachable[j].pre;
+			}
+			new UnitMoveAnimation( e.obj, path, batMap.getMap( e.u, e.v ) );
+		    } else {
+			new MissileAttackAnimation( e.obj, batMap.getMap( e.u, e.v ) );
 		    }
-		    new UnitMoveAnimation( e.obj, path, batMap.getMap( e.u, e.v ) );
 		    return;
 		}
 	    }
