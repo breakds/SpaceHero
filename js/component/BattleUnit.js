@@ -119,6 +119,22 @@ var Warrior = new BattleUnitTemplate( "Warrior", 3,
 				    );
 Warrior.setAttackStyle( "Surounding" );
 
+
+var Dragon = new BattleUnitTemplate( "Dragon", 6, 
+				     1000, /// Health
+				     50, /// Attack
+				     50, /// Defence
+				     19, /// spd
+				     80000, /// price
+				     120, /// max damage 
+				     70, /// min damage
+				     1, /// Production
+				     40123, /// Value
+				     resources.getResource( "dragonImg" ),
+				     resources.getResource( "dragonSelectImg" )
+				   );
+Dragon.setAttackStyle( "flame" );
+
 /*
  * BattleUnit won't get init()
  * unless necessary
@@ -261,6 +277,11 @@ var Commander = function( title, name, group, u ,v  ) {
 	    trace ( "[Warning] Invalid setPos() of Commander." );
 	    return false;
 	}
+    }
+    this.setAP = function( ap ) {
+	this.maxAP = ap;
+	this.AP = this.maxAP;
+	this.requestUpdate();
     }
     this.restoreAP = function() {
 	this.AP = this.maxAP;

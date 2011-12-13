@@ -29,6 +29,8 @@ resources.addImage( "img/cruiser.png", "cruiserImg" );
 resources.addImage( "img/cruiser_select.png", "cruiserSelectImg" );
 resources.addImage( "img/warrior.png", "warriorImg" );
 resources.addImage( "img/warrior_select.png", "warriorSelectImg" );
+resources.addImage( "img/dragon.png", "dragonImg" );
+resources.addImage( "img/dragon_select.png", "dragonSelectImg" );
 /// Battle Status Panels
 resources.addImage( "img/panel.png", "panelBgImg" );
 resources.addImage( "img/panelright.png", "panelBgRightImg" );
@@ -36,5 +38,9 @@ resources.addImage( "img/statusbar.png", "statusBgImg" );
 resources.addImage( "img/scanline.png", "scanLineImg" );
 for ( var i=0; i<24; i++ ) {
     resources.addImage( "img/missile/missile"+i+".png", "missile"+i+"Anim" );
+}
+
+for ( var i=0; i<62; i++ ) {
+    resources.addImage( "img/flame/flame"+i+".png", "flame"+i+"Anim" );
 }
 

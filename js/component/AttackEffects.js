@@ -94,3 +94,91 @@ var MissileAttackAnimation = function( attacker, victim ) {
     this.init();
 }
 MissileAttackAnimation.prototype = new Tween;
+
+
+var Flame = function() {
+    this.views = new Array();
+    this.frame = 0;
+    this.x = 0;
+    this.y = 0;
+    this.rotation = 0;
+    this.tick = 0;
+    this.setPos = function( x, y ) {
+	this.x = x;
+	this.y = y;
+	this.requestUpdate();
+    }
+    this.shift = function( dx, dy ) {
+	this.x += dx;
+	this.y += dy;
+	this.requestUpdate();
+    }
+    this.setAngle = function( ang ) {
+	this.rotation = ang;
+	this.requestUpdate();
+    }
+    this.update = function() {
+	this.tick++;
+	if ( this.tick >= 2 ) {
+	    this.tick = 0;
+	    this.frame++;
+	    if ( this.frame>=62 ) {
+		this.frame = 0;
+	    }
+	    this.requestUpdate();
+	}
+    }
+    this.init();
+
+}
+Flame.prototype = new GameObject;
+
+var FlameView = function( m ) {
+    this.setModel( m );
+    this.register( battlefield );
+    this.draw = function( ctx ) {
+	if ( ctx == ctx2d[1] ) {
+	    drawRotatedImage( ctx2d[1],
+			      resources.getResource(
+				  "flame"+this.model.frame+"Anim" ),
+			      this.model.rotation,
+			      this.model.x,
+			      this.model.y,
+			      15,
+			      75,
+			      true );
+	}
+    }
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctx2d[1] } );	
+    }
+}
+FlameView.prototype = new View;
+
+var FlameAttackAnimation = function( attacker, victim ) {
+    this.objs = new Array();
+    this.objs.push( attacker );
+    this.objs.push( victim );
+    this.lifetime = 120;
+
+    var atkXY = batMapView.getXYFromUV( attacker.u, attacker.v );
+    var vicXY = batMapView.getXYFromUV( victim.u, victim.v );
+    var dx = vicXY.x - atkXY.x;
+    var dy = vicXY.y - atkXY.y;
+    
+    this.flame = new Flame();
+    this.flame.setPos( vicXY.x, vicXY.y );
+    this.flame.setAngle( Math.PI * 0.5 + Math.atan2( dy, dx ) );
+    this.objs[0].setRotation( Math.atan2( dy, dx ) );
+    this.flameview = new FlameView( this.flame );
+    this.onTerminate = function() {
+	this.flame.removeInstance();
+	this.flame = null;
+	this.flameView = null;
+	this.objs[0].setRotation( 0 );
+	new UnitAttackAnimation( this.objs[0], this.objs[1] );
+    }
+    this.init();
+}
+FlameAttackAnimation.prototype = new Tween;

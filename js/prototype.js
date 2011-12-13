@@ -41,11 +41,11 @@ forces[0].commanders[0].units[3].setQuantity( 5 );
 
 
 
-forces[0].createCommander( "General", "Tester", 2, 1 );
-forces[0].commanders[1].addUnit( Fighter );
-forces[0].commanders[1].units[0].setQuantity( 90 );
-forces[0].commanders[1].addUnit( Sniper );
-forces[0].commanders[1].units[0].setQuantity( 10 );
+forces[0].createCommander( "Trainer", "Talon", 2, 1 );
+forces[0].commanders[1].setAP( 8 );
+forces[0].commanders[1].addUnit( Dragon );
+
+
 
 
 forces[1].createCommander( "General", "Luther", 7, 10 );

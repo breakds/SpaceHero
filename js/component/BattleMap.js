@@ -567,7 +567,11 @@ var UnitMoveAnimation = function( obj, path, victim ) {
     }
     this.onTerminate = function() {
 	if ( null != this.victim ) {
-	    new UnitAttackAnimation( this.objs[0], this.victim );
+	    if ( "flame" == this.objs[0].template.attackStyle ) {
+		new FlameAttackAnimation( this.objs[0], this.victim );
+	    } else {
+		new UnitAttackAnimation( this.objs[0], this.victim );
+	    }
 	} else {
 	    logic.battle.onAnimation = false;
 	    dispatcher.broadcast( { name: "NextUnit" } );
