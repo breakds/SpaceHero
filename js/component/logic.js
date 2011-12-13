@@ -148,6 +148,23 @@ var Logic = function() {
 	    this.battle.unitViews.push( new BattleUnitView( units[i], 1 ) );
 	}
 
+	
+	for ( var i=0; i<this.battle.units.length-1; i++ ) {
+	    for ( var j=i+1; j<this.battle.units.length; j++ ) {
+		if ( this.battle.units[j].template.spd > 
+		     this.battle.units[i].template.spd ||
+		     ( this.battle.units[j].template.spd ==
+		       this.battle.units[i].template.spd &&
+		       this.battle.units[j].leader == 
+		       this.battle.commander0 ) ) {
+		    var tmp = this.battle.units[i];
+		    this.battle.units[i] = this.battle.units[j];
+		    this.battle.units[j] = tmp;
+		}
+	    }
+	}
+
+	
 	// Left Panel and Right Panel
 	this.battle.leftPanel = new BattleCommanderView( this.battle.commander0, "left" );
 	this.battle.rightPanel = new BattleCommanderView( this.battle.commander1, "right" );
@@ -188,6 +205,7 @@ var Logic = function() {
 	this.battle.currentUnitID++;
 	if ( this.battle.units.length == this.battle.currentUnitID ) {
 	    this.battle.currentUnitID = 0;
+	    reporter.append( "New Turn Started!" );
 	}
 	var obj = this.battle.units[this.battle.currentUnitID];
 	if ( !obj.active ) {
@@ -195,6 +213,9 @@ var Logic = function() {
 	    return;
 	}
 	obj.requestUpdate();
+	if ( 0 == obj.leader.group ) {
+	    new UnitTurnStartAnimation( obj );
+	}
 
 	/// Acquire Reachable Array
 	this.battle.reachable = batMap.getReachable( obj.u, obj.v, obj.template.spd );

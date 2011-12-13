@@ -77,7 +77,8 @@ var MissileAttackAnimation = function( attacker, victim ) {
 
     this.missile.setAngle( Math.PI * 0.5 + Math.atan2( dy, dx ) );
     this.missileView = new MissileView( this.missile );    
-
+    
+    logic.battle.onAnimation = true;
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
 	    this.missile.shift( this.vx, this.vy );

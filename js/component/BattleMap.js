@@ -205,7 +205,7 @@ var BattleUnitView = function( unit, side ) {
 	    if ( this.model == logic.battle.units[logic.battle.currentUnitID] ) {
 		drawRotatedImage( ctx2d[0],
 				  this.model.template.imageOnSelect,
-				  this.rotation,
+				  this.rotation + this.model.rotation,
 				  c.x + this.model.offset.x,
 				  c.y + this.model.offset.y,
 				  size,
@@ -214,7 +214,7 @@ var BattleUnitView = function( unit, side ) {
 	    } else {
 		drawRotatedImage( ctx2d[0],
 				  this.model.template.image,
-				  this.rotation,
+				  this.rotation + this.model.rotation,
 				  c.x + this.model.offset.x,
 				  c.y + this.model.offset.y,
 				  size,
@@ -605,9 +605,19 @@ var UnitAttackAnimation = function( attacker, victim ) {
 }
 UnitAttackAnimation.prototype = new Tween;
 
-
-
-
+var UnitTurnStartAnimation = function( obj ) {
+    this.objs = new Array();
+    this.objs.push( obj );
+    this.lifetime = 30;
+    this.next = function() {
+	this.objs[0].setRotation( this.tick * Math.PI * 2 / 30.0 );
+    }
+    this.onTerminate = function() {
+	this.objs[0].setRotation( 0 );
+    }
+    this.init();
+}
+UnitTurnStartAnimation.prototype = new Tween;
 
 var BattleReporter = function( logicModel ) {
     this.setModel( logicModel );

@@ -47,8 +47,6 @@ forces[0].commanders[1].units[0].setQuantity( 120 );
 
 
 forces[1].createCommander( "General", "Luther", 7, 10 );
-forces[1].commanders[0].setAttack( 12 );
-forces[1].commanders[0].setDefence( 20 );
 forces[1].commanders[0].addUnit( Warship );
 forces[1].commanders[0].units[0].setQuantity( 4 );
 forces[1].commanders[0].addUnit( Gunboat );

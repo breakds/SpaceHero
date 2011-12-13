@@ -132,7 +132,12 @@ var BattleUnit = function( template, quantity, leader ) {
     this.u = 0;
     this.v = 0;
     this.offset = { x:0, y:0 };
+    this.rotation = 0;
     this.active = true;
+    this.setRotation = function( rot ) {
+	this.rotation = rot;
+	this.requestUpdate();
+    }
     this.setOffset = function( dx, dy ) {
 	this.offset.x = dx;
 	this.offset.y = dy;
@@ -168,6 +173,8 @@ var BattleUnit = function( template, quantity, leader ) {
 	if ( factor > 4.0 ) {
 	    factor = 4.0;
 	}
+	
+
 	damage = Math.floor( damage * factor );
 	if ( damage < 1 ) {
 	    damage = 1;
