@@ -257,6 +257,18 @@ var HexagonGridView = function( m, height, width, margin )
 		if ( status.attackIcon.u != -1 ) {
 		    var enemy = univMap.getMap( status.attackIcon.u,
 						status.attackIcon.v );
+		    var flag = false;
+		    for ( var j=0; j<6; j++ ) {
+			if ( obj.u + univMap.du[j] == status.attackIcon.u &&
+			     obj.v + univMap.dv[j] == status.attackIcon.v ) {
+			    flag = true;
+			}
+		    }
+
+		    if ( !flag ) {
+			return;
+		    }
+
 		    status.attackIcon.u = -1;
 		    dispatcher.broadcast( {name: "StartBattle",
 					   commander0: obj,
