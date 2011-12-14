@@ -267,7 +267,7 @@ var Commander = function( title, name, group, u ,v  ) {
     this.name = name;
     this.type = "Commander";
 
-    this.maxLen = 5;
+    this.maxLen = 6;
     this.curLen = 0;
 
     /// Properties
@@ -321,10 +321,14 @@ var Commander = function( title, name, group, u ,v  ) {
 	for ( var i=0; i<this.units.length; i++ ) {
 	    if ( this.units[i].template == template ) {
 		this.units[i].quantity++;
-		return;
+		return true;
 	    }
 	}
-	this.units.push( new BattleUnit( template, 1, this ) );
+	if ( this.units.length < this.maxLen ) {
+	    this.units.push( new BattleUnit( template, 1, this ) );
+	    return true;
+	}
+	return false;
     }
     this.removeUnit = function( unit ) {
 	this.units.splice( this.units.indexOf( unit ), 1 );
