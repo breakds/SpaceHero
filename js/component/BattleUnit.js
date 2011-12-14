@@ -214,6 +214,35 @@ var BattleUnit = function( template, quantity, leader ) {
 	return damage;
     }
 
+    this.powerLostEstimate = function( attacker ) {
+	var basicDamage = Math.floor( 0.5 * ( attacker.template.dmgMax - attacker.template.dmgMin ) ) +
+	    attacker.template.dmgMin;
+
+	
+	var damage = basicDamage * attacker.quantity;
+	var factor = Math.pow( 1.05, 
+			       attacker.template.att + attacker.leader.att -
+			       this.template.def - this.leader.def );
+	if ( factor > 4.0 ) {
+	    factor = 4.0;
+	}
+	
+
+	damage = Math.floor( damage * factor );
+	if ( damage < 1 ) {
+	    damage = 1;
+	}
+	
+	if ( this.template.hp * ( this.quantity - 1 ) + this.curHp <= damage ) {
+	    return this.quantity * this.template.value;
+	} else if ( damage < this.curHp ) {
+	    return 0;
+	} else {
+	    var deadNum = 1 + Math.floor( ( damage - this.curHp ) / this.template.hp );
+	    return deadNum * this.template.value;
+	}
+    }
+
     this.setPos = function( u, v ) {
 	if ( batMap.setMap( u, v, this ) ) {
 	    this.requestUpdate();

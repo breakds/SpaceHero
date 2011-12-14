@@ -269,7 +269,20 @@ var Logic = function() {
 	/// Temporary AI:
 	if ( 0 != obj.leader.group ) {
 	    if ( 0 != this.battle.attackable.length ) {
-		var pick = Math.floor( Math.random() * this.battle.attackable.length );
+		/// Pick one to attack!
+		var maxScore = -1;
+		var pick = 0;
+		for ( var i=0; i<this.battle.attackable.length; i++ ) {
+		    var enemy = batMap.getMap(
+			this.battle.attackable[i].u,
+			this.battle.attackable[i].v
+		    );
+		    var score = enemy.powerLostEstimate( obj );
+		    if ( score > maxScore ) {
+			maxScore = score;
+			pick = i;
+		    }
+		}
 		dispatcher.broadcast( { name: "UnitMove",
 					obj: obj,
 					u: this.battle.attackable[pick].u,
