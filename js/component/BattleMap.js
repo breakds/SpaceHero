@@ -19,6 +19,27 @@ var BattleHexagonView = function( m, radius ) {
 		      xmax: this.left + this.radius * Math.sqrt(3) * ( this.model.rows + 1 )
 		    };
     
+
+    var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
+    this.dx = [ - smallerRadius * 2,
+		-smallerRadius,
+		smallerRadius,
+		smallerRadius * 2,
+		smallerRadius,
+		- smallerRadius ];
+
+
+
+
+    this.dy = [ 0, 
+		this.radius * 1.5,
+		this.radius * 1.5,
+		0,
+		-this.radius * 1.5,
+		-this.radius * 1.5 ];
+
+
+
     
     this.mouseOn = { u: -1, v: -1 };
     this.getUVFromXY = function( x, y )
@@ -153,7 +174,8 @@ var BattleHexagonView = function( m, radius ) {
 	    this.mouseOn.u = uv.u;
 	    this.mouseOn.v = uv.v;
 	    this.requestUpdate();
-
+	    
+	    /// Update the BattleUnit Panel
 	    var obj = this.model.getMap( uv.u, uv.v );
 	    if ( 0 != obj ) {
 		if ( logic.battle.commander0 == obj.leader ) {
@@ -560,9 +582,22 @@ var UnitMoveAnimation = function( obj, path, victim ) {
     }
     this.next = function() {
 	if ( 0 == this.tick % 20 ) {
+	    this.objs[0].setOffset( 0, 0 );
 	    this.objs[0].setPos( path[path.length-1].u,
 				 path[path.length-1].v );
 	    this.path.splice( path.length-1, 1 );
+	} else if ( 0 == this.tick % 5 ) {
+	    for ( var j=0; j<6; j++ ) {
+		if ( batMap.du[j] == path[path.length-1].u - this.objs[0].u &&
+		     batMap.dv[j] == path[path.length-1].v - this.objs[0].v
+		   ) {
+		    this.objs[0].setOffset( this.objs[0].offset.x + 
+					    batMapView.dx[j] * 0.25,
+					    this.objs[0].offset.y + 
+					    batMapView.dy[j] * 0.25 );
+		    break;
+		}
+	    }
 	}
     }
     this.onTerminate = function() {
