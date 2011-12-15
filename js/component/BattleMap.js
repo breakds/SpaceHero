@@ -224,12 +224,15 @@ var BattleUnitView = function( unit, side ) {
 	    }
 	    c = batMapView.getXYFromUV( this.model.u, this.model.v );
 	    var size = batMapView.radius * 1.90;
+	    c.x += this.model.offset.x;
+	    c.y += this.model.offset.y;
 	    if ( this.model == logic.battle.units[logic.battle.currentUnitID] ) {
+		
 		drawRotatedImage( ctx2d[0],
 				  this.model.template.imageOnSelect,
 				  this.rotation + this.model.rotation,
-				  c.x + this.model.offset.x,
-				  c.y + this.model.offset.y,
+				  c.x,
+				  c.y,
 				  size,
 				  size,
 				  true );
