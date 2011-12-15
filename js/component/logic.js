@@ -332,6 +332,8 @@ var Logic = function() {
 			    new MissileAttackAnimation( e.obj, batMap.getMap( e.u, e.v ) );
 			}
 		    }
+		    this.battle.reachable = new Array();
+		    batMap.requestUpdate();
 		    return;
 		}
 	    }
@@ -347,6 +349,8 @@ var Logic = function() {
 			j = this.battle.reachable[j].pre;
 		    }
 		    new UnitMoveAnimation( e.obj, path, null );
+		    this.battle.reachable = new Array();
+		    batMap.requestUpdate();
 		    return;
 		}
 	    }

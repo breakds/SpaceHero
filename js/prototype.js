@@ -78,6 +78,14 @@ forces[1].commanders[2].units[1].setQuantity( 10 );
 
 
 
+for ( var i=0; i<forces[0].commanders.length; i++ ) {
+    trace( forces[0].commanders[i].name + ": " + 
+	   forces[0].commanders[i].getPower() );
+}
+for ( var i=0; i<forces[1].commanders.length; i++ ) {
+    trace( forces[1].commanders[i].name + ": " + 
+	   forces[1].commanders[i].getPower() );
+}
 
 
 
