@@ -314,7 +314,11 @@ var Logic = function() {
 			}
 			new UnitMoveAnimation( e.obj, path, batMap.getMap( e.u, e.v ) );
 		    } else {
-			new MissileAttackAnimation( e.obj, batMap.getMap( e.u, e.v ) );
+			if ( "Laser" == e.obj.template.attackStyle ) {
+			    new LaserAttackAnimation( e.obj, batMap.getMap( e.u, e.v ) );
+			} else {
+			    new MissileAttackAnimation( e.obj, batMap.getMap( e.u, e.v ) );
+			}
 		    }
 		    return;
 		}

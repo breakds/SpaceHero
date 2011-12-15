@@ -172,6 +172,7 @@ var FlameAttackAnimation = function( attacker, victim ) {
     this.flame.setAngle( Math.PI * 0.5 + Math.atan2( dy, dx ) );
     this.objs[0].setRotation( Math.atan2( dy, dx ) );
     this.flameview = new FlameView( this.flame );
+    logic.battle.onAnimation = true;
     this.onTerminate = function() {
 	this.flame.removeInstance();
 	this.flame = null;
@@ -255,6 +256,7 @@ var SurroundingAttackAnimation = function( attacker ) {
 	}
     }
     this.lifetime = 30;
+    logic.battle.onAnimation = true;
     this.onTerminate = function() {
 	for ( var i=0; i<this.rings.length; i++ ) {
 	    this.rings[i].removeInstance();
@@ -268,3 +270,84 @@ var SurroundingAttackAnimation = function( attacker ) {
     this.init();
 }
 SurroundingAttackAnimation.prototype = new Tween;
+
+
+var Laser = function( sx, sy ) {
+    this.views = new Array();
+    this.sx = sx;
+    this.sy = sy;
+    this.x = 0;
+    this.y = 0;
+    this.color = "rgb(255,255,255)";
+    this.setPos = function( x, y ) {
+	this.x = x;
+	this.y = y;
+	this.requestUpdate();
+    }
+    this.shift = function( dx, dy ) {
+	this.x += dx;
+	this.y += dy;
+	this.requestUpdate();
+    }
+    this.init();
+}
+Laser.prototype = new GameObject;
+
+var LaserView = function( m ) {
+    this.setModel( m );
+    this.register( battlefield );
+    this.draw = function( ctx ) {
+	if ( ctx == ctx2d[1] ) {
+	    ctx.strokeStyle = this.model.color;
+	    ctx.lineWidth = 3;
+	    ctx.beginPath();
+	    ctx.moveTo( this.model.sx, this.model.sy );
+	    ctx.lineTo( this.model.x, this.model.y );
+	    ctx.closePath();
+	    ctx.stroke();
+	}
+    }
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctx2d[1] } );	
+    }
+}
+LaserView.prototype = new View;
+
+var LaserAttackAnimation = function( attacker, victim ) {
+    this.objs = new Array();
+    this.objs.push( attacker );
+    this.objs.push( victim );
+    var atkXY = batMapView.getXYFromUV( attacker.u, attacker.v );
+    var vicXY = batMapView.getXYFromUV( victim.u, victim.v );
+    var dx = vicXY.x - atkXY.x;
+    var dy = vicXY.y - atkXY.y;
+    var dist = Math.sqrt( dx * dx + dy * dy );
+    var frames = Math.floor( dist / 50.0 );
+    this.vx = dx / frames;
+    this.vy = dy / frames;
+    this.lifetime = 2 * frames;
+    this.color = 255;
+    this.laser = new Laser( atkXY.x, atkXY.y );
+    this.laser.setPos( atkXY.x, atkXY.y );
+    this.laserView = new LaserView( this.laser );    
+    
+    logic.battle.onAnimation = true;
+    this.next = function() {
+	if ( 0 == this.tick % 2 ) {
+	    this.color -= 15;
+	    this.laser.color = "rgb(" + 255 + "," + 
+		this.color + "," + this.color + ")";
+	    this.laser.shift( this.vx, this.vy );
+	}
+    }
+
+    this.onTerminate = function() {
+	this.laser.removeInstance();
+	this.laser = null;
+	this.laserView = null;
+	new UnitAttackAnimation( this.objs[0], this.objs[1] );
+    }
+    this.init();
+}
+LaserAttackAnimation.prototype = new Tween;

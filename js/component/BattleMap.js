@@ -215,7 +215,6 @@ var BattleUnitView = function( unit, side ) {
     } else {
 	this.rotation = -Math.PI * 0.5;
     }
-
     
     this.draw = function( ctx ) {
 	if ( ctx == ctx2d[0] ) {
@@ -225,7 +224,7 @@ var BattleUnitView = function( unit, side ) {
 	    c = batMapView.getXYFromUV( this.model.u, this.model.v );
 	    var size = batMapView.radius * 1.90;
 	    c.x += this.model.offset.x;
-	    c.y += this.model.offset.y;
+	    c.y += this.model.offset.y
 	    if ( this.model == logic.battle.units[logic.battle.currentUnitID] ) {
 		
 		drawRotatedImage( ctx2d[0],

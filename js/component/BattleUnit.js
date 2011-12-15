@@ -87,6 +87,7 @@ var Sniper = new BattleUnitTemplate( "Sniper", 2,
 				     resources.getResource( "sniperSelectImg" )
 				   );
 Sniper.setArcher(24);
+Sniper.setAttackStyle( "Laser" );
 
 
 var Cruiser = new BattleUnitTemplate( "Cruiser", 3, 
