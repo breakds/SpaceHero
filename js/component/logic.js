@@ -68,6 +68,18 @@ var Logic = function() {
 	    }
 	}
     }
+    dispatcher.addListener( "DeselectCommander", this );
+    this.onDeselectCommander = function( e ) {
+	if ( this.status.onSelect ) {
+	    this.status.onSelect.removeView( this.status.commanderMenu );
+	    var obj = this.status.onSelect;
+	    this.status.onSelect = null;
+	    obj.requestUpdate();
+	    this.status.commanderMenu = null;
+	    this.requestUpdate();
+	}
+    }
+    
 
     dispatcher.addListener( "RequestArrowPath", this );
     this.onRequestArrowPath = function( e ) {

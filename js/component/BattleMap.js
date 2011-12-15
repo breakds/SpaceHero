@@ -245,8 +245,13 @@ var BattleUnitView = function( unit, side ) {
 				  size,
 				  true );
 	    }
-
-	    ctx2d[0].fillStyle = "#AA00AA";
+	    
+	    
+	    if ( this.model.leader == logic.battle.commander0 ) {
+		ctx2d[0].fillStyle = "#AA00AA";
+	    } else {
+		ctx2d[0].fillStyle = "#EE2200";
+	    }
 	    ctx2d[0].fillRect( c.x - batMapView.radius * 0.8,
 			       c.y + batMapView.radius * 0.8,
 			       batMapView.radius * 0.8,

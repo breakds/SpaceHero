@@ -212,6 +212,7 @@ var HexagonGridView = function( m, height, width, margin )
 	}
 	return true;
     }
+    /*
     this.onMouseMove = function( x, y ) {
 	var status = logic.getStatus();
 	var uv = this.getUVFromXY( x, y );
@@ -288,6 +289,88 @@ var HexagonGridView = function( m, height, width, margin )
 		    }
 		}
 	    }
+	}
+	}*/
+
+    this.onRightMouseDown = function( x, y ) {
+	dispatcher.broadcast( { name: "DeselectCommander" } );
+    }
+    this.onLeftMouseDown = function( x, y ) {
+	var uv = this.getUVFromXY( x, y );
+	var obj = this.model.getMap( uv.u, uv.v );
+	var status = logic.getStatus();
+	if ( obj.type == "Commander" && !logic.status.onSelect) {
+	    dispatcher.broadcast( { name: "SelectCommander",
+				    obj: obj } );
+	}
+	else if ( status.onSelect != null )
+	{
+	    obj = status.onSelect;
+	    if ( "Commander" == obj.type && 0 == obj.group )
+	    {
+		if ( status.attackIcon.u != -1 ) {
+		    var enemy = univMap.getMap( status.attackIcon.u,
+						status.attackIcon.v );
+		    var flag = false;
+		    for ( var j=0; j<6; j++ ) {
+			if ( obj.u + univMap.du[j] == status.attackIcon.u &&
+			     obj.v + univMap.dv[j] == status.attackIcon.v ) {
+			    flag = true;
+			}
+		    }
+
+		    if ( !flag ) {
+			return;
+		    }
+
+		    status.attackIcon.u = -1;
+		    dispatcher.broadcast( {name: "StartBattle",
+					   commander0: obj,
+					   commander1: enemy } );
+		}
+		if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v )
+		{
+		    dispatcher.broadcast( { name: "CommanderMove" } );
+		}	
+		else
+		{
+		    if ( this.model.inMap( uv.u, uv.v ) )
+		    {
+			dispatcher.broadcast( { name: "RequestArrowPath", 
+						obj: obj,
+						target: uv } );
+		    }
+		}
+	    }
+	}
+    }
+    this.onMouseMove = function( x, y ) {
+	var status = logic.getStatus();
+	var uv = this.getUVFromXY( x, y );
+	if ( uv.u != -1 && ( uv.u != this.highlightCoor.u ||
+			     uv.v != this.highlightCoor.v ) ) {
+	    status.attackIcon.u = -1;
+	    this.highlightCoor.u = uv.u;
+	    this.highlightCoor.v = uv.v;
+	    if ( univMap.available( uv.u, uv.v ) && 
+		 !univMap.veil[uv.u][uv.v] ) {
+		if(status.onSelect && "Commander" == status.onSelect.type && 0 == status.onSelect.group)
+		{
+		    status.onSelect.target.u = uv.u;
+		    status.onSelect.target.v = uv.v;
+		    status.onSelect.updatePath();
+		    status.showArrows = true;
+		    logic.requestUpdate();
+		}
+	    } else if ( !univMap.veil[uv.u][uv.v] ) {
+		obj = univMap.getMap( uv.u, uv.v );
+		if ( "Commander" == obj.type && obj.group != 0 ) {
+		    status.attackIcon.u = uv.u;
+		    status.attackIcon.v = uv.v;
+		    logic.requestUpdate();
+		}
+	    }
+	    this.requestUpdate();
 	}
     }
 }
