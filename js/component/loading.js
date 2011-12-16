@@ -40,7 +40,7 @@ for ( var i=0; i<24; i++ ) {
     resources.addImage( "img/missile/missile"+i+".png", "missile"+i+"Anim" );
 }
 
-for ( var i=0; i<62; i++ ) {
-    resources.addImage( "img/flame/flame"+i+".png", "flame"+i+"Anim" );
+for ( var i=0; i<80; i++ ) {
+    resources.addImage( "animation/flame/flame"+i+".png", "flame"+i+"Anim" );
 }
 

@@ -19,3 +19,11 @@ function drawRotatedImage( ctx, img, ang, x, y, width, height, centered ) {
     }
     ctx.restore();
 }
+function drawRotatedImage2( ctx, img, ang, x, y, width, height, centerX, centerY ) {
+    ctx.save();
+    ctx.translate( x, y );
+    ctx.rotate( ang );
+    ctx.drawImage( img, -centerX, -centerY,
+		   width, height );
+    ctx.restore();
+}
