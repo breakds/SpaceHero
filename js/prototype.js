@@ -31,13 +31,13 @@ forces[0].createCommander( "General", "Lionheart", 2, 5 );
 forces[0].commanders[0].setAttack( 12 );
 forces[0].commanders[0].setDefence( 20 );
 forces[0].commanders[0].addUnit( Warrior );
-forces[0].commanders[0].units[0].setQuantity( 4 );
+forces[0].commanders[0].units[0].setQuantity( 30 );
 forces[0].commanders[0].addUnit( Gunboat );
-forces[0].commanders[0].units[1].setQuantity( 40 );
+forces[0].commanders[0].units[1].setQuantity( 80 );
 forces[0].commanders[0].addUnit( Cruiser );
-forces[0].commanders[0].units[2].setQuantity( 5 );
+forces[0].commanders[0].units[2].setQuantity( 15 );
 forces[0].commanders[0].addUnit( Sniper );
-forces[0].commanders[0].units[3].setQuantity( 5 );
+forces[0].commanders[0].units[3].setQuantity( 15 );
 
 
 
@@ -75,6 +75,7 @@ forces[1].commanders[2].addUnit( Sniper );
 forces[1].commanders[2].units[0].setQuantity( 10 );
 forces[1].commanders[2].addUnit( Gunboat );
 forces[1].commanders[2].units[1].setQuantity( 10 );
+forces[1].commanders[2].addUnit( Dragon );
 
 
 

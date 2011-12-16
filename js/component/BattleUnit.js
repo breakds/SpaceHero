@@ -130,7 +130,7 @@ var Dragon = new BattleUnitTemplate( "Dragon", 6,
 				     120, /// max damage 
 				     70, /// min damage
 				     1, /// Production
-				     40123, /// Value
+				     78855, /// Value
 				     resources.getResource( "dragonImg" ),
 				     resources.getResource( "dragonSelectImg" )
 				   );

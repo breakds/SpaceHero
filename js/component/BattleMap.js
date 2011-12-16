@@ -93,7 +93,6 @@ var BattleHexagonView = function( m, radius ) {
 	    var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
 	    
 	    ctxBg2d.strokeStyle = "#0000FF"
-	    ctxBg2d.fillStyle = "#223366";
 	    ctxBg2d.beginPath();
 	    for ( var u=0; u<this.model.cols; u++ ) 
 	    {
@@ -106,13 +105,12 @@ var BattleHexagonView = function( m, radius ) {
 		y += this.radius * 1.5;
 	    }
 	    ctxBg2d.closePath();
-	    ctxBg2d.fill();
 	    ctxBg2d.stroke();
 
 	    
 	    /// Draw Reachable
 	    if ( null != logic.battle.reachable ) {
-		ctxBg2d.fillStyle = "#AACC00";
+		ctxBg2d.fillStyle = "#223366";
 		ctxBg2d.strokeStyle = "#0000FF"
 		ctxBg2d.beginPath();
 		var c = null;
@@ -225,28 +223,15 @@ var BattleUnitView = function( unit, side ) {
 	    var size = batMapView.radius * 1.90;
 	    c.x += this.model.offset.x;
 	    c.y += this.model.offset.y
-	    /*
-	    if ( this.model == logic.battle.units[logic.battle.currentUnitID] ) {
-		
-		drawRotatedImage( ctx2d[0],
-				  this.model.template.imageOnSelect,
-				  this.rotation + this.model.rotation,
-				  c.x,
-				  c.y,
-				  size,
-				  size,
-				  true );
-	    } else {
-	    */
-		drawRotatedImage( ctx2d[0],
-				  this.model.template.image,
-				  this.rotation + this.model.rotation,
-				  c.x,
-				  c.y,
-				  size,
-				  size,
-				  true );
-//	    }
+	    drawRotatedImage( ctx2d[0],
+			      this.model.template.image,
+			      this.rotation + this.model.rotation,
+			      c.x,
+			      c.y,
+			      size,
+			      size,
+			      true );
+
 	    
 	    
 	    if ( this.model.leader == logic.battle.commander0 ) {
@@ -616,7 +601,7 @@ var UnitMoveAnimation = function( obj, path, victim ) {
 	    } else if ( "Surrounding" == this.objs[0].template.attackStyle ) { 
 		new SurroundingAttackAnimation( this.objs[0] );
 	    } else {
-		new UnitAttackAnimation( this.objs[0], this.victim );
+		new MeleeAttackAnimation( this.objs[0], this.victim );
 	    }
 	} else {
 	    logic.battle.onAnimation = false;

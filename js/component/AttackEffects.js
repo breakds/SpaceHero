@@ -107,7 +107,11 @@ var FlameAttackAnimation = function( attacker, victim ) {
     var dx = vicXY.x - atkXY.x;
     var dy = vicXY.y - atkXY.y;
     
-    this.objs[0].setRotation( Math.atan2( dy, dx ) );
+    if ( this.objs[0].leader == logic.battle.commander0 ) {
+	this.objs[0].setRotation( Math.atan2( dy, dx ) );
+    } else {
+	this.objs[0].setRotation( Math.atan2( dy, dx ) + Math.PI );
+    }
     this.flame = new MovieClip( "flame", 30, 60, 80, battlefield, ctx2d[1] );
     this.flame.setPos( atkXY.x + dx * 0.5, atkXY.y + dy * 0.5 );
     this.flame.setCenter( 15, 10 );
@@ -292,3 +296,37 @@ var LaserAttackAnimation = function( attacker, victim ) {
     this.init();
 }
 LaserAttackAnimation.prototype = new Tween;
+
+
+var MeleeAttackAnimation = function( attacker, victim ) {
+    this.objs = new Array();
+    this.objs.push( attacker );
+    this.objs.push( victim );
+    this.lifetime = 50;
+
+    var atkXY = batMapView.getXYFromUV( attacker.u, attacker.v );
+    var vicXY = batMapView.getXYFromUV( victim.u, victim.v );
+    this.dx = vicXY.x - atkXY.x;
+    this.dy = vicXY.y - atkXY.y;
+    
+    if ( this.objs[0].leader == logic.battle.commander0 ) {
+	this.objs[0].setRotation( Math.atan2( this.dy, this.dx ) );
+    } else {
+	this.objs[0].setRotation( Math.atan2( this.dy, this.dx ) + Math.PI );
+    }
+    logic.battle.onAnimation = true;
+    
+    this.next = function() {
+	if ( 20 == this.tick ) {
+	    this.objs[0].setOffset( - this.dx * 0.3, -this.dy * 0.3 );
+	} else if ( 40 == this.tick ) {
+	    this.objs[0].setOffset( 0, 0 );
+	}
+    }
+    this.onTerminate = function() {
+	this.objs[0].setRotation( 0 );
+	new UnitAttackAnimation( this.objs[0], this.objs[1] );
+    }
+    this.init();
+}
+MeleeAttackAnimation.prototype = new Tween;
