@@ -225,6 +225,7 @@ var BattleUnitView = function( unit, side ) {
 	    var size = batMapView.radius * 1.90;
 	    c.x += this.model.offset.x;
 	    c.y += this.model.offset.y
+	    /*
 	    if ( this.model == logic.battle.units[logic.battle.currentUnitID] ) {
 		
 		drawRotatedImage( ctx2d[0],
@@ -236,15 +237,16 @@ var BattleUnitView = function( unit, side ) {
 				  size,
 				  true );
 	    } else {
+	    */
 		drawRotatedImage( ctx2d[0],
 				  this.model.template.image,
 				  this.rotation + this.model.rotation,
-				  c.x + this.model.offset.x,
-				  c.y + this.model.offset.y,
+				  c.x,
+				  c.y,
 				  size,
 				  size,
 				  true );
-	    }
+//	    }
 	    
 	    
 	    if ( this.model.leader == logic.battle.commander0 ) {
@@ -626,7 +628,7 @@ var UnitMoveAnimation = function( obj, path, victim ) {
 UnitMoveAnimation.prototype = new Tween;
 
 
-var UnitAttackAnimation = function( attacker, victim ) {
+var UnitAttackAnimation = function( attacker, victim, extra ) {
     this.objs = new Array();
     this.objs.push( attacker );
     this.objs.push( victim );
@@ -647,7 +649,9 @@ var UnitAttackAnimation = function( attacker, victim ) {
 	/// Cleaning 
 	this.objs[1].setOffset( 0, 0 );
 	logic.battle.onAnimation = false;
-	dispatcher.broadcast( { name: "NextUnit" } );
+	if ( !extra ) {
+	    dispatcher.broadcast( { name: "NextUnit" } );
+	}
     }
     this.init();
 }
@@ -656,12 +660,23 @@ UnitAttackAnimation.prototype = new Tween;
 var UnitTurnStartAnimation = function( obj ) {
     this.objs = new Array();
     this.objs.push( obj );
+    this.objs[0].selector.setScale( 0.9 );
+    this.objs[0].selector.setIntv(1);
+    this.scale = 0.9;
     this.lifetime = 30;
+    logic.battle.onAnimation = true;
     this.next = function() {
-	this.objs[0].setRotation( this.tick * Math.PI * 2 / 30.0 );
+	this.scale -= 0.02;
+	this.objs[0].selector.setScale( this.scale );
     }
     this.onTerminate = function() {
-	this.objs[0].setRotation( 0 );
+	logic.battle.onAnimation = false;
+	this.objs[0].selector.setScale( 0.3 );
+	this.objs[0].selector.setIntv( 6 );
+	if ( 0 != this.objs[0].group ) {
+	    dispatcher.broadcast( { name: "AIThinking",
+				    obj: this.objs[0] } );
+	}
     }
     this.init();
 }

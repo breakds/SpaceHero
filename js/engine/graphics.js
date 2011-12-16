@@ -33,6 +33,7 @@ var display3d = $( "display3d" );
 var bg2d = $( "BackGround2d" );
 var ani2d1 = $( "Animation2d1" );
 var ani2d2 = $( "Animation2d2" );
+var ani2d3 = $( "Animation2d3" );
 var menu2d = $( "Menu" );
 var GameScreen = { width: bg2d.width, height: bg2d.height };
 
@@ -54,13 +55,16 @@ var ctx2d = new Array();
 ctx2d.push( ani2d1.getContext( "2d" ) );
 ctx2d[0].updated = false;
 ctx2d.push( ani2d2.getContext( "2d" ) );
-ctx2d[0].updated = false;
+ctx2d[1].updated = false;
+ctx2d.push( ani2d3.getContext( "2d" ) );
+ctx2d[2].updated = false;
 
 var allContexts = new Array();
 allContexts.push( ctxBg2d );
 allContexts.push( ctxMenu );
 allContexts.push( ctx2d[0] );
 allContexts.push( ctx2d[1]);
+allContexts.push( ctx2d[2]);
 
 function clearContext(ctx) {
     if ( ctx.fillColor ) {

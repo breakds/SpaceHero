@@ -51,6 +51,12 @@ canvas {
     top: 0px;
     z-index: 62;
 }
+#Animation2d3 {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    z-index: 55;
+}
 
 #Menu {
     position: absolute;

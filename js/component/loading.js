@@ -44,3 +44,7 @@ for ( var i=0; i<80; i++ ) {
     resources.addImage( "animation/flame/flame"+i+".png", "flame"+i+"Anim" );
 }
 
+for ( var i=0; i<60; i++ ) {
+    resources.addImage( "animation/selector/selector"+i+".png", "selector"+i+"Anim" );
+}
+

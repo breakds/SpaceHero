@@ -214,7 +214,10 @@ var Logic = function() {
 
 	
 	if ( -1 != this.battle.currentUnitID ) {
-	    this.battle.units[this.battle.currentUnitID].requestUpdate();
+	    if ( this.battle.units[this.battle.currentUnitID].active ) {
+		this.battle.units[this.battle.currentUnitID].removeSelector();
+		this.battle.units[this.battle.currentUnitID].requestUpdate();
+	    }
 	}
 	this.battle.currentUnitID++;
 	if ( this.battle.units.length == this.battle.currentUnitID ) {
@@ -226,10 +229,10 @@ var Logic = function() {
 	    dispatcher.broadcast( { name: "NextUnit" } );
 	    return;
 	}
+	obj.createSelector();
 	obj.requestUpdate();
-	if ( 0 == obj.leader.group ) {
-	    new UnitTurnStartAnimation( obj );
-	}
+	new UnitTurnStartAnimation( obj );
+
 
 	/// Acquire Reachable Array
 	this.battle.reachable = batMap.getReachable( obj.u, obj.v, obj.template.spd );
@@ -275,10 +278,14 @@ var Logic = function() {
 		}
 	    }
 	}
-	
 	batMapView.requestUpdate();
+    }
 
+    
+    dispatcher.addListener( "AIThinking", this );
+    this.onAIThinking = function( e ) {
 	/// Temporary AI:
+	var obj = e.obj;
 	if ( 0 != obj.leader.group ) {
 	    if ( 0 != this.battle.attackable.length ) {
 		/// Pick one to attack!
@@ -308,6 +315,7 @@ var Logic = function() {
 	    }
 	}
     }
+
 
     dispatcher.addListener( "UnitMove", this );
     this.onUnitMove = function( e ) {
@@ -373,6 +381,7 @@ var Logic = function() {
 	    } else {
 		batMap.clearCell( this.battle.units[i].u,
 				  this.battle.units[i].v );
+		this.battle.units[i].removeSelector();
 		this.battle.units[i].restoreHP();
 	    }
 	}

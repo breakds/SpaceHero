@@ -124,7 +124,7 @@ var FlameAttackAnimation = function( attacker, victim ) {
 	if ( batMap.inMap( u, v ) ) {
 	    var obj = batMap.getMap( u ,v );
 	    if ( 0 != obj && obj.leader != this.objs[0].leader ) {
-		new UnitAttackAnimation( this.objs[0], obj );
+		new UnitAttackAnimation( this.objs[0], obj, true );
 	    }
 	}
 
@@ -203,8 +203,9 @@ var SurroundingAttackAnimation = function( attacker ) {
 	    this.rings[i] = null;
 	    this.ringViews[i] = null;
 	}
-	for ( var i=0; i<this.victims.length; i++ ) {
-	    new UnitAttackAnimation( this.attacker, this.victims[i] );
+	new UnitAttackAnimation( this.attacker, this.victims[0] );
+	for ( var i=1; i<this.victims.length; i++ ) {
+	    new UnitAttackAnimation( this.attacker, this.victims[i], true );
 	}
     }
     this.init();

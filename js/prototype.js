@@ -50,11 +50,11 @@ forces[0].commanders[1].addUnit( Dragon );
 
 forces[1].createCommander( "General", "Luther", 7, 10 );
 forces[1].commanders[0].addUnit( Warship );
-forces[1].commanders[0].units[0].setQuantity( 10 );
+forces[1].commanders[0].units[0].setQuantity( 30 );
 forces[1].commanders[0].addUnit( Fighter );
-forces[1].commanders[0].units[1].setQuantity( 50 );
+forces[1].commanders[0].units[1].setQuantity( 100 );
 forces[1].commanders[0].addUnit( Warrior );
-forces[1].commanders[0].units[2].setQuantity( 3 );
+forces[1].commanders[0].units[2].setQuantity( 8 );
 
 
 

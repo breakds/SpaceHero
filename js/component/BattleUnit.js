@@ -151,6 +151,30 @@ var BattleUnit = function( template, quantity, leader ) {
     this.offset = { x:0, y:0 };
     this.rotation = 0;
     this.active = true;
+    this.selector = null;
+    this.removeSelector = function() {
+	if ( this.selector ) {
+	    this.selector.removeInstance();
+	    this.selector = null;
+	}
+    }
+    this.createSelector = function() {
+	if ( !this.selector ) {
+	    var c = batMapView.getXYFromUV( this.u, this.v );
+	    c.x += this.offset.x;
+	    c.y += this.offset.y
+	    this.selector = new MovieClip( "selector",
+					   260,
+					   260,
+					   60,
+					   battlefield,
+					   ctx2d[2] );
+	    this.selector.setScale( 0.3 );
+	    this.selector.setCenter( 130, 130 );
+	    this.selector.setPos( c.x, c.y );
+	    this.selector.setIntv( 6 );
+	}
+    }
     this.setRotation = function( rot ) {
 	this.rotation = rot;
 	this.requestUpdate();
@@ -158,6 +182,12 @@ var BattleUnit = function( template, quantity, leader ) {
     this.setOffset = function( dx, dy ) {
 	this.offset.x = dx;
 	this.offset.y = dy;
+	if ( this.selector ) {
+	    var c = batMapView.getXYFromUV( this.u, this.v );
+	    c.x += this.offset.x;
+	    c.y += this.offset.y;
+	    this.selector.setPos( c.x, c.y );
+	}
 	this.requestUpdate();
     }
     this.setQuantity = function( num ) {
@@ -246,6 +276,12 @@ var BattleUnit = function( template, quantity, leader ) {
 
     this.setPos = function( u, v ) {
 	if ( batMap.setMap( u, v, this ) ) {
+	    if ( this.selector ) {
+		var c = batMapView.getXYFromUV( this.u, this.v );
+		c.x += this.offset.x;
+		c.y += this.offset.y;
+		this.selector.setPos( c.x, c.y );
+	    }
 	    this.requestUpdate();
 	    return true;
 	} else {

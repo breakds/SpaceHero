@@ -20,6 +20,7 @@ var battlefield = new Stage();
 battlefield.addContext( ctxBg2d );
 battlefield.addContext( ctx2d[0] );
 battlefield.addContext( ctx2d[1] );
+battlefield.addContext( ctx2d[2] );
 battlefield.addContext( ctxMenu );
 
 /// Create Solar System Stage
