@@ -121,6 +121,24 @@ var Warrior = new BattleUnitTemplate( "Warrior", 3,
 Warrior.setAttackStyle( "Surrounding" );
 
 
+
+var Cannon = new BattleUnitTemplate( "Cannon", 4, 
+				     300, /// Health
+				     20, /// Attack
+				     30, /// Defence
+				     0, /// spd
+				     5000, /// price
+				     42, /// max damage 
+				     20, /// min damage
+				     1, /// Production
+				     4000, /// Value
+				     resources.getResource( "cannonImg" ),
+				     resources.getResource( "cannonSelectImg" )
+				   );
+Cannon.setArcher(24);
+Cannon.setAttackStyle( "Laser" );
+
+
 var Dragon = new BattleUnitTemplate( "Dragon", 6, 
 				     1000, /// Health
 				     50, /// Attack
@@ -355,17 +373,26 @@ var Commander = function( title, name, group, u ,v  ) {
 	this.requestUpdate();
     }
     this.addUnit = function( template ) {
-	for ( var i=0; i<this.units.length; i++ ) {
-	    if ( this.units[i].template == template ) {
-		this.units[i].quantity++;
+	if ( template != Cannon ) {
+	    for ( var i=0; i<this.units.length; i++ ) {
+		if ( this.units[i].template == template ) {
+		    this.units[i].quantity++;
+		    return true;
+		}
+	    }
+	    if ( this.units.length < this.maxLen ) {
+		this.units.push( new BattleUnit( template, 1, this ) );
 		return true;
 	    }
+	    return false;
+	} else {
+	    if ( this.units.length < this.maxLen ) {
+		this.units.push( new BattleUnit( template, 1, this ) );
+		return true;
+	    }
+	    return false;
 	}
-	if ( this.units.length < this.maxLen ) {
-	    this.units.push( new BattleUnit( template, 1, this ) );
-	    return true;
-	}
-	return false;
+
     }
     this.removeUnit = function( unit ) {
 	this.units.splice( this.units.indexOf( unit ), 1 );

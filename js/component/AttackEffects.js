@@ -77,6 +77,13 @@ var MissileAttackAnimation = function( attacker, victim ) {
 
     this.missile.setAngle( Math.PI * 0.5 + Math.atan2( dy, dx ) );
     this.missileView = new MissileView( this.missile );    
+
+
+    if ( this.objs[0].leader == logic.battle.commander0 ) {
+	this.objs[0].setRotation( Math.atan2( dy, dx ) );
+    } else {
+	this.objs[0].setRotation( Math.atan2( dy, dx ) + Math.PI );
+    }
     
     logic.battle.onAnimation = true;
     this.next = function() {
@@ -86,6 +93,7 @@ var MissileAttackAnimation = function( attacker, victim ) {
     }
 
     this.onTerminate = function() {
+	this.objs[0].setRotation( 0 );
 	this.missile.removeInstance();
 	this.missile = null;
 	this.missileView = null;
@@ -278,6 +286,15 @@ var LaserAttackAnimation = function( attacker, victim ) {
     this.laser.setPos( atkXY.x, atkXY.y );
     this.laserView = new LaserView( this.laser );    
     
+
+    if ( this.objs[0].leader == logic.battle.commander0 ) {
+	this.objs[0].setRotation( Math.atan2( dy, dx ) );
+    } else {
+	this.objs[0].setRotation( Math.atan2( dy, dx ) + Math.PI );
+    }
+
+
+
     logic.battle.onAnimation = true;
     this.next = function() {
 	if ( 0 == this.tick % 2 ) {
@@ -289,6 +306,7 @@ var LaserAttackAnimation = function( attacker, victim ) {
     }
 
     this.onTerminate = function() {
+	this.objs[0].setRotation( 0 );
 	this.laser.removeInstance();
 	this.laser = null;
 	this.laserView = null;
