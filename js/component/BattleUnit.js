@@ -250,6 +250,7 @@ var BattleUnit = function( template, quantity, leader ) {
 	    reporter.append( msg );
 	    this.getKilled();
 	} else if ( damage < this.curHp ) {
+	    reporter.append( msg );
 	    this.curHp -= damage;
 	} else {
 	    var deadNum = 1 + Math.floor( ( damage - this.curHp ) / this.template.hp );
