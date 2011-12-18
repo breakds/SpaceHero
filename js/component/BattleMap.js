@@ -41,7 +41,7 @@ var BattleHexagonView = function( m, radius ) {
 
 
     
-    this.mouseOn = { u: -1, v: -1 };
+    this.mouseOn = { u: -1, v: -1, x:0, y:0 };
     this.getUVFromXY = function( x, y )
     {
 	var smallerRadius = this.radius * Math.sqrt(3) * 0.5;
@@ -82,6 +82,8 @@ var BattleHexagonView = function( m, radius ) {
     this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
 				ctx: ctxBg2d } );
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctx2d[1] } );
     }
 
     this.requestUpdate();
@@ -150,8 +152,41 @@ var BattleHexagonView = function( m, radius ) {
 		ctxBg2d.closePath();
 		ctxBg2d.stroke();
 	    }
-	}
+	} else if ( ctx == ctx2d[1] ) {
+	    var flag = false;
+	    for ( var i=0; i<logic.battle.attackable.length; i++ ) {
+		if ( logic.battle.attackable[i].u == this.mouseOn.u &&
+		     logic.battle.attackable[i].v == this.mouseOn.v ) {
+		    flag = true;
+		    break;
+		}
+	    }
+	    var obj = logic.battle.units[logic.battle.currentUnitID];
+
+	    if ( flag && 0 == obj.leader.group && 
+		 (!obj.template.archer) ) {
+		var c = this.getXYFromUV( this.mouseOn.u,
+					  this.mouseOn.v );
+		var px = this.mouseOn.x - c.x;
+		var py = this.mouseOn.y - c.y;
+		var i = 0;
+		var ang = Math.atan2( py, px );
+		if ( ang > - Math.PI * 5 / 6 &&
+		     ang < Math.PI *5 / 6 ) {
+		    i = 5 - Math.floor( ( ang + Math.PI * 5 / 6 ) / Math.PI * 3 );
+		}
+		drawRotatedImage( ctx2d[1],
+				  resources.getResource( "attackIcon" ),
+				  Math.atan2( this.dy[i], this.dx[i] ) + Math.PI * 0.5,
+				  c.x + this.dx[i] * 0.5,
+				  c.y + this.dy[i] * 0.5,
+				  36,
+				  65,
+				  true );
+	    }
+	} 
     }
+
 
 
 
@@ -171,6 +206,8 @@ var BattleHexagonView = function( m, radius ) {
 	if ( this.model.inMap( uv.u, uv.v ) ) {
 	    this.mouseOn.u = uv.u;
 	    this.mouseOn.v = uv.v;
+	    this.mouseOn.x = x;
+	    this.mouseOn.y = y;
 	    this.requestUpdate();
 	    
 	    /// Update the BattleUnit Panel

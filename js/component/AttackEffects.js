@@ -224,6 +224,7 @@ var Laser = function( sx, sy ) {
     this.x = 0;
     this.y = 0;
     this.color = "rgb(255,255,255)";
+    this.thickness = 3;
     this.setPos = function( x, y ) {
 	this.x = x;
 	this.y = y;
@@ -244,7 +245,7 @@ var LaserView = function( m ) {
     this.draw = function( ctx ) {
 	if ( ctx == ctx2d[1] ) {
 	    ctx.strokeStyle = this.model.color;
-	    ctx.lineWidth = 3;
+	    ctx.lineWidth = this.model.thickness;
 	    ctx.beginPath();
 	    ctx.moveTo( this.model.sx, this.model.sy );
 	    ctx.lineTo( this.model.x, this.model.y );
@@ -309,6 +310,32 @@ var MeleeAttackAnimation = function( attacker, victim ) {
     this.dx = vicXY.x - atkXY.x;
     this.dy = vicXY.y - atkXY.y;
     
+
+    this.laser = new Laser( vicXY.x - batMapView.radius * 0.6, vicXY.y - batMapView.radius * 0.6 );
+    this.laser.setPos( vicXY.x - batMapView.radius * 0.6, vicXY.y - batMapView.radius * 0.6 );
+    this.laser.thickness = 2;
+    this.laser.color = "#FFFF00";
+    this.laserView = new LaserView( this.laser );    
+
+
+    this.laser1 = new Laser( vicXY.x - batMapView.radius * 0.6, vicXY.y - batMapView.radius * 0.6 - 10 );
+    this.laser1.setPos( vicXY.x - batMapView.radius * 0.6, vicXY.y - batMapView.radius * 0.6 - 10 );
+    this.laser1.thickness = 2;
+    this.laser1.color = "#FFFF00";
+    this.laserView1 = new LaserView( this.laser1 );    
+
+    this.laser2 = new Laser( vicXY.x - batMapView.radius * 0.6, vicXY.y - batMapView.radius * 0.6 + 10 );
+    this.laser2.setPos( vicXY.x - batMapView.radius * 0.6, vicXY.y - batMapView.radius * 0.6 + 10 );
+    this.laser2.thickness = 2;
+    this.laser2.color = "#FFFF00";
+    this.laserView2 = new LaserView( this.laser2 );    
+
+    this.v = batMapView.radius * 1.2 / 5.0;
+
+    this.color = 255;
+    
+
+
     if ( this.objs[0].leader == logic.battle.commander0 ) {
 	this.objs[0].setRotation( Math.atan2( this.dy, this.dx ) );
     } else {
@@ -321,10 +348,29 @@ var MeleeAttackAnimation = function( attacker, victim ) {
 	    this.objs[0].setOffset( - this.dx * 0.3, -this.dy * 0.3 );
 	} else if ( 40 == this.tick ) {
 	    this.objs[0].setOffset( 0, 0 );
+	} 
+
+	if ( this.tick > 40 && 0 == this.tick % 2 ) {
+	    this.color -= 15;
+	    this.laser.color = "rgb(" + 255 + "," + 
+		this.color + "," + "0" + ")";
+	    this.laser.shift( this.v, this.v );
+	    this.laser1.shift( this.v, this.v );
+	    this.laser2.shift( this.v, this.v );
 	}
     }
     this.onTerminate = function() {
 	this.objs[0].setRotation( 0 );
+
+	this.laser.removeInstance();
+	this.laser = null;
+	this.laserView = null;
+	this.laser1.removeInstance();
+	this.laser1 = null;
+	this.laserView1 = null;
+	this.laser2.removeInstance();
+	this.laser2 = null;
+	this.laserView2 = null;
 	new UnitAttackAnimation( this.objs[0], this.objs[1] );
     }
     this.init();
