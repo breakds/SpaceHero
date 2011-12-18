@@ -32,6 +32,7 @@ var BattleStatus = function() {
     this.rightPanel = null;
     this.leftUnitShown = null;
     this.rightUnitShow = null;
+    this.destination = -1;
 }
 
 
@@ -302,6 +303,7 @@ var Logic = function() {
 			pick = i;
 		    }
 		}
+		this.battle.destination = this.battle.attackable[pick].neighborID;
 		dispatcher.broadcast( { name: "UnitMove",
 					obj: obj,
 					u: this.battle.attackable[pick].u,
@@ -327,6 +329,10 @@ var Logic = function() {
 		    var path = new Array();
 		    var j = this.battle.attackable[i].neighborID;
 		    if ( j != -1 ) {
+			if ( -1 == this.battle.destination ) {
+			    return;
+			}
+			j = this.battle.destination;
 			while ( this.battle.reachable[j].pre != -1 ) {
 			    path.push( { u: this.battle.reachable[j].u,
 					 v: this.battle.reachable[j].v } );

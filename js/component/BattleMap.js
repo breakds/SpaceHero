@@ -175,14 +175,31 @@ var BattleHexagonView = function( m, radius ) {
 		     ang < Math.PI *5 / 6 ) {
 		    i = 5 - Math.floor( ( ang + Math.PI * 5 / 6 ) / Math.PI * 3 );
 		}
-		drawRotatedImage( ctx2d[1],
-				  resources.getResource( "attackIcon" ),
-				  Math.atan2( this.dy[i], this.dx[i] ) + Math.PI * 0.5,
-				  c.x + this.dx[i] * 0.5,
-				  c.y + this.dy[i] * 0.5,
-				  36,
-				  65,
-				  true );
+		var tarU = this.mouseOn.u + batMap.du[i];
+		var tarV = this.mouseOn.v + batMap.dv[i];
+		
+		/// Check Reachable
+		flag = false;
+		for ( var j=0; j<logic.battle.reachable.length; j++ ) {
+		    if ( logic.battle.reachable[j].u == tarU &&
+			 logic.battle.reachable[j].v == tarV ) {
+			logic.battle.destination = j;
+			flag = true;
+		    }
+		}
+		
+		if ( flag ) {
+		    drawRotatedImage( ctx2d[1],
+				      resources.getResource( "attackIcon" ),
+				      Math.atan2( this.dy[i], this.dx[i] ) + Math.PI * 0.5,
+				      c.x + this.dx[i] * 0.5,
+				      c.y + this.dy[i] * 0.5,
+				      36,
+				      65,
+				      true );
+		} else {
+		    logic.battle.destination = -1;
+		}
 	    }
 	} 
     }
@@ -664,10 +681,12 @@ var UnitAttackAnimation = function( attacker, victim, extra ) {
 	    this.objs[1].setOffset( this.shakeOffset, 0 );
 	    this.shakeOffset = -this.shakeOffset;
 	}
+	if ( 20 == this.tick ) {
+	    /// Attacking
+	    var damage = this.objs[1].underAttack( this.objs[0] );
+	}
     }
     this.onTerminate = function() {
-	/// Attacking
-	var damage = this.objs[1].underAttack( this.objs[0] );
 	/// Cleaning 
 	this.objs[1].setOffset( 0, 0 );
 	logic.battle.onAnimation = false;
