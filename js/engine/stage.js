@@ -78,7 +78,13 @@ var Stage = function()
 
     this.remove = function( view )
     {
-	this.viewObjs.splice( this.viewObjs.indexOf(view), 1 );
+	var idx = this.viewObjs.indexOf(view);
+	if ( -1 == idx ) {
+	    trace( "[Wrong] removing" );
+	    trace( view );
+	} else {
+	    this.viewObjs.splice( idx, 1 );
+	}
     }
 
 

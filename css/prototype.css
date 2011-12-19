@@ -19,27 +19,11 @@
     border: solid gray 1px;
 }
 
-.normaltext {
-    position:absolute;
-    left:200px;
-    top:200px;
-    z-index: 201;
-    width: 100px;
-    height: 50px;
-    color: #FFFFFF;
-    font-size: 10pt;
+.noIbar{
+    cursor: default;
 }
 
-.largetext {
-    position:absolute;
-    left:200px;
-    top:200px;
-    z-index: 201;
-    width: 100px;
-    height: 50px;
-    color: #FFFFFF;
-    font-size: 40pt;
-}
+
 
 canvas {
     border: solid gray 1px;
@@ -85,4 +69,39 @@ canvas {
     left: 0px;
     top: 0px;
     z-index: 100;
+}
+
+.menu {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+}
+
+.normaltext {
+    position: absolute;
+    left:0px;
+    top:0px;
+    text-align: left;
+    z-index: 201;
+    width: 100px;
+    height: 50px;
+    color: #FFFFFF;
+    font-size: 10pt;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+}
+
+.largetext {
+    position:absolute;
+    left:200px;
+    top:200px;
+    z-index: 201;
+    width: 100px;
+    height: 50px;
+    color: #FFFFFF;
+    font-size: 40pt;
+    -moz-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
 }

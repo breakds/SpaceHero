@@ -409,6 +409,13 @@ var CommanderMoveAnimation = function( commanderObj ) {
 	this.lifetime = commanderObj.path.length * 5;
     } else {
 	this.lifetime = commanderObj.AP * 5;
+	if ( 0 >= commanderObj.AP ) {
+	    var c = univMapView.getXYFromUV( commanderObj.u, commanderObj.v );
+	    new TimedBubble( new Bubble( 
+		"Ooops! Used up all my Action Points, sir!", "textfield1", 
+		universe, c.x, c.y,
+		160, 40 ), 100 );
+	}
     }
     this.onStart = function() {
 	logic.status.onAnimation ++;
