@@ -441,11 +441,6 @@ var CommanderMoveAnimation = function( commanderObj ) {
     this.special = false;
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
-	    /*
-	    this.objs[0].AP--;
-	    this.objs[0].setPos( this.objs[0].u + univMap.du[this.objs[0].path[0]],
-				 this.objs[0].v + univMap.dv[this.objs[0].path[0]] );
-	    */
 	    this.objs[0].setOrientation( this.objs[0].path[0] );
 	    if ( this.objs[0].stepForward() ) {
 		this.objs[0].path.splice(0,1);

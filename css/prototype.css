@@ -19,6 +19,28 @@
     border: solid gray 1px;
 }
 
+.normaltext {
+    position:absolute;
+    left:200px;
+    top:200px;
+    z-index: 201;
+    width: 100px;
+    height: 50px;
+    color: #FFFFFF;
+    font-size: 10pt;
+}
+
+.largetext {
+    position:absolute;
+    left:200px;
+    top:200px;
+    z-index: 201;
+    width: 100px;
+    height: 50px;
+    color: #FFFFFF;
+    font-size: 40pt;
+}
+
 canvas {
     border: solid gray 1px;
 }
