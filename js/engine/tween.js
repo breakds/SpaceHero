@@ -1,7 +1,9 @@
 var Tween = function() {
+    /*
     this.tick = 0;
     this.lifetime = 0;
     this.objs = new Array();
+    */
     this.onStart = function() {
 	return;
     }
@@ -22,6 +24,9 @@ var Tween = function() {
 	} else {
 	    this.next();
 	}
+    }
+    this.init = function() {
+	objectManager.objects.push( this );
     }
 }
 Tween.prototype = new GameObject;

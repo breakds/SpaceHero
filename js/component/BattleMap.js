@@ -624,6 +624,7 @@ var UnitMoveAnimation = function( obj, path, victim ) {
     this.objs.push( obj );
     this.path = path;
     this.lifetime = this.path.length * 20;
+    this.tick = 0;
     this.victim = victim
     this.onStart = function() {
 	logic.battle.onAnimation = true;
@@ -673,6 +674,7 @@ var UnitAttackAnimation = function( attacker, victim, extra ) {
     this.objs.push( victim );
     this.shakeOffset = -10;
     this.lifetime = 30;
+    this.tick = 0;
     this.onStart = function() {
 	logic.battle.onAnimation = true;
     }
@@ -705,6 +707,7 @@ var UnitTurnStartAnimation = function( obj ) {
     this.objs[0].selector.setIntv(1);
     this.scale = 0.9;
     this.lifetime = 30;
+    this.tick = 0;
     logic.battle.onAnimation = true;
     this.next = function() {
 	this.scale -= 0.02;
@@ -789,6 +792,7 @@ BattleReporter.prototype = new View();
 
 
 var ReporterAnimation = function() {
+    this.tick = 0;
     this.lifetime = 20;
     this.next = function() {
 	if ( game.stage == battlefield ) {

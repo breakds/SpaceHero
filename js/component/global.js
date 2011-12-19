@@ -2,7 +2,18 @@
 var cam = new Camera();
 
 
-
+/// experience
+expLevel = new Array( 0,
+		      1000,
+		      2000,
+		      3200,
+		      4600,
+		      6200,
+		      8000,
+		      10000,
+		      12200,
+		      14700 );
+		      
 
 /// Create Universe Stage
 var universe = new Stage();

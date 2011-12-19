@@ -23,6 +23,7 @@ var BattleStatus = function() {
     this.commander1 = null;
     this.unitViews = new Array();
     this.units = new Array();
+    this.initQuantity = new Array();
     this.turn = 0;
     this.currentUnitID = 0;
     this.reachable = new Array();
@@ -163,7 +164,7 @@ var Logic = function() {
 	    this.battle.unitViews.push( new BattleUnitView( units[i], 1 ) );
 	}
 
-	
+	/// Sort according 
 	for ( var i=0; i<this.battle.units.length-1; i++ ) {
 	    for ( var j=i+1; j<this.battle.units.length; j++ ) {
 		if ( this.battle.units[j].template.spd > 
@@ -177,6 +178,10 @@ var Logic = function() {
 		    this.battle.units[j] = tmp;
 		}
 	    }
+	}
+	this.battle.initQuantity = new Array();
+	for ( var i=0; i<this.battle.units.length; i++ ) {
+	    this.battle.initQuantity.push( this.battle.units[i].quantity );
 	}
 
 	
@@ -322,7 +327,6 @@ var Logic = function() {
     dispatcher.addListener( "UnitMove", this );
     this.onUnitMove = function( e ) {
 	if ( ! this.battle.onAnimation ) {
-	    
 	    for ( var i=0; i<this.battle.attackable.length; i++ ) {
 		if ( this.battle.attackable[i].u == e.u &&
 		     this.battle.attackable[i].v == e.v ) {
@@ -381,7 +385,18 @@ var Logic = function() {
 	}
 	this.battle.unitViews = new Array();
 	/// Remove Dead Units / restore HP
+	var exp0 = 0;
+	var exp1 = 0;
 	for ( var i=0; i<this.battle.units.length; i++ ) {
+	    if ( this.battle.units[i].leader == this.battle.commander1 ) {
+		trace( this.battle.initQuantity[i] +" * " +
+		       this.battle.units[i].template.expGain );
+		exp0 += this.battle.initQuantity[i] * 
+		    this.battle.units[i].template.expGain;
+	    } else {
+		exp1 += this.battle.initQuantity[i] * 
+		    this.battle.units[i].template.expGain;
+	    }
 	    if ( ! this.battle.units[i].active ) {
 		this.battle.units[i].terminate();
 	    } else {
@@ -398,6 +413,15 @@ var Logic = function() {
 	this.battle.rightPanel = null;
 	game.setStage( universe );
 	new CommanderDeathAnimation( e.loser );
+	if ( this.battle.commander0 != e.loser ) {
+	    trace( this.battle.commander0.name + " gains " + 
+		   exp0 + " experience." );
+	    this.battle.commander0.tryLevelUp( exp0 );
+	} else {
+	    trace( this.battle.commander1.name + " gains " + 
+		   exp1 + " experience." );
+	    this.battle.commander1.tryLevelUp( exp1 );
+	}
     }
 }
 Logic.prototype = new GameObject;

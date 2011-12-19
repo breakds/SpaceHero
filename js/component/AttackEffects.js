@@ -71,6 +71,7 @@ var MissileAttackAnimation = function( attacker, victim ) {
     this.vx = dx / frames;
     this.vy = dy / frames;
     this.lifetime = 5 * frames;
+    this.tick = 0;
     
     this.missile = new Missile();
     this.missile.setPos( atkXY.x, atkXY.y );
@@ -109,6 +110,7 @@ var FlameAttackAnimation = function( attacker, victim ) {
     this.objs.push( attacker );
     this.objs.push( victim );
     this.lifetime = 80;
+    this.tick = 0;
 
     var atkXY = batMapView.getXYFromUV( attacker.u, attacker.v );
     var vicXY = batMapView.getXYFromUV( victim.u, victim.v );
@@ -208,6 +210,7 @@ var SurroundingAttackAnimation = function( attacker ) {
 	}
     }
     this.lifetime = 30;
+    this.tick = 0;
     logic.battle.onAnimation = true;
     this.onTerminate = function() {
 	for ( var i=0; i<this.rings.length; i++ ) {
@@ -281,6 +284,7 @@ var LaserAttackAnimation = function( attacker, victim ) {
     this.vx = dx / frames;
     this.vy = dy / frames;
     this.lifetime = 2 * frames;
+    this.tick = 0;
     this.color = 255;
     this.laser = new Laser( atkXY.x, atkXY.y );
     this.laser.setPos( atkXY.x, atkXY.y );
@@ -322,7 +326,7 @@ var MeleeAttackAnimation = function( attacker, victim ) {
     this.objs.push( attacker );
     this.objs.push( victim );
     this.lifetime = 50;
-
+    this.tick = 0;
     var atkXY = batMapView.getXYFromUV( attacker.u, attacker.v );
     var vicXY = batMapView.getXYFromUV( victim.u, victim.v );
     this.dx = vicXY.x - atkXY.x;

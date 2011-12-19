@@ -1,6 +1,6 @@
 var UnitTypes = new Array();
 var BattleUnitTemplate = function( typeName, level, hp, att, def, spd, 
-				   price, dmgMax, dmgMin, production, value,
+				   price, dmgMax, dmgMin, production, value, exp,
 				   image, imageOnSelect ) {
     this.image = image;
     this.imageOnSelect = imageOnSelect;
@@ -14,6 +14,7 @@ var BattleUnitTemplate = function( typeName, level, hp, att, def, spd,
     this.dmgMax = dmgMax;
     this.dmgMin = dmgMin;
     this.production = production;
+    this.expGain = exp;
     /// For AI:
     this.value = value;
     this.archer = false;
@@ -39,7 +40,8 @@ var Fighter = new BattleUnitTemplate( "Fighter", 1,
 				      3, /// max damage 
 				      1, /// min damage
 				      20, /// Production
-				      95, /// Value 
+				      95, /// Value
+				      8, /// Exp
 				      resources.getResource( "fighterImg" ),
 				      resources.getResource( "fighterSelectImg" )
 				    );
@@ -53,7 +55,8 @@ var Gunboat = new BattleUnitTemplate( "Gunboat", 1,
 				      2, /// max damage 
 				      1, /// min damage
 				      16, /// Production
-				      66, /// Value
+				      80, /// Value
+				      8, /// Exp
 				      resources.getResource( "gunboatImg" ),
 				      resources.getResource( "gunboatSelectImg" )
 				    );
@@ -69,6 +72,7 @@ var Warship = new BattleUnitTemplate( "Warship", 2,
 				      3, /// min damage
 				      7, /// Production
 				      448, /// Value
+				      80, /// Exp
 				      resources.getResource( "warshipImg" ),
 				      resources.getResource( "warshipSelectImg" )
 				    );
@@ -79,10 +83,11 @@ var Sniper = new BattleUnitTemplate( "Sniper", 2,
 				     5, /// Defence
 				     7, /// spd
 				     225, /// price
-				     9, /// max damage 
+				     8, /// max damage 
 				     5, /// min damage
 				     7, /// Production
-				     331, /// Value
+				     360, /// Value
+				     65, /// Exp
 				     resources.getResource( "sniperImg" ),
 				     resources.getResource( "sniperSelectImg" )
 				   );
@@ -100,6 +105,7 @@ var Cruiser = new BattleUnitTemplate( "Cruiser", 3,
 				      18, /// min damage
 				      2, /// Production
 				      1720, /// Value
+				      250, // Exp
 				      resources.getResource( "cruiserImg" ),
 				      resources.getResource( "cruiserSelectImg" )
 				    );
@@ -115,6 +121,7 @@ var Warrior = new BattleUnitTemplate( "Warrior", 3,
 				      10, /// min damage
 				      2, /// Production
 				      1669, /// Value
+				      220, /// Exp
 				      resources.getResource( "warriorImg" ),
 				      resources.getResource( "warriorSelectImg" )
 				    );
@@ -132,6 +139,7 @@ var Cannon = new BattleUnitTemplate( "Cannon", 4,
 				     20, /// min damage
 				     1, /// Production
 				     4000, /// Value
+				     610, /// Exp
 				     resources.getResource( "cannonImg" ),
 				     resources.getResource( "cannonSelectImg" )
 				   );
@@ -149,6 +157,7 @@ var Dragon = new BattleUnitTemplate( "Dragon", 6,
 				     70, /// min damage
 				     1, /// Production
 				     78855, /// Value
+				     5000, /// Exp
 				     resources.getResource( "dragonImg" ),
 				     resources.getResource( "dragonSelectImg" )
 				   );
@@ -322,6 +331,7 @@ var Commander = function( title, name, group, u ,v  ) {
     this.title = title;
     this.name = name;
     this.type = "Commander";
+    this.exp = 0;
 
     this.maxLen = 6;
     this.curLen = 0;
@@ -448,6 +458,31 @@ var Commander = function( title, name, group, u ,v  ) {
 	univMap.clearCell( this.u, this.v );
 	forces[this.group].removeCommander( this );
 	this.removeInstance();
+    }
+
+
+
+    this.levelUp = function() {
+	this.level += 1;
+	this.att += 1 + Math.floor( Math.random() * 3 );
+	this.def += 1 + Math.floor( Math.random() * 3 );
+	if ( 1 == this.level % 2 && this.maxAP < 10 ) {
+	    this.maxAP += 1;
+	}
+	this.requestUpdate();
+	new LevelUpAnimation( this );
+    }
+    this.tryLevelUp = function( exp ) {
+	var exp1 = exp;
+	if ( this.level < expLevel.length ) {
+	    while ( this.exp + exp1 > expLevel[this.level] &&
+		    this.level < expLevel.length ) {
+		exp1 = this.exp + exp1 - expLevel[this.level];
+		this.exp = expLevel[this.level];
+		this.levelUp();
+	    }
+	    this.exp += exp1;
+	}
     }
 
     /// Coordinates

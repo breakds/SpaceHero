@@ -36,16 +36,21 @@ var GameObject = function() {
 var ObjectManager = function() {
     this.objects = new Array();
     this.updateAll = function() {
-	for ( idx in this.objects ) {
-	    //	    trace( "Updating "+this.objects[idx] );
+	for ( var idx=0; idx<this.objects.length; idx++ ) {
 	    this.objects[idx].update();
 	}
     }
     this.remove = function( obj ) {
-	this.objects.splice( this.objects.indexOf(obj), 1 );
+	var idx = this.objects.indexOf(obj);
+	if ( idx != -1 ) {
+	    this.objects.splice( idx, 1 );
+	} else {
+	    trace( "wrong!" );
+	    trace( obj );
+	}
     }
     this.reset = function() {
 	this.objects = new Array();
     }
 }
-var  objectManager = new ObjectManager();
+var objectManager = new ObjectManager();

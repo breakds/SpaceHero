@@ -438,6 +438,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
 				    visiting: this.objs[0] } );
 	}
     }
+    this.tick = 0;
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
 	    /*
@@ -461,7 +462,7 @@ var CommanderDeathAnimation = function( cmder ) {
     this.objs = new Array();
     this.objs.push( cmder );
     this.lifetime = 40;
-    
+    this.tick = 0;
     this.onStart = function() {
 	logic.status.onAnimation ++;
     }
@@ -594,6 +595,80 @@ var UniverseLogicView = function( logicModel ) {
     }
 }
 UniverseLogicView.prototype = new View;
+
+
+var LevelUpSub = function( x, y ) {
+    this.views = new Array();
+    this.frame = 0;
+    this.x = x;
+    this.y = y;
+    this.rotation = 0;
+    this.tick = 0;
+    this.setPos = function( x, y ) {
+	this.x = x;
+	this.y = y;
+	this.requestUpdate();
+    }
+    this.shift = function( dx, dy ) {
+	this.x += dx;
+	this.y += dy;
+	this.requestUpdate();
+    }
+    this.setAngle = function( ang ) {
+	this.rotation = ang;
+	this.requestUpdate();
+    }
+    this.init();
+}
+LevelUpSub.prototype = new GameObject;
+
+var LevelUpSubView = function( m ) {
+    this.setModel( m );
+    this.register( universe );
+    this.draw = function( ctx ) {
+	if ( ctx == ctxMenu ) {
+	    ctx.fillStyle = "#0066FF";
+	    ctx.textAlign = "center";
+	    ctx.textBaseline = "alphabetic";
+	    ctx.fillText( "Level Up", this.model.x, this.model.y );
+	}
+    }
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxMenu } );	
+    }
+    this.requestUpdate();
+}
+LevelUpSubView.prototype = new View;
+
+
+var LevelUpAnimation = function( obj ) {
+    this.objs = new Array();
+    this.objs.push( obj );
+    
+
+    this.levelup = new LevelUpSub();
+    var c = univMapView.getXYFromUV( obj.u, obj.v );
+    this.levelup.setPos( c.x, c.y );
+    this.levelupView = new LevelUpSubView( this.levelup );
+
+
+    this.lifetime = 50;
+    this.tick = 0;
+    this.init();
+    this.next = function() {
+	if ( 0 == this.tick % 5 ) {
+	    this.levelup.shift( 0, -2 );
+	}
+    }
+    
+    this.onTerminate = function() {
+	this.levelup.removeInstance();
+	this.levelup = null;
+	this.levelupView = null;
+    }
+}
+LevelUpAnimation.prototype = new Tween;
 
 
 

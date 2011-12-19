@@ -317,7 +317,7 @@ var HexCellUnveilAnimation = function( hexmap, u, v ) {
     this.angle = 0.0;
     this.u = u;
     this.v = v;
-    
+    this.tick = 0;
     this.onTerminate = function() {
 	this.objs[0].unveilAnimations.splice(
 	    this.objs[0].unveilAnimations.indexOf( this ), 1
