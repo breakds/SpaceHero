@@ -449,7 +449,12 @@ var Commander = function( title, name, group, u ,v  ) {
 	return power;
     }
     this.updatePath = function() {
-	this.path = univMap.floodFill( this.u, this.v, this.target.u, this.target.v );
+	obj = univMap.getMap( this.target.u, this.target.v );
+	if ( 0 == obj ) {
+	    this.path = univMap.floodFill( this.u, this.v, this.target.u, this.target.v );
+	} else if ( "Commander" == obj.type && obj.group != this.group ) {
+	    this.path = univMap.floodFill2( this.u, this.v, this.target.u, this.target.v );
+	}
     }
     this.terminate = function() {
 	if ( this == logic.status.onSelect ) {

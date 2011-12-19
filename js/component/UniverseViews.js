@@ -308,6 +308,7 @@ var HexagonGridView = function( m, height, width, margin )
 	    obj = status.onSelect;
 	    if ( "Commander" == obj.type && 0 == obj.group )
 	    {
+		/*
 		if ( status.attackIcon.u != -1 ) {
 		    var enemy = univMap.getMap( status.attackIcon.u,
 						status.attackIcon.v );
@@ -328,6 +329,7 @@ var HexagonGridView = function( m, height, width, margin )
 					   commander0: obj,
 					   commander1: enemy } );
 		}
+		*/
 		if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v )
 		{
 		    dispatcher.broadcast( { name: "CommanderMove" } );
@@ -352,6 +354,7 @@ var HexagonGridView = function( m, height, width, margin )
 	    status.attackIcon.u = -1;
 	    this.highlightCoor.u = uv.u;
 	    this.highlightCoor.v = uv.v;
+	    /*
 	    if ( univMap.available( uv.u, uv.v ) && 
 		 !univMap.veil[uv.u][uv.v] ) {
 		if(status.onSelect && "Commander" == status.onSelect.type && 0 == status.onSelect.group)
@@ -370,6 +373,7 @@ var HexagonGridView = function( m, height, width, margin )
 		    logic.requestUpdate();
 		}
 	    }
+	    */
 	    this.requestUpdate();
 	}
     }
@@ -433,12 +437,23 @@ var CommanderMoveAnimation = function( commanderObj ) {
     }
     this.onTerminate = function() {
 	logic.status.onAnimation --;
-	if ( 1 == univMap.terran[this.objs[0].u][this.objs[0].v] ) {
+	if ( this.special ) {
+	    var enemy = univMap.getMap( 
+		this.objs[0].u + univMap.du[this.objs[0].path[0]],
+		this.objs[0].v + univMap.dv[this.objs[0].path[0]] );
+	    if ( enemy.group != this.objs[0].group ) {
+		dispatcher.broadcast( {name: "StartBattle",
+				       commander0: this.objs[0],
+				       commander1: enemy } );
+	    }
+	    this.objs[0].path = new Array();
+	} else if ( 1 == univMap.terran[this.objs[0].u][this.objs[0].v] ) {
 	    dispatcher.broadcast( { name: "EnterSolarSystem",
 				    visiting: this.objs[0] } );
 	}
     }
     this.tick = 0;
+    this.special = false;
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
 	    /*
@@ -447,9 +462,12 @@ var CommanderMoveAnimation = function( commanderObj ) {
 				 this.objs[0].v + univMap.dv[this.objs[0].path[0]] );
 	    */
 	    this.objs[0].setOrientation( this.objs[0].path[0] );
-	    this.objs[0].stepForward();
-	    this.objs[0].path.splice(0,1);
-	    logic.requestUpdate();
+	    if ( this.objs[0].stepForward() ) {
+		this.objs[0].path.splice(0,1);
+		logic.requestUpdate();
+	    } else {
+		this.special = true;
+	    }
 	}
     }
     this.init();
@@ -528,6 +546,26 @@ var UniverseLogicView = function( logicModel ) {
 			u += univMap.du[obj.path[i]];
 			v += univMap.dv[obj.path[i]];
 			var c = univMapView.getXYFromUV( u, v );
+			var enemy = univMap.getMap( u, v );
+			if ( 0 != enemy && enemy.group != 0 ) {
+			    drawRotatedImage( ctx2d[1],
+					      resources.getResource( "attackIcon" ),
+					      - Math.PI * 0.75,
+					      c.x,
+					      c.y,
+					      26,
+					      52,
+					      true );
+			    drawRotatedImage( ctx2d[1],
+					      resources.getResource( "attackIcon" ),
+					      Math.PI * 0.75,
+					      c.x,
+					      c.y,
+					      26,
+					      52,
+					      true );
+			    return;
+			}
 			if ( i < obj.AP ) {
 			    if ( i != obj.path.length-1 ) {
 				drawRotatedImage( ctx2d[1],
@@ -656,6 +694,7 @@ var LevelUpAnimation = function( obj ) {
     this.lifetime = 50;
     this.tick = 0;
     this.init();
+    logic.status.onAnimation++;
     this.next = function() {
 	if ( 0 == this.tick % 5 ) {
 	    this.levelup.shift( 0, -2 );
@@ -666,6 +705,7 @@ var LevelUpAnimation = function( obj ) {
 	this.levelup.removeInstance();
 	this.levelup = null;
 	this.levelupView = null;
+	logic.status.onAnimation--;
     }
 }
 LevelUpAnimation.prototype = new Tween;
