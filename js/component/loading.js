@@ -17,6 +17,10 @@ resources.addImage( "img/projector_right.png", "projectorRight");
 resources.addImage( "img/planetMenu_right.png", "planetMenuRight");
 resources.addImage( "img/planetMenuProfilePic.png", "pmProfilePic");
 resources.addImage( "img/attack.png", "attackIcon");
+resources.addImage( "img/minestar.png", "mineStarImg");
+resources.addImage( "img/redflag.png", "redFlag" );
+resources.addImage( "img/greenflag.png", "greenFlag" );
+resources.addImage( "img/blueflag.png", "blueFlag" );
 /// Battle Units
 resources.addImage( "img/fighter.png", "fighterImg" );
 resources.addImage( "img/fighter_select.png", "fighterSelectImg" );

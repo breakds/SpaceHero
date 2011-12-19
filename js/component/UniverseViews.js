@@ -118,12 +118,32 @@ var HexagonGridView = function( m, height, width, margin )
 		y = this.top + this.model.lower[u] * smallerRadius;
 		for ( var v=this.model.lower[u]; v<=this.model.upper[u]; v+=2 )
 		{
-		    if ( 1 == this.model.terran[u][v] ) {
-			ctxBg2d.drawImage( resources.getResource( "solarIconImg" ), 
-					   x - this.radius, 
-					   y - this.radius * 0.625, 
-					   this.radius * 2.0,
-					   this.radius * 1.25 );
+		    if ( (!this.model.veil[u][v]) && 
+			 (0 != this.model.terran[u][v] )) {
+			     if ( 1 == this.model.terran[u][v] ) {
+				 ctxBg2d.drawImage( resources.getResource( "solarIconImg" ), 
+						    x - this.radius, 
+						    y - this.radius * 0.625, 
+						    this.radius * 2.0,
+						    this.radius * 1.25 );
+			     } else if ( "Mine" == this.model.terran[u][v].type ) {
+				 ctxBg2d.drawImage( resources.getResource( "mineStarImg" ), 
+						    x - this.radius * 0.9,
+						    y - this.radius * 0.9,
+						    this.radius * 1.8,
+						    this.radius * 1.8 );
+				 if ( this.model.terran[u][v].landlord ) {
+				     ctxBg2d.drawImage( 
+					 this.model.terran[u][v].landlord.colorFlag, 
+					 x - this.radius * 0.5,
+					 y - this.radius * 0.8,
+					 this.radius,
+					 this.radius  
+				     );
+				 }
+
+
+			     }
 		    }
 		    y += smallerRadius * 2;
 		}
@@ -308,28 +328,6 @@ var HexagonGridView = function( m, height, width, margin )
 	    obj = status.onSelect;
 	    if ( "Commander" == obj.type && 0 == obj.group )
 	    {
-		/*
-		if ( status.attackIcon.u != -1 ) {
-		    var enemy = univMap.getMap( status.attackIcon.u,
-						status.attackIcon.v );
-		    var flag = false;
-		    for ( var j=0; j<6; j++ ) {
-			if ( obj.u + univMap.du[j] == status.attackIcon.u &&
-			     obj.v + univMap.dv[j] == status.attackIcon.v ) {
-			    flag = true;
-			}
-		    }
-
-		    if ( !flag ) {
-			return;
-		    }
-
-		    status.attackIcon.u = -1;
-		    dispatcher.broadcast( {name: "StartBattle",
-					   commander0: obj,
-					   commander1: enemy } );
-		}
-		*/
 		if ( uv.u == status.onSelect.target.u && uv.v == status.onSelect.target.v )
 		{
 		    dispatcher.broadcast( { name: "CommanderMove" } );
@@ -354,26 +352,6 @@ var HexagonGridView = function( m, height, width, margin )
 	    status.attackIcon.u = -1;
 	    this.highlightCoor.u = uv.u;
 	    this.highlightCoor.v = uv.v;
-	    /*
-	    if ( univMap.available( uv.u, uv.v ) && 
-		 !univMap.veil[uv.u][uv.v] ) {
-		if(status.onSelect && "Commander" == status.onSelect.type && 0 == status.onSelect.group)
-		{
-		    status.onSelect.target.u = uv.u;
-		    status.onSelect.target.v = uv.v;
-		    status.onSelect.updatePath();
-		    status.showArrows = true;
-		    logic.requestUpdate();
-		}
-	    } else if ( !univMap.veil[uv.u][uv.v] ) {
-		obj = univMap.getMap( uv.u, uv.v );
-		if ( "Commander" == obj.type && obj.group != 0 ) {
-		    status.attackIcon.u = uv.u;
-		    status.attackIcon.v = uv.v;
-		    logic.requestUpdate();
-		}
-	    }
-	    */
 	    this.requestUpdate();
 	}
     }
@@ -437,6 +415,13 @@ var CommanderMoveAnimation = function( commanderObj ) {
     }
     this.onTerminate = function() {
 	logic.status.onAnimation --;
+	
+	var terran = univMap.terran[this.objs[0].u][this.objs[0].v];
+	if ( 0 != terran ) {
+	    if ( "Mine" == terran.type ) {
+		terran.onOccupy( this.objs[0] );
+	    }
+	}
 	if ( this.special ) {
 	    var enemy = univMap.getMap( 
 		this.objs[0].u + univMap.du[this.objs[0].path[0]],
@@ -447,7 +432,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
 				       commander1: enemy } );
 	    }
 	    this.objs[0].path = new Array();
-	} else if ( 1 == univMap.terran[this.objs[0].u][this.objs[0].v] ) {
+	} else if ( 1 == terran ) {
 	    dispatcher.broadcast( { name: "EnterSolarSystem",
 				    visiting: this.objs[0] } );
 	}

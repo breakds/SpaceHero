@@ -1,6 +1,6 @@
 /// Create Forces
-new Force( "The Republic", "Player"  );
-new Force( "The Empire", "AI" );
+new Force( "The Republic", "Player", "blue"  );
+new Force( "The Empire", "AI", "red" );
 
 
 /// Set Current Rendering Stage
@@ -17,6 +17,7 @@ var reporterAnim = new ReporterAnimation();
 var univMap = new HexagonMap( 14, 18 );
 var univMapView = new HexagonGridView( univMap, 750, 750, 50 );
 univMap.addSolarSystem( 2, 3);
+var mineStar = new MineStar( 2, 11 );
 
 
 

@@ -1,5 +1,5 @@
 var forces = new Array();
-var Force = function( name, type ) {
+var Force = function( name, type, color ) {
     this.groupID = forces.length;
     forces.push( this );
     /*
@@ -8,6 +8,8 @@ var Force = function( name, type ) {
     this.type = type;
     this.name = name;
     this.gold = 5000;
+    this.colorFlag = resources.getResource( color + "Flag" );
+    trace( this.colorFlag );
 
     /// Commanders that belongs to this force
     this.commanders = new Array();

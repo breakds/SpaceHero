@@ -61,11 +61,6 @@ var HexagonMap = function( rows, cols ) {
     }
 
     /// Terran
-    /*
-      0 - Ordinary Space
-      1 - Solar System
-      2 - Mine Nebula
-     */
     this.terran = new Array();
     for ( var i=0; i<this.cols; i++ ) {
 	this.terran[i] = new Array();
@@ -80,9 +75,9 @@ var HexagonMap = function( rows, cols ) {
 	}
     }
 
-    this.addMineNebula = function( u, v ) {
+    this.addMineStar = function( u, v, mine ) {
 	if ( this.inMap( u, v ) ) {
-	    this.terran[u][v] = 2;
+	    this.terran[u][v] = mine;
 	}
     }
 
