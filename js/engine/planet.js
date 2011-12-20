@@ -31,7 +31,8 @@ var PlanetView = function( m ) {
 	this.circleColorBuffer.numItems = resolution;
     
     this.draw = function()
-	{
+    {
+	    if ( this.model.solar.active ) {
 		setShader(notShaderProgram);
 		gl.bindBuffer(gl.ARRAY_BUFFER, this.circleVertexBuffer);
 		gl.vertexAttribPointer(notShaderProgram.vertexPositionAttribute, this.circleVertexBuffer.itemSize, gl.FLOAT, false, 0, 0);
@@ -47,13 +48,15 @@ var PlanetView = function( m ) {
 			this.model.atmosModel.update();
 			this.model.atmosModel.draw();
 		}
+	    }
     }
 }
 PlanetView.prototype = new View();
 
 
-var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAround, planetInfo)
+var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAround, planetInfo, solar)
 {
+    this.solar = solar;
 	this.hasFactory;
 	if (planetInfo == null) {
 		this.hasFactory = false;
@@ -109,6 +112,6 @@ var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAro
     /// Add a View:
     this.addView( new PlanetView( this ) );
 	
-	this.buildings = new Array(); // array of strings that list the buildings on this planet
+    this.buildings = new Array(); // array of strings that list the buildings on this planet
 }
 Planet.prototype = new GameObject();

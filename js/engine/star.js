@@ -9,27 +9,29 @@ var StarSolarView = function( m ) {
     
     this.draw = function()
     {
-	//tilt camera and then draw
-	if(this.left == 1)
-	{
-	    cam.circleZ();
+	if ( this.model.active ) {
+	    //tilt camera and then draw
+	    if(this.left == 1)
+	    {
+		cam.circleZ();
+	    }
+	    if(this.right == 1)
+	    {
+		cam.circleNZ();
+	    }
+	    if(this.up == 1)
+	    {
+		cam.rotateUp();
+	    }
+	    if(this.down == 1)
+	    {
+		cam.rotateDown();
+	    }
+	    this.model.starModel.draw();
+	    this.model.starModel2.draw(); //star cloud
+	    starfield.draw();
+	    cam.update();
 	}
-	if(this.right == 1)
-	{
-	    cam.circleNZ();
-	}
-	if(this.up == 1)
-	{
-	    cam.rotateUp();
-	}
-	if(this.down == 1)
-	{
-	    cam.rotateDown();
-	}
-	this.model.starModel.draw();
-	this.model.starModel2.draw(); //star cloud
-	starfield.draw();
-	cam.update();
     }
     
     this.onKeyDown = function(key)
@@ -216,7 +218,7 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     
     /// do init a game object before using it
     this.init();
-    this.active = true;
+    this.active = false;
     
     
     this.update = function()
@@ -235,7 +237,7 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     var textures1 = ["testPlanet.png", "planet2.png", "planet9.png", "planet7.png"]; // habitable
     var textures2 = ["planet3.png", "planet4.png", "planet5.png", "planet6.png", "planet8.png", "planet10.png", "planet11.png", "planet12.png"]; // barren 68 10 11 12
     
-    var planet2 = new Planet(textures1[Math.floor(Math.random()*textures1.length)], "clouds.png", -8, 0, -20, 1, radii2[0], this, new PlanetInfo(null, "Joe"));
+    var planet2 = new Planet(textures1[Math.floor(Math.random()*textures1.length)], "clouds.png", -8, 0, -20, 1, radii2[0], this, new PlanetInfo(null, "Joe"), this );
     planet2.orbitVelocity = 0.003 / planet2.orbitRadius;
     this.planets.push(planet2); 
     
@@ -244,7 +246,7 @@ var Star = function(texture, x, y, z, radius, u, v ) {
 	var x = Math.random();
 	if(x > 0.3) // 50% chance of a planet in each orbit
 	{
-	    var planet = new Planet(textures2[Math.floor(Math.random()*textures2.length)], null, -8, 0, -20, (Math.random() * 1.5) + 0.5, radii[i], this, null);
+	    var planet = new Planet(textures2[Math.floor(Math.random()*textures2.length)], null, -8, 0, -20, (Math.random() * 1.5) + 0.5, radii[i], this, null, this );
 	    planet.orbitVelocity = 0.003 / planet.orbitRadius;
 	    this.planets.push(planet);
 	}
@@ -484,6 +486,7 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 
     this.onLeftMouseDown = function( e ) {
 	if (that.active) {
+	    planetMenu.star.active = false;
 	    planetMenu.commanderPanel.removeInstance();
 	    game.setStage( universe );
 	}

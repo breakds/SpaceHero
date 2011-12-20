@@ -24,7 +24,7 @@ var mineStar = new MineStar( 2, 11 );
 new Star("star1.png", 0, 0, 0, 2, 2, 3 );
 stars[0].setOwner( forces[0] );
 new Star("star1.png", 0, 0, 0, 2, 2, 9 );
-stars[1].setOwner( forces[1] );
+stars[1].setOwner( forces[0] );
 
 
 

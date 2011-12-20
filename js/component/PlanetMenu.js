@@ -1072,6 +1072,7 @@ var PlanetMenu = function() {
     dispatcher.addListener( "EnterSolarSystem", this );
     this.onEnterSolarSystem = function( e ) {
 	this.star = e.star;
+	this.star.active = true;
 	this.commanderPanel = new CommanderInfoPanel( 
 	    this.star.visiting,
 	    300, 
