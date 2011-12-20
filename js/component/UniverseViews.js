@@ -384,7 +384,7 @@ var CommanderUniverseView = function( commander ) {
 	    var size = univMapView.radius * 1.90 * this.model.scale;
 	    if ( this.model == logic.status.onSelect ) {
 		drawRotatedImage( ctx2d[0],
-				  resources.getResource( "commanderSelectImg" ),
+				  resources.getResource( "commander" + this.model.group +"SelectImg" ),
 				  Math.PI * 2 / 6 * this.model.orientation,
 				  c.x,
 				  c.y,

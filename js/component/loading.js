@@ -1,7 +1,8 @@
 /// Resources
-resources.addImage( "img/commander.png", "commander0Img" );
+resources.addImage( "img/commander0.png", "commander0Img" );
 resources.addImage( "img/commander1.png", "commander1Img" );
-resources.addImage( "img/commanderSelect.png", "commanderSelectImg" );
+resources.addImage( "img/commander0select.png", "commander0SelectImg" );
+resources.addImage( "img/commander1select.png", "commander1SelectImg" );
 resources.addImage( "img/greenarrow.png", "greenArrowImg" );
 resources.addImage( "img/target.png", "targetImg" );
 resources.addImage( "img/shieldicon.png", "shieldIcon" );
