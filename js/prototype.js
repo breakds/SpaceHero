@@ -20,8 +20,17 @@ var playerForceView = new ForceUniverseView( forces[0], 800, 120 );
 /// Create Universe Map
 var univMap = new HexagonMap( 14, 18 );
 var univMapView = new HexagonGridView( univMap, 750, 750, 50 );
-univMap.addSolarSystem( 2, 3);
 var mineStar = new MineStar( 2, 11 );
+new Star("star1.png", 0, 0, 0, 2, 2, 3 );
+stars[0].setOwner( forces[0] );
+new Star("star1.png", 0, 0, 0, 2, 2, 9 );
+stars[1].setOwner( forces[1] );
+
+
+
+var starfield = new StarField();
+cam.viewMode = "star";
+cam.viewObject = stars[0];
 
 
 

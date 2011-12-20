@@ -122,7 +122,7 @@ var Logic = function() {
 
     dispatcher.addListener( "EnterSolarSystem", this );
     this.onEnterSolarSystem = function( e ) {
-	testStar.visiting = e.visiting;
+	e.star.visiting = e.visiting;
 	game.setStage( solarSystem );
     }
 
@@ -412,7 +412,9 @@ var Logic = function() {
 	this.battle.leftPanel = null;
 	this.battle.rightPanel = null;
 	game.setStage( universe );
-	new CommanderDeathAnimation( e.loser );
+	if ( "defender" != e.loser.type ) {
+	    new CommanderDeathAnimation( e.loser );
+	}
 	if ( this.battle.commander0 != e.loser ) {
 	    trace( this.battle.commander0.name + " gains " + 
 		   exp0 + " experience." );
@@ -421,6 +423,38 @@ var Logic = function() {
 	    trace( this.battle.commander1.name + " gains " + 
 		   exp1 + " experience." );
 	    this.battle.commander1.tryLevelUp( exp1 );
+	}
+
+	if ( "defender" == e.loser.type ) {
+	    if ( this.battle.commander0 != e.loser ) {
+		e.loser.star.setOwner( forces[ this.battle.commander0.group] );
+		if ( 0 == this.battle.commander0.group ) {
+		    var c = univMapView.getXYFromUV( 
+			this.battle.commander0.u,
+			this.battle.commander0.v );
+		    new TimedBubble( new Bubble( 
+			"Captured a new Solar System, Sir!", "textfield1", 
+			universe, c.x, c.y,
+			160, 40 ), 100 );
+		}
+	    } else {
+		e.loser.star.setOwner( forces[ this.battle.commander1.group] );
+		if ( 0 == this.battle.commander1.group ) {
+		    var c = univMapView.getXYFromUV( 
+			this.battle.commander0.u,
+			this.battle.commander0.v );
+		    new TimedBubble( new Bubble( 
+			"Captured a new Solar System, Sir!", "textfield1", 
+			universe, c.x, c.y,
+			160, 40 ), 100 );
+		}
+	    }
+	}
+	if ( "defender" == this.battle.commander0.type ) {
+	    this.battle.commander0.terminate();
+	}
+	if ( "defender" == this.battle.commander1.type ) {
+	    this.battle.commander1.terminate();
 	}
     }
 }

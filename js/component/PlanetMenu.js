@@ -97,12 +97,12 @@ var PlanetMenuView = function( m ) {
     this.widgets.push(new planetMenuExitButton("Exit", this.menu1xPos + 190, this.menu1yPos + 580));
     this.creditWidget = new planetMenuCredits("Credits: ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney);
     
-    this.shipYardWidgets.push(new planetMenuButton("Fighter                      90", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", 90, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Gunboat                    66", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", 66, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Warship                   448", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", 448, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Sniper                       331", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", 331, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Cruiser                   1720", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", 1720, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Warrior                  1669", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", 1669, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Fighter                      "+ Fighter.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", Fighter.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Gunboat                    "+Gunboat.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", Gunboat.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Warship                   "+Warship.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", Warship.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Sniper                       "+Sniper.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", Sniper.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Cruiser                   "+Cruiser.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", Cruiser.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Warrior                  "+Warrior.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", Warrior.price, "shipyard" ));
     this.shipYardWidgets.push(new planetMenuButton("Miner                          50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50, "shipyard" ));
     
     this.factoryWidgets.push(new planetMenuButton("ShipYard                      50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50, "factory" ));
@@ -235,35 +235,6 @@ var PlanetMenuView = function( m ) {
 	that.state = 1;
 	that.creditWidget.money = e.force.gold;
 	that.infoWidget.updatePlanetInfo(e.planet.planetInfo.name, e.planet.planetInfo.structureList, e.force.name, e.commander.name);
-	/*
-	for (var i = 0; i < that.currentWidgetList.length; i++) {
-	    that.currentWidgetList[i].active = true;
-	}
-	for (var i = 0; i < that.tabWidgets.length; i++) {
-	    that.tabWidgets[i].active = true;
-	}
-	*/
-	dispatcher.broadcast( { name: "SetShipQuantity",
-				type: "fighter",
-				quant: e.ss.quantities[0]} );
-	dispatcher.broadcast( { name: "SetShipQuantity",
-				type: "gunboat",
-				quant: e.ss.quantities[1]} );
-	dispatcher.broadcast( { name: "SetShipQuantity",
-				type: "warship",
-				quant: e.ss.quantities[2]} );
-	dispatcher.broadcast( { name: "SetShipQuantity",
-				type: "sniper",
-				quant: e.ss.quantities[3]} );
-	dispatcher.broadcast( { name: "SetShipQuantity",
-				type: "cruiser",
-				quant: e.ss.quantities[4]} );
-	dispatcher.broadcast( { name: "SetShipQuantity",
-				type: "warrior",
-				quant: e.ss.quantities[5]} );
-	dispatcher.broadcast( { name: "SetShipQuantity",
-				type: "shipyard",
-				quant: 0} );
 	new OpenMenuAnimation( this );
     }
     
@@ -397,15 +368,8 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
 
     }
     
-    dispatcher.addListener( "SetShipQuantity", this);
-    this.onSetShipQuantity = function(e) {
-	if (e.type == that.updateName) {
-	    that.quant = e.quant;
-	}
-    }
-    
     this.onLeftMouseDown = function( x, y ) {
-	if (that.active && that.quant > 0) {
+	if ( that.active ) {
 	    
 	    dispatcher.broadcast( { name: "PlanetMenuAction",
 				    type: that.updateName,
@@ -1057,27 +1021,27 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     }
     
     dispatcher.addListener( "UpdateSubMenu", this );
-    this.onUpdateSubMenu= function(e) {
+    this.onUpdateSubMenu= function( e ) {
 	that.headerText = that.headerList[e.type];
 	that.information = that.informationList[e.type];
 	that.profilePic = that.profilePicList[e.type];
 	if (e.type == "fighter") {
-	    that.informationList["fighter"][that.fighterInfoText.length - 1] = "Quantity:                  " + e.amount;
+	    that.informationList["fighter"][that.fighterInfoText.length - 1] = "Quantity:                  " + planetMenu.star.quantities[0];
 	}
 	else if (e.type == "gunboat") {
-	    that.informationList["gunboat"][that.gunboatInfoText.length - 1] = "Quantity:                  " + e.amount;
+	    that.informationList["gunboat"][that.gunboatInfoText.length - 1] = "Quantity:                  " + planetMenu.star.quantities[1];
 	}
 	else if (e.type == "warship") {
-	    that.informationList["warship"][that.warshipInfoText.length - 1] = "Quantity:                  " + e.amount;
+	    that.informationList["warship"][that.warshipInfoText.length - 1] = "Quantity:                  " + planetMenu.star.quantities[2];
 	}
 	else if (e.type == "sniper") {
-	    that.informationList["sniper"][that.sniperInfoText.length - 1] = "Quantity:                  " + e.amount;
+	    that.informationList["sniper"][that.sniperInfoText.length - 1] = "Quantity:                  " + planetMenu.star.quantities[3];
 	}
 	else if (e.type == "cruiser") {
-	    that.informationList["cruiser"][that.cruiserInfoText.length - 1] = "Quantity:                  " + e.amount;
+	    that.informationList["cruiser"][that.cruiserInfoText.length - 1] = "Quantity:                  " + planetMenu.star.quantities[4];
 	}
 	else if (e.type == "warrior") {
-	    that.informationList["warrior"][that.warriorInfoText.length - 1] = "Quantity:                  " + e.amount;
+	    that.informationList["warrior"][that.warriorInfoText.length - 1] = "Quantity:                  " + planetMenu.star.quantities[5];
 	}
 	
     }
@@ -1087,6 +1051,8 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 var PlanetMenu = function() {
     this.visible = true;
     var that = this;
+    this.star = null;
+    this.commanderPanel = null;
     this.init();
     
 
@@ -1103,7 +1069,14 @@ var PlanetMenu = function() {
     }
     this.setVisible( true );
     
-    
+    dispatcher.addListener( "EnterSolarSystem", this );
+    this.onEnterSolarSystem = function( e ) {
+	this.star = e.star;
+	this.commanderPanel = new CommanderInfoPanel( 
+	    this.star.visiting,
+	    300, 
+	    20 );
+    }
     var planetMenuHandler = new PlanetMenuHandler();
     var planetMenuView = new PlanetMenuView(this);
 }
@@ -1113,90 +1086,100 @@ var PlanetMenuHandler = function() {
     this.force = null;
     this.commander = null;
     this.ss = null;
+    this.star = null;
     var that = this;
-    dispatcher.addListener("OpenPlanetMenu", this);
-    this.onOpenPlanetMenu = function(e) {
-	that.force = e.force;
-	that.commander = e.commander;
-	that.ss = e.ss;
+
+    dispatcher.addListener( "EnterSolarSystem", this );
+    this.onEnterSolarSystem = function( e ) {
+	this.star = e.star;
     }
+    
     dispatcher.addListener( "PlanetMenuAction", this );
     this.onPlanetMenuAction = function( e ) {
-	if (e.cost <= that.force.gold) {
-	    that.force.gold -= e.cost;
-	    dispatcher.broadcast( { name: "UpdateCredits",
-				    value: that.force.gold } );
+	if ( e.cost <= forces[this.star.visiting.group].gold ) {
 	    if (e.type == "fighter") {
-		that.commander.addUnit(Fighter);
-		dispatcher.broadcast( { name: "UpdateCommanderFleet",
-					commander: that.commander } );
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "fighter",
-					quant: (that.ss.quantities[0] - 1)} );
-		
-		dispatcher.broadcast( { name: "UpdateSubMenu",
-					type: "fighter",
-					amount: that.ss.quantities[0]} );
-		
+		if ( 0 < this.star.quantities[0] ) {
+		    this.star.visiting.addUnit(Fighter);
+		    this.star.quantities[0]--;
+		    trace( this.star.quantities[0] );
+		    forces[this.star.visiting.group].gold -= e.cost;
+		    dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
+
+		    dispatcher.broadcast( { name: "UpdateSubMenu",
+					    type: "fighter",
+					    amount: this.star.quantities[0] } );
+		}
 	    }
 	    else if (e.type == "gunboat") {
-		that.commander.addUnit(Gunboat);
-		dispatcher.broadcast( { name: "UpdateCommanderFleet",
-					commander: that.commander } );
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "gunboat",
-					quant: that.ss.quantities[1] - 1} );
-		
-		dispatcher.broadcast( { name: "UpdateSubMenu",
-					type: "gunboat",
-					amount: that.ss.quantities[1]} );
+		if ( 0 < this.star.quantities[1] ) {
+		    this.star.visiting.addUnit(Gunboat);
+		    this.star.quantities[1]--;
+		    forces[this.star.visiting.group].gold -= e.cost;
+		    dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
+
+		    dispatcher.broadcast( { name: "UpdateSubMenu",
+					    type: "gunship",
+					    amount: this.star.quantities[1] } );
+		}
 	    }
 	    else if (e.type == "warship") {
-		that.commander.addUnit(Warship);
-		dispatcher.broadcast( { name: "UpdateCommanderFleet",
-					commander: that.commander } );
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "warship",
-					quant: that.ss.quantities[2] - 1} );
-		dispatcher.broadcast( { name: "UpdateSubMenu",
-					type: "warship",
-					amount: that.ss.quantities[2]} );
+		if ( 0 < this.star.quantities[2] ) {
+		    this.star.visiting.addUnit(Warship);
+		    this.star.quantities[2]--;
+		    forces[this.star.visiting.group].gold -= e.cost;
+		    dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
+
+		    dispatcher.broadcast( { name: "UpdateSubMenu",
+					    type: "warship",
+					    amount: this.star.quantities[2] } );
+		}
 	    }
 	    else if (e.type == "sniper") {
-		that.commander.addUnit(Sniper);
-		dispatcher.broadcast( { name: "UpdateCommanderFleet",
-					commander: that.commander } );
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "sniper",
-					quant: that.ss.quantities[3] - 1} );
-		dispatcher.broadcast( { name: "UpdateSubMenu",
-					type: "sniper",
-					amount: that.ss.quantities[3]} );
+		if ( 0 < this.star.quantities[3] ) {
+		    this.star.visiting.addUnit(Sniper);
+		    this.star.quantities[3]--;
+		    forces[this.star.visiting.group].gold -= e.cost;
+		    dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
+
+		    dispatcher.broadcast( { name: "UpdateSubMenu",
+					    type: "sniper",
+					    amount: this.star.quantities[3] } );
+		}
+
 	    }
 	    else if (e.type == "cruiser") {
-		that.commander.addUnit(Cruiser);
-		dispatcher.broadcast( { name: "UpdateCommanderFleet",
-					commander: that.commander } );
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "cruiser",
-					quant: that.ss.quantities[4] - 1} );
-		dispatcher.broadcast( { name: "UpdateSubMenu",
-					type: "cruiser",
-					amount: that.ss.quantities[4]} );
+		if ( 0 < this.star.quantities[4] ) {
+		    this.star.visiting.addUnit(Cruiser);
+		    this.star.quantities[4]--;
+		    forces[this.star.visiting.group].gold -= e.cost;
+		    dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
+
+		    dispatcher.broadcast( { name: "UpdateSubMenu",
+					    type: "cruiser",
+					    amount: this.star.quantities[4] } );
+		}
 	    }
 	    else if (e.type == "warrior") {
-		that.commander.addUnit(Warrior);
-		dispatcher.broadcast( { name: "UpdateCommanderFleet",
-					commander: that.commander } );
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "warrior",
-					quant: that.ss.quantities[5] - 1} );
-		dispatcher.broadcast( { name: "UpdateSubMenu",
-					type: "warrior",
-					amount: that.ss.quantities[5]} );
+		if ( 0 < this.star.quantities[5] ) {
+		    this.star.visiting.addUnit(Warrior);
+		    this.star.quantities[5]--;
+		    forces[this.star.visiting.group].gold -= e.cost;
+		    dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
+
+		    dispatcher.broadcast( { name: "UpdateSubMenu",
+					    type: "warrior",
+					    amount: this.star.quantities[5] } );
+		}
+
 	    }
 	    else if (e.type == "miner") {
-		that.ss.miners ++;
+
 	    }
 	    else if (e.type == "shipyard") {
 		

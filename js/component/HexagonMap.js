@@ -69,9 +69,9 @@ var HexagonMap = function( rows, cols ) {
 	}
     }
     
-    this.addSolarSystem = function( u, v ) {
+    this.addSolarSystem = function( u, v, m ) {
 	if ( this.inMap( u, v ) ) {
-	    this.terran[u][v] = 1;
+	    this.terran[u][v] = m;
 	}
     }
 

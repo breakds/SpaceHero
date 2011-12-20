@@ -120,12 +120,21 @@ var HexagonGridView = function( m, height, width, margin )
 		{
 		    if ( (!this.model.veil[u][v]) && 
 			 (0 != this.model.terran[u][v] )) {
-			     if ( 1 == this.model.terran[u][v] ) {
+			     if ( "Star" == this.model.terran[u][v].type ) {
 				 ctxBg2d.drawImage( resources.getResource( "solarIconImg" ), 
 						    x - this.radius, 
 						    y - this.radius * 0.625, 
 						    this.radius * 2.0,
 						    this.radius * 1.25 );
+				 if ( this.model.terran[u][v].owner ) {
+				     ctxBg2d.drawImage( 
+					 this.model.terran[u][v].owner.colorFlag, 
+					 x - this.radius * 0.5,
+					 y - this.radius * 0.8,
+					 this.radius,
+					 this.radius  
+				     );
+				 }
 			     } else if ( "Mine" == this.model.terran[u][v].type ) {
 				 ctxBg2d.drawImage( resources.getResource( "mineStarImg" ), 
 						    x - this.radius * 0.9,
@@ -439,9 +448,23 @@ var CommanderMoveAnimation = function( commanderObj ) {
 				       commander1: enemy } );
 	    }
 	    this.objs[0].path = new Array();
-	} else if ( 1 == terran ) {
-	    dispatcher.broadcast( { name: "EnterSolarSystem",
-				    visiting: this.objs[0] } );
+	} else if ( "Star" == terran.type ) {
+	    if ( this.objs[0].group == terran.owner.groupID && 
+		 this.objs[0].group == 0 ) {
+		dispatcher.broadcast( { name: "EnterSolarSystem",
+					visiting: this.objs[0],
+					star: terran } );
+	    } else {
+		terran.owner.createCommander( "Defender", "Cannons", -1, -1 );
+		var defender = terran.owner.commanders[
+		    terran.owner.commanders.length -1 ];
+		defender.type = "defender";
+		defender.star = terran;
+		defender.addUnit( Cannon );
+		dispatcher.broadcast( {name: "StartBattle",
+				       commander0: this.objs[0],
+				       commander1: defender } );
+	    }
 	}
     }
     this.tick = 0;
