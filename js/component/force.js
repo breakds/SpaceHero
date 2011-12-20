@@ -32,6 +32,23 @@ var Force = function( name, type, color ) {
 	    this.updateIncome();
 	}
     }
+
+    this.solars = new Array();
+    this.declareSolar = function( solar ) {
+	var idx = this.solars.indexOf( solar );
+	if ( -1 == idx ) {
+	    this.solars.push( solar );
+	    this.updateIncome();
+	}
+    }
+
+    this.removeSolar = function( solar ) {
+	var idx = this.solars.indexOf( solar );
+	if ( -1 != idx ) {
+	    this.solars.slice( idx, 1 );
+	    this.updateIncome();
+	}
+    }
     
     this.income = 0;
     this.updateIncome = function() {
@@ -39,10 +56,13 @@ var Force = function( name, type, color ) {
 	for ( var i=0; i<this.mines.length; i++ ) {
 	    this.income += this.mines[i].income;
 	}
+	for ( var i=0; i<this.solars.length; i++ ) {
+	    this.income += this.solars[i].miners * this.solars[i].incomeRate;
+	}
 	this.requestUpdate();
     }
 
-    this.solars = new Array();
+
 
 
     this.setID = function( id ) {

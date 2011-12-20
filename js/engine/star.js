@@ -145,22 +145,46 @@ function rayCheck (direction, position, planetList) {
 var stars = new Array();
 
 var Star = function(texture, x, y, z, radius, u, v ) {
+    
+    /// Put the star into the Array of all solar systems
     stars.push( this );
+    
+    /// The coordinates on the universe map
     this.u = u;
     this.v = v;
+
+
+    /// Put the solar system onto the universe map
     univMap.addSolarSystem( u, v, this );
+    
+    /// Type for terran detection 
     this.type = "Star";
+
+    /// The visiting commander
     this.visiting = null;
+
+    /// The force that owns this solar system
     this.owner = null;
     this.setOwner = function( force ) {
+	if ( this.owner ) {
+	    this.owner.removeSolar( this );
+	}
 	this.owner = force;
+	this.owner.declareSolar( this );
 	univMap.requestUpdate();
     }
+
+
+    /// The quantities of battle units that this star can
+    /// produce currently
     this.quantities = new Array();
-    for ( var i=0; i < UnitTypes.length; i++ ){
+    for ( var i=0; i < 6; i++ ){
 	this.quantities[i] = 1;
     }
-    this.monthCount = 0;
+
+    
+
+    /// The owner get incomeRate * #miner gold each turn
     this.incomeRate = 20;
     this.position = vec3.create();
     this.position[0] = x;
@@ -186,15 +210,15 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     
     
     var that = this;
+
     /// Add views:
     new StarSolarView( this );
-    /*
-      this.addView( new StarUniverseView( this ) );
-    */
     
     /// do init a game object before using it
     this.init();
     this.active = true;
+    
+    
     this.update = function()
     {
 	this.starModel.update(); //star rotations
@@ -228,17 +252,24 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     
 
     
+
+    /// Every Turn, the onwer gains gold
     dispatcher.addListener( "NewTurn", this);
     this.onNewTurn = function( e ) {
-	forces[that.group].gold += that.miners * that.incomeRate;
-	that.monthCount ++;
-	if (that.monthCount >= 11) {
-	    that.monthCount = 0;
-	    for ( var i=0; i < 6; i++ ){
-		that.quantities[i] += UnitTypes[i].production;
-	    }
+	if ( this.owner ) {
+	    this.owner.gold += that.miners * that.incomeRate;
 	}
     }
+    
+
+    /// Every Year, new ships will be added into shipyard
+    dispatcher.addListener( "NewYear", this );
+    this.onNewYear = function( e ) {
+	for ( var i=0; i < 6; i++ ) {
+	    this.quantities[i] += UnitTypes[i].production;
+	}
+    }
+    
     
     this.miners = 1; // number of miners in the system
     var openButton = new planetMenuOpenButton("Open Planet Menu", 50, 670, this);

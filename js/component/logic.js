@@ -12,6 +12,9 @@ var GameStatus = function() {
 	if( 13 == this.month) {
 	    this.month = 1;
 	    this.year--;
+	    dispatcher.broadcast( { name: "NewYear",
+				    year: this.year } );
+				    
 	}
     }
     this.onTurn = forces[0];
