@@ -13,6 +13,10 @@ var univLogicView = new UniverseLogicView( logic );
 var reporter = new BattleReporter( logic );
 var reporterAnim = new ReporterAnimation();
 
+
+/// Force View:
+var playerForceView = new ForceUniverseView( forces[0], 800, 120 );
+
 /// Create Universe Map
 var univMap = new HexagonMap( 14, 18 );
 var univMapView = new HexagonGridView( univMap, 750, 750, 50 );

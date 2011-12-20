@@ -138,3 +138,88 @@ var CommanderMenu = function( commander, right, top ) {
     this.requestUpdate();
 }
 CommanderMenu.prototype = new View;
+
+var ForceUniverseView = function( force, left, top ) {
+
+    this.setModel( force );
+    this.register( universe );
+    
+    this.left = left;
+    this.top = top;
+    this.draw = function( ctx ) {
+	if ( ctx == ctxMenu ) {
+	    /// Draw Flag
+	    ctxMenu.drawImage( 
+		this.model.colorFlag,
+		this.left,
+		this.top, 
+		30,
+		30 );
+	    /// Draw Name
+	    ctxMenu.fillStyle = "#FFFFFF";
+	    ctxMenu.font = "20px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "alphabetic";
+	    ctxMenu.fillText( this.model.name, 
+			      this.left + 60,
+			      this.top + 20 );
+	    /// Draw Gold
+	    ctxMenu.fillStyle = "#FFAA00";
+	    ctxMenu.font = "15px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "alphabetic";
+	    ctxMenu.fillText( "Gold", 
+			      this.left + 30,
+			      this.top + 45 );
+	    ctxMenu.fillStyle = "#FF0000";
+	    ctxMenu.font = "15px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "alphabetic";
+	    ctxMenu.fillText( this.model.gold, 
+			      this.left + 120,
+			      this.top + 45 );
+
+	    /// Draw Income
+	    ctxMenu.fillStyle = "#FFAA00";
+	    ctxMenu.font = "15px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "alphabetic";
+	    ctxMenu.fillText( "Income", 
+			      this.left + 30,
+			      this.top + 70 );
+	    ctxMenu.fillStyle = "#FF0000";
+	    ctxMenu.font = "15px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "alphabetic";
+	    ctxMenu.fillText( this.model.income,
+			      this.left + 120,
+			      this.top + 70 );
+
+	    /// Draw Solar System Owned
+	    ctxMenu.fillStyle = "#FFAA00";
+	    ctxMenu.font = "15px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "alphabetic";
+	    ctxMenu.fillText( "Solar Sys", 
+			      this.left + 30,
+			      this.top + 95 );
+	    ctxMenu.fillStyle = "#FF0000";
+	    ctxMenu.font = "15px Arial";
+	    ctxMenu.textAlign = "left";
+	    ctxMenu.textBaseline = "alphabetic";
+	    ctxMenu.fillText( this.model.solars.length,
+			      this.left + 120,
+			      this.top + 95 );
+	    
+
+			      
+	}
+    }
+    
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxMenu } );
+    }
+    this.requestUpdate();
+}
+ForceUniverseView.prototype = new View();

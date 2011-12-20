@@ -8,7 +8,10 @@ var MineStar = function( u, v ) {
     this.onOccupy = function( cmder ) {
 	if ( (!this.landlord ) ||
 	     ( this.landlord != forces[cmder.group] ) ) {
-		 this.landlord = forces[cmder.group];
+	    if ( this.landlord ) {
+		this.landlord.removeMine( this );
+	    }
+	    forces[cmder.group].declareMine( this );
 	}
     }
     dispatcher.addListener( "NewTurn", this );

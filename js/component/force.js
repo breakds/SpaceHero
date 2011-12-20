@@ -14,9 +14,37 @@ var Force = function( name, type, color ) {
     /// Commanders that belongs to this force
     this.commanders = new Array();
 
-    /// Solar Systems that belongs to this force
-    this.solarSystems = new Array();
+    this.mines = new Array();
+    this.declareMine = function( mine ) {
+	var idx = this.mines.indexOf( mine );
+	if ( -1 == idx ) {
+	    this.mines.push( mine );
+	    mine.landlord = this;
+	    this.updateIncome();
+	}
+    }
+
+    this.removeMine = function( mine ) {
+	var idx = this.mines.indexOf( mine );
+	if ( -1 != idx ) {
+	    this.mines.slice( idx, 1 );
+	    mine.landlord = null;
+	    this.updateIncome();
+	}
+    }
     
+    this.income = 0;
+    this.updateIncome = function() {
+	this.income = 0;
+	for ( var i=0; i<this.mines.length; i++ ) {
+	    this.income += this.mines[i].income;
+	}
+	this.requestUpdate();
+    }
+
+    this.solars = new Array();
+
+
     this.setID = function( id ) {
 	this.groupID = id;
     }
