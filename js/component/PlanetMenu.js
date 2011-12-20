@@ -1,3 +1,41 @@
+var OpenMenuAnimation = function( m ) {
+    this.objs = new Array();
+    this.objs.push( m );
+    this.lifetime = 200;
+    this.tick = 0;
+    this.objs[0].curTime = 0;
+    this.objs[0].curTime2 = 0;
+    this.init();
+    this.next = function() {
+	if ( 1 == this.objs[0].state ) {
+	    this.objs[0].curTime++;
+	    if ( this.objs[0].curTime >= this.objs[0].aniTime ) {
+		this.objs[0].state = 2;
+		dispatcher.broadcast( { name: "ActivateWidgets" } );
+		if ( this.objs[0].currentWidgetList == this.objs[0].shipYardWidgets ) {
+		    dispatcher.broadcast( { name: "SwitchTab", 
+					    tab: "shipyard" } );
+		} else {
+		    dispatcher.broadcast( { name: "SwitchTab", 
+					    tab: "factory" } );
+		}
+
+	    }
+	} else if ( 3 == this.objs[0].state ) {
+	    this.objs[0].curTime2++;
+	    if ( this.objs[0].curTime2 >= this.objs[0].aniTime ) {
+		this.objs[0].state = 0;
+		dispatcher.broadcast( { name: "ShowPlanetButton",
+					display: true } );
+	    }
+	}
+	this.objs[0].requestUpdate();
+    }
+}
+OpenMenuAnimation.prototype = new Tween;
+
+
+
 var PlanetMenuView = function( m ) {
     this.setModel( m );
     this.register( solarSystem );
@@ -59,18 +97,19 @@ var PlanetMenuView = function( m ) {
     this.widgets.push(new planetMenuExitButton("Exit", this.menu1xPos + 190, this.menu1yPos + 580));
     this.creditWidget = new planetMenuCredits("Credits: ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney);
     
-    this.shipYardWidgets.push(new planetMenuButton("Fighter                      90", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", 90));
-    this.shipYardWidgets.push(new planetMenuButton("Gunboat                    66", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", 66));
-    this.shipYardWidgets.push(new planetMenuButton("Warship                   448", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", 448));
-    this.shipYardWidgets.push(new planetMenuButton("Sniper                       331", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", 331));
-    this.shipYardWidgets.push(new planetMenuButton("Cruiser                   1720", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", 1720));
-    this.shipYardWidgets.push(new planetMenuButton("Warrior                  1669", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", 1669));
-    this.shipYardWidgets.push(new planetMenuButton("Miner                          50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50));
+    this.shipYardWidgets.push(new planetMenuButton("Fighter                      90", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", 90, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Gunboat                    66", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", 66, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Warship                   448", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", 448, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Sniper                       331", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", 331, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Cruiser                   1720", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", 1720, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Warrior                  1669", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", 1669, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Miner                          50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50, "shipyard" ));
     
-    this.factoryWidgets.push(new planetMenuButton("ShipYard                      50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50));
-    this.factoryWidgets.push(new planetMenuButton("Defense System         0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 0));
-    this.factoryWidgets.push(new planetMenuButton("Refinery                       0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 0));
-    this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant   0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",0));
+    this.factoryWidgets.push(new planetMenuButton("ShipYard                      50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("Defense System         0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 0, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("Refinery                       0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 0, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant   0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",0, "factory" ));
+    dispatcher.broadcast( { name: "DisactivateWidgets" } );
     
     
     
@@ -81,19 +120,15 @@ var PlanetMenuView = function( m ) {
 	    ctx.textAlign = defaultTextAlign;
 	    ctx.textBaseline = defaultTextBaseline;
 	    if (that.state == 2) {
-		
 		if (that.opacity < 1.0)
 		    that.opacity += that.aniSpeed;
 		if (that.opacity >= 1) 
 		    that.opacity = 0.5;
-		
 		if (that.opacity2 < 1.0)
 		    that.opacity2 += that.aniSpeed / 8;
 		if (that.opacity2 >= 1) 
 		    that.opacity2 = 0.95;
-		
 		var originalAlpha = ctx.globalAlpha;
-		
 		ctx.drawImage(resources.getResource( "projectorLeft" ), 0, 0);
 		ctx.drawImage(resources.getResource( "projectorRight" ), 512, 0);
 		ctx.globalAlpha = that.opacity;
@@ -106,7 +141,6 @@ var PlanetMenuView = function( m ) {
 		for (var i = 0; i < that.tabWidgets.length; i++) {
 		    that.tabWidgets[i].draw(ctx);
 		}
-		
 		for (var i = 0; i < that.widgets.length; i++) {
 		    that.widgets[i].draw(ctx);
 		}
@@ -131,7 +165,6 @@ var PlanetMenuView = function( m ) {
 		ctx.drawImage(resources.getResource( "projectorLeft" ), that.projector1x, that.projector1y);
 		ctx.drawImage(resources.getResource( "projectorRight" ), that.projector2x, that.projector2y);
 		if (that.curTime >= that.aniTime/2) {
-		    
 		    if (that.beamHeight < resources.getResource("beamLeft").height) {
 			that.beamHeight += that.aniSpeed2 * 20;
 		    }
@@ -150,13 +183,6 @@ var PlanetMenuView = function( m ) {
 		    ctx.drawImage(resources.getResource("planetMenuLeft"), 0, (resources.getResource("planetMenuLeft").height - that.menuHeight) / 2, resources.getResource("planetMenuLeft").width, that.menuHeight);
 		    ctx.drawImage(resources.getResource("planetMenuRight"), 512, (resources.getResource("planetMenuRight").height - that.menuHeight) / 2, resources.getResource("planetMenuRight").width, that.menuHeight);
 		}
-		
-		that.curTime += 1;
-		if (that.curTime >= that.aniTime) {
-		    that.state = 2;
-		    that.curTime = 0;
-		}
-		
 	    }
 	    else if (that.state == 3) {
 		if (that.curTime2 >= that.aniTime/2) {
@@ -170,7 +196,6 @@ var PlanetMenuView = function( m ) {
 		    } else if (that.projector2x > 562) {
 			that.projector2x = 562;
 		    }
-		    
 		}
 		ctx.drawImage(resources.getResource( "projectorLeft" ), that.projector1x, that.projector1y);
 		ctx.drawImage(resources.getResource( "projectorRight" ), that.projector2x, that.projector2y);	
@@ -193,13 +218,6 @@ var PlanetMenuView = function( m ) {
 		ctx.drawImage(resources.getResource("planetMenuRight"), 512, (resources.getResource("planetMenuRight").height - that.menuHeight) / 2, resources.getResource("planetMenuRight").width, that.menuHeight);
 		
 		
-		that.curTime2 += 1;
-		if (that.curTime2 >= that.aniTime) {
-		    that.state = 0;
-		    that.curTime2 = 0;
-		    dispatcher.broadcast( { name: "ShowPlanetButton",
-					    display: true } );
-		}
 	    }
 	}
     }
@@ -217,13 +235,14 @@ var PlanetMenuView = function( m ) {
 	that.state = 1;
 	that.creditWidget.money = e.force.gold;
 	that.infoWidget.updatePlanetInfo(e.planet.planetInfo.name, e.planet.planetInfo.structureList, e.force.name, e.commander.name);
+	/*
 	for (var i = 0; i < that.currentWidgetList.length; i++) {
 	    that.currentWidgetList[i].active = true;
 	}
 	for (var i = 0; i < that.tabWidgets.length; i++) {
 	    that.tabWidgets[i].active = true;
 	}
-	//console.log("sent: " + e.ss.quantities[0]);
+	*/
 	dispatcher.broadcast( { name: "SetShipQuantity",
 				type: "fighter",
 				quant: e.ss.quantities[0]} );
@@ -245,6 +264,7 @@ var PlanetMenuView = function( m ) {
 	dispatcher.broadcast( { name: "SetShipQuantity",
 				type: "shipyard",
 				quant: 0} );
+	new OpenMenuAnimation( this );
     }
     
     
@@ -254,12 +274,17 @@ var PlanetMenuView = function( m ) {
 	if (e.exit == true) {
 	    if (that.state == 2) {
 		that.state = 3;
+		dispatcher.broadcast( { name: "DisactivateWidgets" } );
+		dispatcher.broadcast( { name: "ShowPlanetButton",
+					display: true } );
+		/*
 		for (var i = 0; i < that.currentWidgetList.length; i++) {
 		    that.currentWidgetList[i].active = false;
 		}
 		for (var i = 0; i < that.tabWidgets.length; i++) {
 		    that.tabWidgets[i].active = false;
 		}
+		*/
 	    }
 	}
     }
@@ -268,22 +293,10 @@ var PlanetMenuView = function( m ) {
     this.onSwitchTab = function( e ) {
 	//trace(e.tab);
 	if (e.tab == "shipyard") {
-	    for (var i = 0; i < that.factoryWidgets.length; i++) {
-		that.factoryWidgets[i].active = false;
-	    }
-	    for (var i = 0; i < that.shipYardWidgets.length; i++) {
-		that.shipYardWidgets[i].active = true;
-	    }
 	    that.currentWidgetList = that.shipYardWidgets;
 	    that.tabWidgets[0].selected = false;
 	}
 	else if (e.tab == "factory") {
-	    for (var i = 0; i < that.factoryWidgets.length; i++) {
-		that.factoryWidgets[i].active = true;
-	    }
-	    for (var i = 0; i < that.shipYardWidgets.length; i++) {
-		that.shipYardWidgets[i].active = false;
-	    }
 	    that.currentWidgetList = that.factoryWidgets;
 	    that.tabWidgets[1].selected = false;
 	}
@@ -299,9 +312,10 @@ var PlanetMenuView = function( m ) {
 }
 PlanetMenuView.prototype = new View;
 
-var planetMenuButton = function(name, xPos, yPos, updateName, cost) {
+var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
+    this.register( solarSystem );
+    this.tab = tab;
     this.force = null;
-
     this.cost = cost;
     this.xPos = xPos;
     this.yPos = yPos;
@@ -327,38 +341,48 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost) {
     this.lineHeight = 3;
     
     this.draw = function( ctx ) {
-	var originalColor = ctx.fillStyle;
-	var originalFont = ctx.font;
-	if (that.highlighted) {
-	    that.drawHighlight(ctx);
-	} else {
+	if ( ctx == ctxMenu && this.active) {
+	    var originalColor = ctx.fillStyle;
+	    var originalFont = ctx.font;
+	    if (that.highlighted) {
+		that.drawHighlight(ctx);
+	    } else {
 	    
-	}
-	ctx.font = that.font;
-	ctx.fillStyle = that.shadowColor;
-	ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+	    }
+	    ctx.font = that.font;
+	    ctx.fillStyle = that.shadowColor;
+	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 	
-	if (that.cost <= that.force.gold && that.quant > 0) {
-	    ctx.fillStyle = that.color;
-	}
-	else {
-	    ctx.fillStyle = that.color2;
-	}
-	ctx.font = that.font;
-	if (that.highlighted) {
-	    ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
-	    ctx.strokeStyle = "#000000";
-	    ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
-	} else {
-	    ctx.fillText(that.name, that.xPos, that.yPos);
-	    ctx.strokeStyle = "#000000";
-	    ctx.strokeText(that.name, that.xPos, that.yPos, 1);
-	}
+	    if (that.cost <= that.force.gold && that.quant > 0) {
+		ctx.fillStyle = that.color;
+	    }
+	    else {
+		ctx.fillStyle = that.color2;
+	    }
+	    ctx.font = that.font;
+	    if (that.highlighted) {
+		ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+	    } else {
+		ctx.fillText(that.name, that.xPos, that.yPos);
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+	    }
 	
 	
-	ctx.fillStyle = originalColor;
-	ctx.font = originalFont;
+	    ctx.fillStyle = originalColor;
+	    ctx.font = originalFont;
+	}
     }
+
+
+    dispatcher.addListener( "DisactivateWidgets", this );
+    this.onDisactivateWidgets = function( e ) {
+	this.active = false;
+	this.requestUpdate();
+    }
+    
     
     this.drawHighlight = function( ctx ) {
 	ctx.fillStyle = that.highlightColor;
@@ -399,6 +423,18 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost) {
 	}
 	
     }
+
+
+    dispatcher.addListener( "SwitchTab", this );
+    this.onSwitchTab = function( e ) {
+	if ( e.tab == this.tab ) {
+	    this.active = true;
+	    this.requestUpdate();
+	} else {
+	    this.active = false;
+	    this.requestUpdate();
+	}
+    }
     
 
     this.onRollOut = function( x, y ) {
@@ -432,10 +468,10 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost) {
     }
     this.requestUpdate();
 }
-
+planetMenuButton.prototype = new View;
 
 var planetMenuExitButton = function(name, xPos, yPos) {
-    //this.register(universe);
+    this.register(solarSystem);
     this.xPos = xPos;
     this.yPos = yPos;
     this.name = name;
@@ -458,51 +494,53 @@ var planetMenuExitButton = function(name, xPos, yPos) {
     this.edgeOffset = 10;
     
     this.draw = function( ctx ) {
-	var originalColor = ctx.fillStyle;
-	var originalFont = ctx.font;
+	if ( ctx == ctxMenu && this.active) {
+	    var originalColor = ctx.fillStyle;
+	    var originalFont = ctx.font;
 	
-	ctx.beginPath();
-	ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
-	ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
-	ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
-	ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
-	ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
-	ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
-	ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
-	ctx.closePath();
-	var originalWidth = ctx.lineWidth;
-	ctx.lineWidth = that.lineWidth;
-	if (that.highlighted) {
-	    ctx.strokeStyle = that.strokeStyle2;
-	    ctx.fillStyle = that.highlightColor2;
-	} else {
-	    ctx.strokeStyle = that.strokeStyle;
-	    ctx.fillStyle = that.highlightColor;
+	    ctx.beginPath();
+	    ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+	    ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
+	    ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
+	    ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+	    ctx.closePath();
+	    var originalWidth = ctx.lineWidth;
+	    ctx.lineWidth = that.lineWidth;
+	    if (that.highlighted) {
+		ctx.strokeStyle = that.strokeStyle2;
+		ctx.fillStyle = that.highlightColor2;
+	    } else {
+		ctx.strokeStyle = that.strokeStyle;
+		ctx.fillStyle = that.highlightColor;
+	    }
+	    
+	    ctx.fill();
+	    ctx.stroke();
+	    ctx.lineWidth = originalWidth;
+	    
+	    ctx.font = that.font;
+	    ctx.fillStyle = that.shadowColor;
+	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+	    
+	    ctx.fillStyle = that.color;
+	    ctx.font = that.font;
+	    if (that.highlighted) {
+		ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+	    } else {
+		ctx.fillText(that.name, that.xPos, that.yPos);
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+	    }
+	    
+	    
+	    ctx.fillStyle = originalColor;
+	    ctx.font = originalFont;
 	}
-	
-	ctx.fill();
-	ctx.stroke();
-	ctx.lineWidth = originalWidth;
-	
-	ctx.font = that.font;
-	ctx.fillStyle = that.shadowColor;
-	ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
-	
-	ctx.fillStyle = that.color;
-	ctx.font = that.font;
-	if (that.highlighted) {
-	    ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
-	    ctx.strokeStyle = "#000000";
-	    ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
-	} else {
-	    ctx.fillText(that.name, that.xPos, that.yPos);
-	    ctx.strokeStyle = "#000000";
-	    ctx.strokeText(that.name, that.xPos, that.yPos, 1);
-	}
-	
-	
-	ctx.fillStyle = originalColor;
-	ctx.font = originalFont;
     }
     
     this.drawHighlight = function( ctx ) {
@@ -516,6 +554,18 @@ var planetMenuExitButton = function(name, xPos, yPos) {
 	ctx.strokeStyle = that.highlightColor2;
 	ctx.stroke();
 
+    }
+
+    dispatcher.addListener( "ActivateWidgets", this );
+    this.onActivateWidgets = function( e ) {
+	this.active = true;
+	this.requestUpdate();
+    }
+
+    dispatcher.addListener( "DisactivateWidgets", this );
+    this.onDisactivateWidgets = function( e ) {
+	this.active = false;
+	this.requestUpdate();
     }
     
     this.onLeftMouseDown = function( x,y ) {
@@ -540,7 +590,6 @@ var planetMenuExitButton = function(name, xPos, yPos) {
     }
     
     this.hitTest = function( x, y ) {
-	//trace("testing button" );
 	if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
 	     y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
 	    return true;
@@ -554,10 +603,11 @@ var planetMenuExitButton = function(name, xPos, yPos) {
     }
     this.requestUpdate();
 }
+planetMenuExitButton.prototype = new View;
 
 
 var planetMenuTabButton = function(name, xPos, yPos, updateName) {
-    //this.register(universe);
+    this.register(solarSystem);
     this.xPos = xPos;
     this.yPos = yPos;
     this.name = name;
@@ -580,34 +630,56 @@ var planetMenuTabButton = function(name, xPos, yPos, updateName) {
     this.selected = false;
     
     this.draw = function( ctx ) {
-	var originalColor = ctx.fillStyle;
-	var originalFont = ctx.font;
-	if (that.highlighted) {
+	if ( ctx == ctxMenu && this.active) {
+	    var originalColor = ctx.fillStyle;
+	    var originalFont = ctx.font;
+	    if (that.highlighted) {
+		
+	    } 
+	    if (that.selected) {
+		that.drawHighlight(ctx);
+	    }
+	    ctx.font = that.font;
+	    ctx.fillStyle = that.shadowColor;
+	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 	    
-	} 
-	if (that.selected) {
-	    that.drawHighlight(ctx);
+	    ctx.fillStyle = that.color;
+	    ctx.font = that.font;
+	    if (that.highlighted) {
+		ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+	    } else {
+		ctx.fillText(that.name, that.xPos, that.yPos);
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+	    }
+	    
+	    
+	    ctx.fillStyle = originalColor;
+	    ctx.font = originalFont;
 	}
-	ctx.font = that.font;
-	ctx.fillStyle = that.shadowColor;
-	ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
-	
-	ctx.fillStyle = that.color;
-	ctx.font = that.font;
-	if (that.highlighted) {
-	    ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
-	    ctx.strokeStyle = "#000000";
-	    ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
-	} else {
-	    ctx.fillText(that.name, that.xPos, that.yPos);
-	    ctx.strokeStyle = "#000000";
-	    ctx.strokeText(that.name, that.xPos, that.yPos, 1);
-	}
-	
-	
-	ctx.fillStyle = originalColor;
-	ctx.font = originalFont;
     }
+
+
+
+
+
+    dispatcher.addListener( "ActivateWidgets", this );
+    this.onActivateWidgets = function( e ) {
+	this.active = true;
+	this.requestUpdate();
+    }
+
+    dispatcher.addListener( "DisactivateWidgets", this );
+    this.onDisactivateWidgets = function( e ) {
+	this.active = false;
+	this.requestUpdate();
+    }
+
+
+
+
     
     this.drawHighlight = function( ctx ) {
 	ctx.fillStyle = that.highlightColor;
@@ -630,23 +702,25 @@ var planetMenuTabButton = function(name, xPos, yPos, updateName) {
 
     this.onLeftMouseDown = function( x, y ) {
 	if (that.active) {
-	    
+	    that.selected = true;
+	    dispatcher.broadcast( { name: "SwitchTab",
+				    tab: that.updateName} );
 	}
     }
     
     this.hitTest = function( x, y ) {
 	if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
 	     y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
-	    
-	    that.selected = true;
-	    dispatcher.broadcast( { name: "SwitchTab",
-				    tab: that.updateName} );
-	    
-	} else {
+	    return true;
+	} 
+	return false;
+	/*
+	else {
 	    
 	    that.highlighted = false;
 	    //that.requestUpdate();
 	}
+	*/
     }
     this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
@@ -654,8 +728,10 @@ var planetMenuTabButton = function(name, xPos, yPos, updateName) {
     }
     this.requestUpdate();
 }
+planetMenuTabButton.prototype = new View;
 
 var planetMenuLabel = function(name, font, color, xPos, yPos) {
+    this.register( solarSystem );
     this.xPos = xPos;
     this.yPos = yPos;
     this.name = name;
@@ -664,24 +740,43 @@ var planetMenuLabel = function(name, font, color, xPos, yPos) {
     this.color = "#FFFFFF";
     this.shadowColor = "#222222";
     this.font = font;
+    this.active = false;
+
+
+    dispatcher.addListener( "ActivateWidgets", this );
+    this.onActivateWidgets = function( e ) {
+	this.active = true;
+	this.requestUpdate();
+    }
+
+    dispatcher.addListener( "DisactivateWidgets", this );
+    this.onDisactivateWidgets = function( e ) {
+	this.active = false;
+	this.requestUpdate();
+    }
+
     
     this.draw = function( ctx ) {
-	var originalColor = ctx.fillStyle;
-	var originalFont = ctx.font;
-	ctx.font = that.font;
-	ctx.fillStyle = that.shadowColor;
-	ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
-	
-	ctx.fillStyle = that.color;
-	ctx.fillText(that.name, that.xPos, that.yPos);
-	ctx.strokeStyle = "#000000";
-	ctx.strokeText(that.name, that.xPos, that.yPos);
-	ctx.fillStyle = originalColor;
-	ctx.font = originalFont;
+	if ( ctx == ctxMenu && this.active ) {
+	    var originalColor = ctx.fillStyle;
+	    var originalFont = ctx.font;
+	    ctx.font = that.font;
+	    ctx.fillStyle = that.shadowColor;
+	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+	    
+	    ctx.fillStyle = that.color;
+	    ctx.fillText(that.name, that.xPos, that.yPos);
+	    ctx.strokeStyle = "#000000";
+	    ctx.strokeText(that.name, that.xPos, that.yPos);
+	    ctx.fillStyle = originalColor;
+	    ctx.font = originalFont;
+	}
     }
 }
+planetMenuLabel.prototype = new View;
 
 var planetMenuCredits = function(name, xPos, yPos, credits) {
+    this.register( solarSystem );
     this.xPos = xPos;
     this.yPos = yPos;
     this.width = 300;
@@ -696,29 +791,47 @@ var planetMenuCredits = function(name, xPos, yPos, credits) {
     this.xOffset = -20;
     this.yOffset = -35;
     this.money = credits;
+    this.active = false;
     
     dispatcher.addListener( "UpdateCredits", this );
     this.onUpdateCredits = function( e ) {
 	that.money = e.value;
     }
+
+    dispatcher.addListener( "ActivateWidgets", this );
+    this.onActivateWidgets = function( e ) {
+	this.active = true;
+	this.requestUpdate();
+    }
+
+    dispatcher.addListener( "DisactivateWidgets", this );
+    this.onDisactivateWidgets = function( e ) {
+	this.active = false;
+	this.requestUpdate();
+    }
+
     
     this.draw = function( ctx ) {
-	var originalColor = ctx.fillStyle;
-	var originalFont = ctx.font;
-	ctx.font = that.font;
-	ctx.fillStyle = that.backgroundColor;
-	ctx.fillRect(that.xPos + that.xOffset, that.yPos + that.yOffset, that.width, that.height);
-	ctx.fillStyle = that.shadowColor;
-	ctx.fillText(that.name + that.money, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
-	
-	ctx.fillStyle = that.color;
-	ctx.fillText(that.name + that.money, that.xPos, that.yPos);
-	ctx.strokeStyle = "#000000";
-	ctx.strokeText(that.name + that.money, that.xPos, that.yPos);
-	ctx.fillStyle = originalColor;
-	ctx.font = originalFont;
+	if ( ctx == ctxMenu && this.active ) {
+	    var originalColor = ctx.fillStyle;
+	    var originalFont = ctx.font;
+	    ctx.font = that.font;
+	    ctx.fillStyle = that.backgroundColor;
+	    ctx.fillRect(that.xPos + that.xOffset, that.yPos + that.yOffset, that.width, that.height);
+	    ctx.fillStyle = that.shadowColor;
+	    ctx.fillText(that.name + that.money, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+	    
+	    ctx.fillStyle = that.color;
+	    ctx.fillText(that.name + that.money, that.xPos, that.yPos);
+	    ctx.strokeStyle = "#000000";
+	    ctx.strokeText(that.name + that.money, that.xPos, that.yPos);
+	    ctx.fillStyle = originalColor;
+	    ctx.font = originalFont;
+	}
     }
 }
+planetMenuCredits.prototype = new View();
+
 
 var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, commanderName, planetStructures) {
     this.informationList = new Array();
@@ -978,7 +1091,7 @@ var PlanetMenu = function() {
     
 
     this.update = function() {
-	//	this.requestUpdate();
+	this.requestUpdate();
     }
 
     this.requestUpdate();

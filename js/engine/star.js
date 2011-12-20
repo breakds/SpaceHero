@@ -230,137 +230,130 @@ var Star = function(texture, x, y, z, radius) {
 	}
 	
 	this.miners = 1; // number of miners in the system
-	var openButton = new planetMenuOpenButton("Open Planet Menu", 50, 670, this);
+    var openButton = new planetMenuOpenButton("Open Planet Menu", 50, 670, this);
 	var leaveButton = new exitSolarSystemButton("Leave Solar System", 50, 730, this);
 	var commanderInfoPanel = new CommanderInfoPanel(50,50,this);
 }
 Star.prototype = new GameObject();
 
 var planetMenuOpenButton = function(name, xPos, yPos, model) {
-		this.setModel(model);
-		this.model = model;
-		this.register( solarSystem );
-		this.xPos = xPos;
-		this.yPos = yPos;
-		this.name = name;
-		this.highlighted = false;
-		this.active = true;
-		var that = this;
-		this.shadowDist = 2;
-		this.color = "#FFFFFF";
-		this.shadowColor = "#222222";
-		this.highlightColor = "rgba(255,255,255,0.1)";
-		this.highlightColor2 = "rgba(255,255,255,0.2)";
-		this.strokeStyle = "rgba(50,50,200, 0.5)";
-		this.strokeStyle2 = "rgba(50,50,200, 0.7)";
-		this.font = "28px Eras Bold ITC"
-		this.buttonWidth = 300;
-		this.buttonHeight = 40;
-		this.xOffset = -17;
-		this.yOffset = -30;
-		this.lineWidth = 3;
-		this.edgeOffset = 10;
+    this.setModel(model);
+    this.register( solarSystem );
+    this.xPos = xPos;
+    this.yPos = yPos;
+    this.name = name;
+    this.highlighted = false;
+    this.active = true;
+    var that = this;
+
+    /// Style Parameters
+    this.shadowDist = 2;
+    this.color = "#FFFFFF";
+    this.shadowColor = "#000000";
+    this.highlightColor = "rgba(255,255,255,0.1)";
+    this.highlightColor2 = "rgba(255,255,255,0.2)";
+    this.strokeStyle = "rgba(50,50,200, 0.5)";
+    this.strokeStyle2 = "rgba(50,50,200, 0.7)";
+    this.font = "28px Eras Bold ITC"
+    this.buttonWidth = 300;
+    this.buttonHeight = 40;
+    this.xOffset = -17;
+    this.yOffset = -30;
+    this.lineWidth = 3;
+    this.edgeOffset = 10;
 		
-		this.draw = function( ctx ) {
-			if (ctx == ctxMenu && that.active) {
-				var ctx = ctxMenu;
-				var originalColor = ctx.fillStyle;
-				var originalFont = ctx.font;
+    this.draw = function( ctx ) {
+	if (ctx == ctxMenu && that.active) {
+	    ctx.beginPath();
+	    ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+	    ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
+	    ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
+	    ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+	    ctx.closePath();
+	    ctx.lineWidth = that.lineWidth;
+	    if (that.highlighted) {
+		ctx.strokeStyle = that.strokeStyle2;
+		ctx.fillStyle = that.highlightColor2;
+	    } else {
+		ctx.strokeStyle = that.strokeStyle;
+		ctx.fillStyle = that.highlightColor;
+	    }
+	    
+	    ctx.fill();
+	    ctx.stroke();
+
+
+	    ctx.font = that.font;
+	    ctx.fillStyle = that.shadowColor;
+	    ctx.textBaseline = "alphabetic";
+	    ctx.textAlign = "start";
+	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+
 				
-				ctx.beginPath();
-				ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
-				ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
-				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
-				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
-				ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
-				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
-				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
-				ctx.closePath();
-				var originalWidth = ctx.lineWidth;
-				ctx.lineWidth = that.lineWidth;
-				if (that.highlighted) {
-					ctx.strokeStyle = that.strokeStyle2;
-					ctx.fillStyle = that.highlightColor2;
-				} else {
-					ctx.strokeStyle = that.strokeStyle;
-					ctx.fillStyle = that.highlightColor;
-				}
-				
-				ctx.fill();
-				ctx.stroke();
-				ctx.lineWidth = originalWidth;
-				
-				ctx.font = that.font;
-				ctx.fillStyle = that.shadowColor;
-			    ctx.textBaseline = "alphabetic";
-			    ctx.textAlign = "start";
-				ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
-				
-				ctx.fillStyle = that.color;
-				ctx.font = that.font;
-				if (that.highlighted) {
-				    ctx.textBaseline = "alphabetic";
-				    ctx.textAlign = "start";
-					ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
-					ctx.strokeStyle = "#000000";
-					ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
-				} else {
-				    ctx.textBaseline = "alphabetic";
-				    ctx.textAlign = "start";
-					ctx.fillText(that.name, that.xPos, that.yPos);
-					ctx.strokeStyle = "#000000";
-					ctx.strokeText(that.name, that.xPos, that.yPos, 1);
-				}
-				
-				
-				ctx.fillStyle = originalColor;
-				ctx.font = originalFont;
-			}
-		}
+	    ctx.fillStyle = that.color;
+	    ctx.font = that.font;
+	    if (that.highlighted) {
+		ctx.textBaseline = "alphabetic";
+		ctx.textAlign = "start";
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+		ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+
+	    } else {
+		ctx.textBaseline = "alphabetic";
+		ctx.textAlign = "start";
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+		ctx.fillText( that.name, that.xPos, that.yPos);
+	    }
+	}
+    }
     
     this.onLeftMouseDown = function( x, y ) {
 	if (that.active) {
-	    console.log(that.model.quantities[0]);
 	    dispatcher.broadcast( { name: "OpenPlanetMenu",
 				    force: forces[that.model.group],
 				    commander: that.model.visiting ,
 				    planet: that.model.planets[0],
 				    ss: that.model} );
 	    that.active = false;
-
 	}
     }
     
-		dispatcher.addListener("ShowPlanetButton", this);
-		this.onShowPlanetButton = function(e) {
-			if (e.display == true) {
-				that.active = true;
-				}
-			}
-		
-		
+    dispatcher.addListener("ShowPlanetButton", this);
+    this.onShowPlanetButton = function(e) {
+	if (e.display == true) {
+	    that.active = true;
+	}
+    }
+    
+    
     this.onMouseMove = function( x, y ) {
 	if (that.active) {
 	    that.highlighted = true;
+	    this.requestUpdate();
 	}
     }
     
     this.onRollOut = function( x, y ) {
 	if ( that.active ) {
 	    that.highlighted = false;
+	    this.requestUpdate();
 	}
     }
-		
-		this.hitTest = function( x, y ) {
-			//trace("testing button" );
-			if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
-				 y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
-				return true;
-			} else {
-				return false
-			}
-		}
-	this.requestUpdate = function() {
+    
+    this.hitTest = function( x, y ) {
+	if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
+	     y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
+	    return true;
+	} else {
+	    return false
+	}
+    }
+    this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
 				ctx: ctxMenu } );
     }
@@ -393,79 +386,78 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 		this.lineWidth = 3;
 		this.edgeOffset = 10;
 		
-		this.draw = function( ctx ) {
-			if (ctx == ctxMenu && that.active) {
-				var ctx = ctxMenu;
-				var originalColor = ctx.fillStyle;
-				var originalFont = ctx.font;
-				
-				ctx.beginPath();
-				ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
-				ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
-				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
-				ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
-				ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
-				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
-				ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
-				ctx.closePath();
-				var originalWidth = ctx.lineWidth;
-				ctx.lineWidth = that.lineWidth;
-				if (that.highlighted) {
-					ctx.strokeStyle = that.strokeStyle2;
-					ctx.fillStyle = that.highlightColor2;
-				} else {
-					ctx.strokeStyle = that.strokeStyle;
-					ctx.fillStyle = that.highlightColor;
-				}
-				
-				ctx.fill();
-				ctx.stroke();
-				ctx.lineWidth = originalWidth;
-				
-				ctx.font = that.font;
-				ctx.fillStyle = that.shadowColor;
-			    ctx.textBaseline = "alphabetic";
-			    ctx.textAlign = "start";
-				ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
-				
-				ctx.fillStyle = that.color;
-				ctx.font = that.font;
-				if (that.highlighted) {
-					ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
-					ctx.strokeStyle = "#000000";
-					ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
-				} else {
-					ctx.fillText(that.name, that.xPos, that.yPos);
-					ctx.strokeStyle = "#000000";
-					ctx.strokeText(that.name, that.xPos, that.yPos, 1);
-				}
-				
-				
-				ctx.fillStyle = originalColor;
-				ctx.font = originalFont;
-			}
-		}
+    this.draw = function( ctx ) {
+	if (ctx == ctxMenu && that.active) {
+	    var ctx = ctxMenu;
+	    var originalColor = ctx.fillStyle;
+	    var originalFont = ctx.font;
+	    
+	    ctx.beginPath();
+	    ctx.moveTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+	    ctx.lineTo(that.xPos + that.edgeOffset + that.xOffset, that.yPos + that.yOffset);
+	    ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.edgeOffset + that.yOffset);
+	    ctx.lineTo(that.xPos + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth - that.edgeOffset + that.xOffset, that.yPos + that.buttonHeight + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.buttonHeight - that.edgeOffset + that.yOffset);
+	    ctx.lineTo(that.xPos + that.buttonWidth + that.xOffset, that.yPos + that.yOffset);
+	    ctx.closePath();
+	    var originalWidth = ctx.lineWidth;
+	    ctx.lineWidth = that.lineWidth;
+	    if (that.highlighted) {
+		ctx.strokeStyle = that.strokeStyle2;
+		ctx.fillStyle = that.highlightColor2;
+	    } else {
+		ctx.strokeStyle = that.strokeStyle;
+		ctx.fillStyle = that.highlightColor;
+	    }
+	    
+	    ctx.fill();
+	    ctx.stroke();
+	    ctx.lineWidth = originalWidth;
+	    
+	    ctx.font = that.font;
+	    ctx.fillStyle = that.shadowColor;
+	    ctx.textBaseline = "alphabetic";
+	    ctx.textAlign = "start";
+	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+	    
+	    ctx.fillStyle = that.color;
+	    ctx.font = that.font;
+	    if (that.highlighted) {
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+		ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+
+	    } else {
+		ctx.strokeStyle = "#000000";
+		ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+		ctx.fillText(that.name, that.xPos, that.yPos);
+	    }
+	    ctx.fillStyle = originalColor;
+	    ctx.font = originalFont;
+	}
+    }
 		
 
-		this.onLeftMouseDown = function( e ) {
-			if (that.active) {
-			    game.setStage( universe );
-			}
-		}
-		
+    this.onLeftMouseDown = function( e ) {
+	if (that.active) {
+	    game.setStage( universe );
+	}
+    }
+    
 
-		this.onOpenPlanetMenu = function(e) {
-			that.active = false;
-		}
-		
+    this.onOpenPlanetMenu = function(e) {
+	that.active = false;
+    }
+    
 
-		this.onShowPlanetButton = function(e) {
-			if (e.display == true) {
-				that.active = true;
-				}
-			}
-		
-		
+    this.onShowPlanetButton = function(e) {
+	if (e.display == true) {
+	    that.active = true;
+	}
+    }
+    
+    
     this.onMouseMove = function( x, y ) {
 	if (that.active) {
 	    that.highlighted = true;
@@ -478,17 +470,17 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 	    that.highlighted = false;
 	}
     }
-		
-		this.hitTest = function( x, y ) {
-			//trace("testing button" );
-			if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
-				 y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
-				return true;
-			} else {
-				return false
-			}
-		}
-	this.requestUpdate = function() {
+    
+    this.hitTest = function( x, y ) {
+	//trace("testing button" );
+	if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
+	     y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
+	    return true;
+	} else {
+	    return false
+	}
+    }
+    this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
 				ctx: ctxMenu } );
     }
@@ -672,17 +664,17 @@ var CommanderInfoPanel = function(xPos, yPos, model) {
 			
 		}
 		
-		dispatcher.addListener("OpenPlanetMenu", this);
-		this.onOpenPlanetMenu = function(e) {
-			that.active = false;
-		}
-		
-		dispatcher.addListener("ShowPlanetButton", this);
-		this.onShowPlanetButton = function(e) {
-			if (e.display == true) {
-				that.active = true;
-				}
-			}
+    dispatcher.addListener("OpenPlanetMenu", this);
+    this.onOpenPlanetMenu = function(e) {
+	that.active = false;
+    }
+    
+    dispatcher.addListener("ShowPlanetButton", this);
+    this.onShowPlanetButton = function(e) {
+	if (e.display == true) {
+	    that.active = true;
+	}
+    }
 		
 	this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
