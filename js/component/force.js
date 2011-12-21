@@ -250,7 +250,9 @@ var Force = function( name, type, color ) {
 				var defender = stars[ind[i]].owner.commanders[stars[ind[i]].owner.commanders.length -1 ];
 				defender.type = "defender";
 				defender.star = stars[ind[i]];
-				defender.addUnit( Cannon );
+				for ( var l=0; l<stars[ind[i]].defenceSystem; l++ ) {
+				    defender.addUnit( Cannon );
+				}
 				dispatcher.broadcast( {name: "StartBattle",
 						       commander0: cmder,
 						       commander1: defender,

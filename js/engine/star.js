@@ -110,9 +110,9 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     this.u = u;
     this.v = v;
 	
-	this.incomePercent = 1.0;
+    this.incomePercent = 1.0;
 
-	this.defenceSystem = 0;
+    this.defenceSystem = 1;
     /// Put the solar system onto the universe map
     univMap.addSolarSystem( u, v, this );
     
@@ -128,6 +128,7 @@ var Star = function(texture, x, y, z, radius, u, v ) {
 	if ( this.owner ) {
 	    this.owner.removeSolar( this );
 	}
+	this.defenceSystem = 1;
 	this.owner = force;
 	this.owner.declareSolar( this );
 	univMap.requestUpdate();
@@ -235,9 +236,9 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     
     
     this.miners = 1; // number of miners in the system
-	this.defenceSystem = 0;
-	this.hasRefinery = false;
-	this.hasPowerPlant = false;
+    this.defenceSystem = 1;
+    this.hasRefinery = false;
+    this.hasPowerPlant = false;
     var openButton = new planetMenuOpenButton("Open Planet Menu", 50, 670, this);
     var leaveButton = new exitSolarSystemButton("Leave Solar System", 50, 730, this);
 }
