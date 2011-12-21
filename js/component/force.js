@@ -230,7 +230,7 @@ var Force = function( name, type, color ) {
 	    
 	    
 	    /// Enemy Star
-	    if ( cmder.getPower() < 6000 ) {
+	    if ( cmder.getPower() < 18000 ) {
 		return false;
 	    }
 	    
@@ -242,7 +242,6 @@ var Force = function( name, type, color ) {
 			    continue;
 			}
 			cmder.setOrientation( pathes[ind[i]][0] );
-			trace( "pick " + pathes[i][0] );
 			if ( cmder.stepForward() ) {
 			    if ( cmder.u == stars[ind[i]].u &&
 				 cmder.v == stars[ind[i]].v ) {
@@ -268,6 +267,68 @@ var Force = function( name, type, color ) {
 	    
 	    return false;
 	}
+
+
+
+	this.tryPurchase = function( cmder ) {
+	    var pathes = new Array();
+	    for ( var i=0; i<stars.length; i++ ) {
+		pathes.push( 
+		    univMap.floodFill( 
+			cmder.u,
+			cmder.v,
+			stars[i].u,
+			stars[i].v
+		    ) 
+		);
+	    } 
+	    
+	    /// Sort
+	    var ind = new Array();
+	    for ( var i=0; i<stars.length; i++ ) {
+		ind.push( i );
+	    }
+	    for ( var i=0; i<stars.length-1; i++ ) {
+		for ( var j=1; j<stars.length; j++ ) {
+		    if ( ( pathes[ind[j]] && (!pathes[ind[i]] ) ) ||
+			 ( pathes[ind[j]] && pathes[ind[i]] && 
+			   pathes[ind[j]].length < pathes[ind[i]].length ) ) {
+			var tmp = ind[i];
+			ind[i] = ind[j];
+			ind[j] = tmp;
+		    }
+		}
+	    }
+
+	    for ( var i=0; i<stars.length; i++ ) {
+		if ( pathes[ind[i]] ) {
+		    if ( stars[ind[i]].owner ) {
+			if ( stars[ind[i]].owner.groupID
+			     == cmder.group ) {
+			    cmder.setOrientation( pathes[ind[i]][0] );
+			    if ( cmder.stepForward() ) {
+				if ( cmder.u == stars[ind[i]].u &&
+				     cmder.v == stars[ind[i]].v ) {
+				    /// Purchase
+				    var force = forces[cmder.group];
+				    for ( var j=0; j<6; j++ ) {
+					while ( force.gold >= UnitTypes[j].price && stars[ind[i]].quantities[j] > 0 ) {
+					    force.gold -= UnitTypes[j].price;
+					    stars[ind[i]].quantities[j]--;
+					    cmder.addUnit( UnitTypes[j] );
+					}
+				    }
+				}
+			    }
+			    return true;
+			}
+		    }
+		}
+	    }
+	    
+	    return false;
+	}
+
 	this.update = function() {
 	    if ( this.thinking ) {
 		this.tick++;
@@ -318,7 +379,9 @@ var Force = function( name, type, color ) {
 			    }
 			}
 			
-
+			if ( this.tryPurchase( cmder ) ) {
+			    return;
+			}
 			
 			do { 
 			    this.commanders[i].setOrientation( Math.floor( Math.random() * 6 ) );
@@ -326,6 +389,10 @@ var Force = function( name, type, color ) {
 			return;
 		    }
 		}
+
+
+
+		/// Create Commander ?
 		this.thinking = false;
 		dispatcher.broadcast( { name: "EndTurn", 
 					groupID: this.groupID } );

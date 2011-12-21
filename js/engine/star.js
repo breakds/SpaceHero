@@ -227,10 +227,10 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     /// Every Year, new ships will be added into shipyard
     dispatcher.addListener( "NewYear", this );
     this.onNewYear = function( e ) {
-	for ( var i=0; i < 10; i++ ) {
+	for ( var i=0; i < 6; i++ ) {
 	    this.quantities[i] += UnitTypes[i].production;
 	}
-	quantities[7] = 3;
+	this.quantities[7] = 3;
     }
     
     

@@ -52,7 +52,7 @@ forces[1].commanders[0].units[0].setQuantity( 10 );
 forces[1].commanders[0].addUnit( Fighter );
 forces[1].commanders[0].units[1].setQuantity( 20 );
 forces[1].commanders[0].addUnit( Warship );
-forces[1].commanders[0].units[2].setQuantity( 100 );
+forces[1].commanders[0].units[2].setQuantity( 4 );
 
 
 

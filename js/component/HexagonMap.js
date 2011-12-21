@@ -98,7 +98,7 @@ var HexagonMap = function( rows, cols ) {
     for ( var i=0; i<this.cols; i++ ) {
 	this.veil[i] = new Array();
 	for ( var j=this.lower[i]; j<=this.upper[i]; j++ ) {
-	    this.veil[i][j] = true;
+	    this.veil[i][j] = false;
 	}
     }
 
