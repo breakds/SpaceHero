@@ -96,52 +96,7 @@ StarSolarView.prototype = new View();
   StarUniverseView.prototype = new View();
 */
 
-function adjustAngle(angle, viewAngle, mouse, distance) {
-    var magicNum = 11.37777777 * 3;
-    var center = distance / 2;
-    return (mouse - center) / magicNum;
-    
-}
 
-function startRayCheck(planetList, mx, my) {
-    var rayLen = 100;
-    var position = new Array();
-    position[0] = cam.position[0];
-    position[1] = cam.position[1];
-    position[2] = cam.position[2];
-    var rotation = new Array();
-    rotation[0] = cam.orientation[0];
-    rotation[1] = cam.orientation[1];
-    rotation[2] = cam.orientation[2];
-    
-    rotation[0] = adjustAngle(rotation[0], 90, mx, 1024);
-    rotation[1] = adjustAngle(rotation[1], 90 * (3/4), my, 768);
-    var rayDir = [position[0] + rayLen * Math.sin(degToRad(rotation[0])) * Math.cos(degToRad(rotation[1])),
-		  position[1] - rayLen * Math.sin(degToRad(rotation[1])),
-		  position[2] - rayLen * Math.cos(degToRad(rotation[0])) * Math.cos(degToRad(rotation[1]))];
-    console.log("planet1: " + planetList[0].position[0] + " "  + planetList[0].position[1] + " "  + planetList[0].position[2]);
-    console.log("ray dirrection: " + rayDir);
-    return rayCheck(rayDir, position, planetList);
-}
-
-function rayCheck (direction, position, planetList) {
-    var rayIter = 500;
-    for (var t = 0; t <= 1; t += rayIter) {
-	var rx = position[0] + ((direction[0] - position[0]) * t);
-	var ry = position[1] + ((direction[1] - position[1]) * t);
-	var rz = position[2] + ((direction[2] - position[2]) * t);
-	for (var i = 0; i < planetList.length; i++) {
-	    if (rx >= (planetList[i].position[0] - (planetList[i].radius)) && rx <= (planetList[i].position[0] + (planetList[i].radius))) {
-		if (ry >= (planetList[i].position[1] - (planetList[i].radius)) && ry <= (planetList[i].position[1] + (planetList[i].radius))) {
-		    if (rz >= (planetList[i].position[2] - (planetList[i].radius)) && rz <= (planetList[i].position[2] + (planetList[i].radius))) {
-			return planetList[i];
-		    }
-		}
-	    }
-	}
-    }
-    return null;
-}
 
 
 var stars = new Array();
@@ -154,6 +109,8 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     /// The coordinates on the universe map
     this.u = u;
     this.v = v;
+	
+	this.incomePercent = 1.0;
 
 	this.defenceSystem = 0;
     /// Put the solar system onto the universe map
@@ -180,14 +137,17 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     /// The quantities of battle units that this star can
     /// produce currently
     this.quantities = new Array();
-    for ( var i=0; i < 6; i++ ){
-	this.quantities[i] = 1;
+    for ( var i=0; i < 10; i++ ){
+		this.quantities[i] = 1;
     }
+	this.quantities[7] = 3;
 
     
 
     /// The owner get incomeRate * #miner gold each turn
     this.incomeRate = 20;
+	
+	this.incomeRate2 = this.incomeRate;
     this.position = vec3.create();
     this.position[0] = x;
     this.position[1] = y;
@@ -251,29 +211,33 @@ var Star = function(texture, x, y, z, radius, u, v ) {
 	    this.planets.push(planet);
 	}
     }
-    
-
-    
+    this.quantities[6] = this.planets.length - 1;
 
     /// Every Turn, the onwer gains gold
     dispatcher.addListener( "NewTurn", this);
     this.onNewTurn = function( e ) {
 	if ( this.owner ) {
-	    this.owner.gold += that.miners * that.incomeRate;
+	    this.owner.gold += that.miners * that.incomeRate2 * that.incomePercent;
+		this.incomeRate = that.miners * that.incomeRate2 * that.incomePercent;
 	}
     }
     
-
+	
+	
     /// Every Year, new ships will be added into shipyard
     dispatcher.addListener( "NewYear", this );
     this.onNewYear = function( e ) {
-	for ( var i=0; i < 6; i++ ) {
+	for ( var i=0; i < 10; i++ ) {
 	    this.quantities[i] += UnitTypes[i].production;
 	}
+	quantities[7] = 3;
     }
     
     
     this.miners = 1; // number of miners in the system
+	this.defenceSystem = 0;
+	this.hasRefinery = false;
+	this.hasPowerPlant = false;
     var openButton = new planetMenuOpenButton("Open Planet Menu", 50, 670, this);
     var leaveButton = new exitSolarSystemButton("Leave Solar System", 50, 730, this);
 }
