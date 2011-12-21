@@ -275,6 +275,51 @@ var HexagonMap = function( rows, cols ) {
 	return null;
     }
 
+    this.floodFillnoVeil = function( u0, v0, u1, v1 ) {
+	if ( this.inMap( u0, v0 ) && this.available( u1, v1 ) ) {
+	    this.initAuxMap();
+	    var q = new Array();
+	    q.push( { u: u0, v: v0, dir: -1, pre: -1 } );
+	    this.auxMap[u0][v0] = 1;
+	    var i = 0;
+	    var nu = 0;
+	    var nv = 0;
+	    var j = 0;
+	    var flag = false;
+	    while ( i < q.length ) {
+		for ( j=0; j<6; j++ ) {
+		    nu = q[i].u + this.du[j];
+		    nv = q[i].v + this.dv[j];
+		    if ( this.available( nu, nv ) &&
+			 0 == this.auxMap[nu][nv] ) {
+			this.auxMap[nu][nv] = 1;
+			q.push( { u: nu, v: nv, dir: j, pre: i } );
+			if ( nu == u1 && nv == v1 ) {
+			    flag = true;
+			    break;
+			}
+		    }
+		}
+		if ( flag ) {
+		    break;
+		}
+		i++;
+	    }
+	    if ( flag ) {
+		var path = new Array();
+		i = q.length-1;
+		do {
+		    path.push( q[i].dir );
+		    i = q[i].pre;
+		} while ( 0 != i );
+		path.reverse();
+		return path;
+	    }
+	    return null;
+	}
+	return null;
+    }
+
 
     this.floodFill2 = function( u0, v0, u1, v1 ) {
 	if ( this.inMap( u0, v0 ) ) {
@@ -326,6 +371,58 @@ var HexagonMap = function( rows, cols ) {
 	return null;
     }
 
+
+
+    this.floodFillnoVeil2 = function( u0, v0, u1, v1 ) {
+	if ( this.inMap( u0, v0 ) ) {
+	    this.initAuxMap();
+	    var q = new Array();
+	    q.push( { u: u0, v: v0, dir: -1, pre: -1 } );
+	    this.auxMap[u0][v0] = 1;
+	    var i = 0;
+	    var nu = 0;
+	    var nv = 0;
+	    var j = 0;
+	    var flag = false;
+	    while ( i < q.length ) {
+		for ( j=0; j<6; j++ ) {
+		    nu = q[i].u + this.du[j];
+		    nv = q[i].v + this.dv[j];
+		    if ( this.available( nu, nv ) &&
+			 0 == this.auxMap[nu][nv] ) {
+			this.auxMap[nu][nv] = 1;
+			q.push( { u: nu, v: nv, dir: j, pre: i } );
+			if ( nu == u1 && nv == v1 ) {
+			    flag = true;
+			    break;
+			}
+		    } else if ( nu == u1 && nv == v1 ) {
+			q.push( { u: nu, v: nv, dir: j, pre: i } );
+			flag = true;
+			break;
+		    }
+		}
+		if ( flag ) {
+		    break;
+		}
+		i++;
+	    }
+	    if ( flag ) {
+		var path = new Array();
+		i = q.length-1;
+		do {
+		    path.push( q[i].dir );
+		    i = q[i].pre;
+		} while ( 0 != i );
+		path.reverse();
+		return path;
+	    }
+	    return null;
+	}
+	return null;
+    }
+
+
     this.floodFill3 = function( u0, v0, u1, v1 ) {
 	if ( this.inMap( u0, v0 ) ) {
 	    var tmpObj = this.getMap( u0, v0 );
@@ -345,8 +442,7 @@ var HexagonMap = function( rows, cols ) {
 		    nu = q[i].u + this.du[j];
 		    nv = q[i].v + this.dv[j];
 		    if ( this.available( nu, nv ) &&
-			 0 == this.auxMap[nu][nv] && 
-			 (!this.veil[nu][nv]) ) {
+			 0 == this.auxMap[nu][nv] ) {
 			this.auxMap[nu][nv] = 1;
 			q.push( { u: nu, v: nv, dir: j, pre: i } );
 			if ( nu == u1 && nv == v1 ) {

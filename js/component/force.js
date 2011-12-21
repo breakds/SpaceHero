@@ -105,7 +105,7 @@ var Force = function( name, type, color ) {
 	    var pathes = new Array();
 	    for ( var i=0; i<forces[0].commanders.length; i++ ) {
 		pathes.push( 
-		    univMap.floodFill2( 
+		    univMap.floodFillnoVeil2( 
 			cmder.u,
 			cmder.v,
 			forces[0].commanders[i].u,
@@ -182,7 +182,7 @@ var Force = function( name, type, color ) {
 	    var pathes = new Array();
 	    for ( var i=0; i<stars.length; i++ ) {
 		pathes.push( 
-		    univMap.floodFill( 
+		    univMap.floodFillnoVeil( 
 			cmder.u,
 			cmder.v,
 			stars[i].u,
@@ -276,7 +276,7 @@ var Force = function( name, type, color ) {
 	    var pathes = new Array();
 	    for ( var i=0; i<stars.length; i++ ) {
 		pathes.push( 
-		    univMap.floodFill( 
+		    univMap.floodFillnoVeil( 
 			cmder.u,
 			cmder.v,
 			stars[i].u,
@@ -359,7 +359,7 @@ var Force = function( name, type, color ) {
 			for ( var j=0; j<mines.length; j++ ) {
 			    if ( (!mines[j].landlord) ||
 				 mines[j].landlord.groupID != cmder.group ) {
-				var path = univMap.floodFill( 
+				var path = univMap.floodFillnoVeil( 
 				    cmder.u,
 				    cmder.v,
 				    mines[j].u,
