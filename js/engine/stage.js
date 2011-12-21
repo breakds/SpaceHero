@@ -33,6 +33,7 @@ var Stage = function()
 			quat4.toMat4(cam.orientation, quatMat);
 			mat4.multiply(mvMatrix, quatMat);
 			mat4.translate(mvMatrix, camTranslate);
+			mat4.set(mvMatrix, mvCamera);
 			setShader(lightShaderProgram);
 			gl.useProgram(currentShader);
 			cam.update();

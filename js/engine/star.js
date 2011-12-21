@@ -155,7 +155,7 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     this.u = u;
     this.v = v;
 
-
+	this.defenceSystem = 0;
     /// Put the solar system onto the universe map
     univMap.addSolarSystem( u, v, this );
     
@@ -205,7 +205,7 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     this.starModel2.setPosition(this.position[0], this.position[1], this.position[2]);
     this.starModel2.setScale(this.radius + 0.1, this.radius + 0.1, this.radius + 0.1);
     this.starModel2.useLighting(false);
-    this.starModel2.constantRotation(0,0.1,0);
+    this.starModel2.constantRotation(0.3,0,0);
     this.starModel2.setRotation(90, 0, 0);
     
     //end star clouds "flares"
@@ -527,6 +527,17 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
 	    return false
 	}
     }
+	
+	dispatcher.addListener( "OpenPlanetMenu", this );
+    this.onOpenPlanetMenu = function( e ) {
+	this.active = false;
+    }
+
+    dispatcher.addListener("ShowPlanetButton", this);
+    this.onShowPlanetButton = function(e) {
+	this.active = true;
+    }
+	
     this.requestUpdate = function() {
 	dispatcher.broadcast( { name: "UpdateContext",
 				ctx: ctxMenu } );
@@ -646,8 +657,8 @@ var CommanderInfoPanel = function( commander, right, top ) {
 	this.active = false;
     }
 
-    dispatcher.addListener("ExitPlanetMenu", this);
-    this.onExitPlanetMenu = function(e) {
+    dispatcher.addListener("ShowPlanetButton", this);
+    this.onShowPlanetButton = function(e) {
 	this.active = true;
     }
 
