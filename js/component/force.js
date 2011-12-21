@@ -74,6 +74,28 @@ var Force = function( name, type, color ) {
 	new CommanderUniverseView( this.commanders[this.commanders.length-1] );
     }
     
+
+
+    this.createRandomCommander = function( u, v ) {
+	if ( this.gold >= 2500 ) {
+	    this.gold -= 2500;
+	    var title = commanderTitlePool[ 
+		Math.floor( Math.random() * commanderTitlePool.length ) 
+	    ];
+	    var name = commanderNamePool[ 
+		Math.floor( Math.random() * commanderNamePool.length ) 
+	    ];
+	    this.commanders.push( new Commander( title, name, this.groupID, u, v ) );
+	    var cmder = this.commanders[this.commanders.length-1];
+	    new CommanderUniverseView( cmder );
+	    /// Randomly Number Of Fighter
+	    cmder.addUnit( Fighter );
+	    cmder.units[0].setQuantity( 5 + Math.floor( Math.random() * 5 )  );
+	    this.requestUpdate();
+	}
+    }
+    
+    
     this.removeCommander = function( cmder ) {
 	this.commanders.splice( this.commanders.indexOf( cmder ), 1 );
     }

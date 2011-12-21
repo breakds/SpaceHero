@@ -256,7 +256,9 @@ var HexagonGridView = function( m, height, width, margin )
 				    obj: obj } );
 	} else if ( 0 != terran && !logic.status.onSelect ) {
 	    if ( "Star" == terran.type && 0 == terran.owner.groupID ) {
-		dispatcher.broadcast( { name: "CreateCommander" } );
+		dispatcher.broadcast( { name: "CreateCommander",
+					star: terran
+				      } );
 	    }
 	} else if ( status.onSelect != null )
 	{
@@ -333,6 +335,7 @@ var CommanderUniverseView = function( commander ) {
 	dispatcher.broadcast( { name: "UpdateContext",
 				ctx: ctx2d[0] } );
     }
+    this.requestUpdate();
 }
 CommanderUniverseView.prototype = new View;
 

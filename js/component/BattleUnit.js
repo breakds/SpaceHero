@@ -496,3 +496,37 @@ var Commander = function( title, name, group, u ,v  ) {
 Commander.prototype = new GameObject;
 
 
+
+
+
+var commanderTitlePool = new Array( "General", "Sir", "King",
+				    "Master", "Lord" );
+var commanderTitlePoolChecked = new Array();
+for ( var i=0; i<commanderTitlePool; i++ ) {
+    commanderTitlePoolChecked.push( true );
+}
+
+var commanderNamePool = new Array( "Lionheart", 
+				   "Dracon",
+				   "Roland",
+				   "Tyris",
+				   "Adela",
+				   "Thane",
+				   "Solmyr",
+				   "Kyrre",
+				   "Uland",
+				   "Dace",
+				   "Alicia",
+				   "Barbluke",
+				   "Vokial",
+				   "Tazar" );
+			       
+
+var commanderNamePoolChecked = new Array();
+for ( var i=0; i<commanderNamePool; i++ ) {
+    commanderNamePoolChecked.push( true );
+}
+
+
+			       
+			       
