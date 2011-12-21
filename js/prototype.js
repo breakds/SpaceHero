@@ -144,5 +144,5 @@ for ( var i=0; i<forces[1].commanders.length; i++ ) {
 
 var planetMenu = new PlanetMenu();
 
-game.play();
+//game.play();
 
