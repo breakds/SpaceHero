@@ -249,7 +249,7 @@ var PlanetMenuView = function( m ) {
     this.onOpenPlanetMenu = function(e) {
 		that.state = 1;
 		that.creditWidget.money = e.force.gold;
-		that.infoWidget.updatePlanetInfo(e.planet.planetInfo.name, e.planet.planetInfo.structureList, e.force.name, e.commander.name);
+	that.infoWidget.updatePlanetInfo(e.planet.planetInfo.name, e.planet.planetInfo.structureList, e.force.name, e.commander.name);
 		new OpenMenuAnimation( this );
     }
     
@@ -899,7 +899,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     }
     this.informationList["planet"] = this.planetInfoText;
     this.headerList["planet"] = planetName;
-    this.profilePicList["planet"] = null;
+    this.profilePicList["planet"] = "planetProfile";
     
     this.fighterInfoText = new Array(); 
     this.fighterInfoText.push("Health:                        3");
@@ -910,7 +910,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.fighterInfoText.push("Quantity:                  1");
     this.informationList["fighter"] = this.fighterInfoText;
     this.headerList["fighter"] = "Fighter";
-    this.profilePicList["fighter"] = "fighterImg";
+    this.profilePicList["fighter"] = "fighterProfile";
     
     this.gunboatInfoText = new Array(); 
     this.gunboatInfoText.push("Health:                        4");
@@ -921,7 +921,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.gunboatInfoText.push("Quantity:                  1");
     this.informationList["gunboat"] = this.gunboatInfoText;
     this.headerList["gunboat"] = "Gunboat";
-    this.profilePicList["gunboat"] = "gunboatImg";
+    this.profilePicList["gunboat"] = "gunboatProfile";
 
     
     this.warshipInfoText = new Array(); 
@@ -933,7 +933,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.warshipInfoText.push("Quantity:                  1");
     this.informationList["warship"] = this.warshipInfoText;
     this.headerList["warship"] = "Warship";
-    this.profilePicList["warship"] = "warshipImg";
+    this.profilePicList["warship"] = "warshipProfile";
 
     
     this.sniperInfoText = new Array(); 
@@ -945,7 +945,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.sniperInfoText.push("Quantity:                  1");
     this.informationList["sniper"] = this.sniperInfoText;
     this.headerList["sniper"] = "Sniper";
-    this.profilePicList["sniper"] = "sniperImg";
+    this.profilePicList["sniper"] = "sniperProfile";
     
     
     this.cruiserInfoText = new Array(); 
@@ -957,7 +957,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.cruiserInfoText.push("Quantity:                  1");
     this.informationList["cruiser"] = this.cruiserInfoText;
     this.headerList["cruiser"] = "Cruiser";
-    this.profilePicList["cruiser"] = "cruiserImg";
+    this.profilePicList["cruiser"] = "cruiserProfile";
 
     this.warriorInfoText = new Array(); 
     this.warriorInfoText.push("Health:                      75");
@@ -968,7 +968,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.warriorInfoText.push("Quantity:                  1");
     this.informationList["warrior"] = this.warriorInfoText;
     this.headerList["warrior"] = "Warrior";
-    this.profilePicList["warrior"] = "warriorImg";
+    this.profilePicList["warrior"] = "warriorProfile";
     
     this.minerInfoText = new Array(); 
     this.minerInfoText.push("Miners are weak ships");
@@ -982,7 +982,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 	this.minerInfoText.push("[One per planet]");
     this.informationList["miner"] = this.minerInfoText;
     this.headerList["miner"] = "Miner";
-    this.profilePicList["miner"] = "pmProfilePic";
+    this.profilePicList["miner"] = "minerProfile";
     
     this.shipyardInfoText = new Array(); 
     this.shipyardInfoText.push("The shipyard allows");
@@ -1003,7 +1003,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 	this.defenseInfoText.push("[3 per solar system]");
     this.informationList["defensesystem"] = this.defenseInfoText;
     this.headerList["defensesystem"] = "Defense System";
-    this.profilePicList["defensesystem"] = "pmProfilePic";
+    this.profilePicList["defensesystem"] = "defenseProfile";
     
     this.refineryInfoText = new Array(); 
     this.refineryInfoText.push("The refinery allows you");
@@ -1016,7 +1016,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 	this.refineryInfoText.push("[1 per solar system]");
     this.informationList["refinery"] = this.refineryInfoText;
     this.headerList["refinery"] = "Refinery";
-    this.profilePicList["refinery"] = "pmProfilePic";
+    this.profilePicList["refinery"] = "refineryProfile";
     
     this.powerplantInfoText = new Array(); 
     this.powerplantInfoText.push("The fusion power plant");
@@ -1030,7 +1030,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 	this.powerplantInfoText.push("[1 per solar system]");
     this.informationList["powerplant"] = this.powerplantInfoText;
     this.headerList["powerplant"] = "Fusion Power Plant";
-    this.profilePicList["powerplant"] = "pmProfilePic";
+    this.profilePicList["powerplant"] = "powerPlantProfile";
     
     this.xPos = xPos;
     this.yPos = yPos;
@@ -1043,7 +1043,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.shadowColor = "#222222";
     this.headerFont = "28px Eras Bold ITC";
     this.infoFont = "23px Eras Bold ITC";
-    this.profilePicX = this.xPos + 50;
+    this.profilePicX = this.xPos;
     this.profilePicY = this.yPos + 20;
     this.headerTextX = 270;
     this.headerTextY = 0;
@@ -1087,7 +1087,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 	ctx.textAlign = "left";
 	//trace(that.profilePicX + " " + that.profilePicY);
 	if (that.profilePic != null) {
-		ctx.drawImage(resources.getResource(that.profilePic), that.profilePicX, that.profilePicY, 180, 180);
+	    ctx.drawImage(resources.getResource(that.profilePic), that.profilePicX, that.profilePicY );
 	}
 	
 	ctx.font = that.infoFont;

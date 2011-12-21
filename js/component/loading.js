@@ -17,7 +17,7 @@ resources.addImage( "img/planetMenu_left.png", "planetMenuLeft");
 resources.addImage( "img/beam_right.png", "beamRight" );
 resources.addImage( "img/projector_right.png", "projectorRight");
 resources.addImage( "img/planetMenu_right.png", "planetMenuRight");
-resources.addImage( "img/planetMenuProfilePic.png", "pmProfilePic");
+resources.addImage( "img/planetProfile.png", "planetProfile");
 resources.addImage( "img/attack.png", "attackIcon");
 resources.addImage( "img/minestar.png", "mineStarImg");
 resources.addImage( "img/redflag.png", "redFlag" );
@@ -44,6 +44,19 @@ resources.addImage( "img/panel.png", "panelBgImg" );
 resources.addImage( "img/panelright.png", "panelBgRightImg" );
 resources.addImage( "img/statusbar.png", "statusBgImg" );
 resources.addImage( "img/scanline.png", "scanLineImg" );
+
+resources.addImage( "img/fighterProfile.png", "fighterProfile" );
+resources.addImage( "img/cruiserProfile.png", "cruiserProfile" );
+resources.addImage( "img/sniperProfile.png", "sniperProfile" );
+resources.addImage( "img/warshipProfile.png", "warshipProfile" );
+resources.addImage( "img/gunboatProfile.png", "gunboatProfile" );
+resources.addImage( "img/warriorProfile.png", "warriorProfile" );
+resources.addImage( "img/refineryProfile.png", "minerProfile" );
+
+resources.addImage( "img/defenseProfile.png", "defenseProfile" );
+resources.addImage( "img/refineryProfile.png", "refineryProfile" );
+resources.addImage( "img/powerPlantProfile.png", "powerPlantProfile" );
+
 for ( var i=0; i<24; i++ ) {
     resources.addImage( "img/missile/missile"+i+".png", "missile"+i+"Anim" );
 }
