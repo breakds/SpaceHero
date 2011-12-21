@@ -80,6 +80,8 @@ function getShader(gl, id) {
 		
         lightShaderProgram.pMatrixUniform = gl.getUniformLocation(lightShaderProgram, "uPMatrix");
         lightShaderProgram.mvMatrixUniform = gl.getUniformLocation(lightShaderProgram, "uMVMatrix");
+		lightShaderProgram.mvCameraUniform = gl.getUniformLocation(lightShaderProgram, "uMVCamera");
+		lightShaderProgram.mvLightingUniform = gl.getUniformLocation(lightShaderProgram, "uMVLighting");
 		lightShaderProgram.nMatrixUniform = gl.getUniformLocation(lightShaderProgram, "uNMatrix");
         lightShaderProgram.samplerUniform = gl.getUniformLocation(lightShaderProgram, "uSampler");
 		lightShaderProgram.materialShininessUniform = gl.getUniformLocation(lightShaderProgram, "uMaterialShininess");

@@ -8,23 +8,29 @@ var OpenMenuAnimation = function( m ) {
     this.init();
     this.next = function() {
 	if ( 1 == this.objs[0].state ) {
-	    this.objs[0].curTime++;
+	    //this.objs[0].curTime++;
+		//console.log("cur time: " + this.objs[0].curTime);
 	    if ( this.objs[0].curTime >= this.objs[0].aniTime ) {
-		this.objs[0].state = 2;
-		dispatcher.broadcast( { name: "ActivateWidgets" } );
-		if ( this.objs[0].currentWidgetList == this.objs[0].shipYardWidgets ) {
-		    dispatcher.broadcast( { name: "SwitchTab", 
-					    tab: "shipyard" } );
-		} else {
-		    dispatcher.broadcast( { name: "SwitchTab", 
-					    tab: "factory" } );
-		}
+			this.objs[0].curTime = 0;
+			this.objs[0].state = 2;
+			dispatcher.broadcast( { name: "ActivateWidgets" } );
+			if ( this.objs[0].currentWidgetList == this.objs[0].shipYardWidgets ) {
+				dispatcher.broadcast( { name: "SwitchTab", 
+							tab: "shipyard" } );
+			} else {
+				dispatcher.broadcast( { name: "SwitchTab", 
+							tab: "factory" } );
+			}
 
 	    }
 	} else if ( 3 == this.objs[0].state ) {
-	    this.objs[0].curTime2++;
+	    //this.objs[0].curTime2++;
+		//console.log("cur time here: " + this.objs[0].curTime2)
 	    if ( this.objs[0].curTime2 >= this.objs[0].aniTime ) {
 		this.objs[0].state = 0;
+		this.objs[0].curTime2 = 0;
+		dispatcher.broadcast( { name: "ExitPlanetButton",
+					exit: true } );
 		dispatcher.broadcast( { name: "ShowPlanetButton",
 					display: true } );
 	    }
@@ -60,14 +66,14 @@ var PlanetMenuView = function( m ) {
     
     this.menuReady = false;
     this.aniSpeed = 0.05;
-    this.aniSpeed2 = 1.2;
+    this.aniSpeed2 = 1.0;
     this.opacity = 0.5;
     this.opacity2 = 0.95;
     
     this.beamHeight = 0;
     this.menuHeight = 0;
     
-    this.aniTime = (1 * fps);
+    this.aniTime = (1.2 * fps);
     this.curTime = 0;
     this.curTime2 = 0;
     
@@ -97,18 +103,18 @@ var PlanetMenuView = function( m ) {
     this.widgets.push(new planetMenuExitButton("Exit", this.menu1xPos + 190, this.menu1yPos + 580));
     this.creditWidget = new planetMenuCredits("Credits: ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney);
     
-    this.shipYardWidgets.push(new planetMenuButton("Fighter                      "+ Fighter.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", Fighter.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Gunboat                    "+Gunboat.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", Gunboat.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Warship                   "+Warship.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", Warship.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Sniper                       "+Sniper.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", Sniper.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Cruiser                   "+Cruiser.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", Cruiser.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Warrior                  "+Warrior.price, this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", Warrior.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Miner                          50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Fighter", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", Fighter.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Gunboat", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", Gunboat.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Warship", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", Warship.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Sniper", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", Sniper.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Cruiser", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", Cruiser.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Warrior", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", Warrior.price, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Miner", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50, "shipyard" ));
     
-    this.factoryWidgets.push(new planetMenuButton("ShipYard                      50", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50, "factory" ));
-    this.factoryWidgets.push(new planetMenuButton("Defense System         0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 0, "factory" ));
-    this.factoryWidgets.push(new planetMenuButton("Refinery                       0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 0, "factory" ));
-    this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant   0", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",0, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("ShipYard", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("Defense System", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 0, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("Refinery", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 0, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",0, "factory" ));
     dispatcher.broadcast( { name: "DisactivateWidgets" } );
     
     
@@ -120,104 +126,110 @@ var PlanetMenuView = function( m ) {
 	    ctx.textAlign = defaultTextAlign;
 	    ctx.textBaseline = defaultTextBaseline;
 	    if (that.state == 2) {
-		if (that.opacity < 1.0)
-		    that.opacity += that.aniSpeed;
-		if (that.opacity >= 1) 
-		    that.opacity = 0.5;
-		if (that.opacity2 < 1.0)
-		    that.opacity2 += that.aniSpeed / 8;
-		if (that.opacity2 >= 1) 
-		    that.opacity2 = 0.95;
-		var originalAlpha = ctx.globalAlpha;
-		ctx.drawImage(resources.getResource( "projectorLeft" ), 0, 0);
-		ctx.drawImage(resources.getResource( "projectorRight" ), 512, 0);
-		ctx.globalAlpha = that.opacity;
-		ctx.drawImage(resources.getResource( "beamLeft" ), 0, 0);
-		ctx.drawImage(resources.getResource( "beamRight" ), 512, 0);
-		ctx.globalAlpha = that.opacity2;
-		ctx.drawImage(resources.getResource( "planetMenuRight" ), 512, 0);
-		ctx.drawImage(resources.getResource( "planetMenuLeft" ), 0, 0);
-		that.drawBackground(ctx);
-		for (var i = 0; i < that.tabWidgets.length; i++) {
-		    that.tabWidgets[i].draw(ctx);
-		}
-		for (var i = 0; i < that.widgets.length; i++) {
-		    that.widgets[i].draw(ctx);
-		}
-		
-		for (var i = 0; i < that.currentWidgetList.length; i++) {
-		    that.currentWidgetList[i].draw(ctx);
-		}
-		that.creditWidget.draw(ctx);
-		that.infoWidget.draw(ctx);
-		ctx.globalAlpha = originalAlpha;
-	    } else if (that.state == 1) {
-		if (that.projector1x < 0) {
-		    that.projector1x += that.aniSpeed2;
-		} else if (that.projector1x > 0) {
-		    that.projector1x = 0;
-		}
-		if (that.projector2x > 512) {
-		    that.projector2x -= that.aniSpeed2;
-		} else if (that.projector2x > 512) {
-		    that.projector2x = 512;
-		}
-		ctx.drawImage(resources.getResource( "projectorLeft" ), that.projector1x, that.projector1y);
-		ctx.drawImage(resources.getResource( "projectorRight" ), that.projector2x, that.projector2y);
-		if (that.curTime >= that.aniTime/2) {
-		    if (that.beamHeight < resources.getResource("beamLeft").height) {
-			that.beamHeight += that.aniSpeed2 * 20;
-		    }
-		    else if (that.beamHeight > resources.getResource("beamLeft").height) {
-			that.beamHeight = resources.getResource("beamLeft").height;
-		    }
-		    
-		    if (that.menuHeight < resources.getResource("planetMenuLeft").height) {
-			that.menuHeight += that.aniSpeed2 * 20;
-		    }
-		    else if (that.menuHeight > resources.getResource("planetMenuLeft").height) {
-			that.menuHeight = resources.getResource("planetMenuLeft").height;
-		    }
-		    ctx.drawImage(resources.getResource("beamLeft"), 0, (resources.getResource("beamLeft").height - that.beamHeight) / 2, resources.getResource("beamLeft").width, that.beamHeight);
-		    ctx.drawImage(resources.getResource("beamRight"), 512, (resources.getResource("beamRight").height - that.beamHeight) / 2, resources.getResource("beamRight").width, that.beamHeight);
-		    ctx.drawImage(resources.getResource("planetMenuLeft"), 0, (resources.getResource("planetMenuLeft").height - that.menuHeight) / 2, resources.getResource("planetMenuLeft").width, that.menuHeight);
-		    ctx.drawImage(resources.getResource("planetMenuRight"), 512, (resources.getResource("planetMenuRight").height - that.menuHeight) / 2, resources.getResource("planetMenuRight").width, that.menuHeight);
-		}
+			if (that.opacity < 1.0)
+				that.opacity += that.aniSpeed;
+			if (that.opacity >= 1) 
+				that.opacity = 0.5;
+			if (that.opacity2 < 1.0)
+				that.opacity2 += that.aniSpeed / 8;
+			if (that.opacity2 >= 1) 
+				that.opacity2 = 0.95;
+			var originalAlpha = ctx.globalAlpha;
+			ctx.drawImage(resources.getResource( "projectorLeft" ), 0, 0);
+			ctx.drawImage(resources.getResource( "projectorRight" ), 512, 0);
+			ctx.globalAlpha = that.opacity;
+			ctx.drawImage(resources.getResource( "beamLeft" ), 0, 0);
+			ctx.drawImage(resources.getResource( "beamRight" ), 512, 0);
+			ctx.globalAlpha = that.opacity2;
+			ctx.drawImage(resources.getResource( "planetMenuRight" ), 512, 0);
+			ctx.drawImage(resources.getResource( "planetMenuLeft" ), 0, 0);
+			that.drawBackground(ctx);
+			for (var i = 0; i < that.tabWidgets.length; i++) {
+				that.tabWidgets[i].draw(ctx);
+			}
+			for (var i = 0; i < that.widgets.length; i++) {
+				that.widgets[i].draw(ctx);
+			}
+			
+			for (var i = 0; i < that.currentWidgetList.length; i++) {
+				that.currentWidgetList[i].draw(ctx);
+			}
+			that.creditWidget.draw(ctx);
+			that.infoWidget.draw(ctx);
+			ctx.globalAlpha = originalAlpha;
+	    } 
+		else if (that.state == 1) {
+			that.curTime++;
+			if (that.curTime <= that.aniTime) {
+				if (that.projector1x < 0) {
+					that.projector1x += that.aniSpeed2;
+				} else if (that.projector1x > 0) {
+					that.projector1x = 0;
+				}
+				if (that.projector2x > 512) {
+					that.projector2x -= that.aniSpeed2;
+				} else if (that.projector2x > 512) {
+					that.projector2x = 512;
+				}
+				ctx.drawImage(resources.getResource( "projectorLeft" ), that.projector1x, that.projector1y);
+				ctx.drawImage(resources.getResource( "projectorRight" ), that.projector2x, that.projector2y);
+				if (that.curTime >= that.aniTime/2) {
+					if (that.beamHeight < resources.getResource("beamLeft").height) {
+					that.beamHeight += that.aniSpeed2 * 20;
+					}
+					else if (that.beamHeight > resources.getResource("beamLeft").height) {
+					that.beamHeight = resources.getResource("beamLeft").height;
+					}
+					
+					if (that.menuHeight < resources.getResource("planetMenuLeft").height) {
+					that.menuHeight += that.aniSpeed2 * 20;
+					}
+					else if (that.menuHeight > resources.getResource("planetMenuLeft").height) {
+					that.menuHeight = resources.getResource("planetMenuLeft").height;
+					}
+					ctx.drawImage(resources.getResource("beamLeft"), 0, (resources.getResource("beamLeft").height - that.beamHeight) / 2, resources.getResource("beamLeft").width, that.beamHeight);
+					ctx.drawImage(resources.getResource("beamRight"), 512, (resources.getResource("beamRight").height - that.beamHeight) / 2, resources.getResource("beamRight").width, that.beamHeight);
+					ctx.drawImage(resources.getResource("planetMenuLeft"), 0, (resources.getResource("planetMenuLeft").height - that.menuHeight) / 2, resources.getResource("planetMenuLeft").width, that.menuHeight);
+					ctx.drawImage(resources.getResource("planetMenuRight"), 512, (resources.getResource("planetMenuRight").height - that.menuHeight) / 2, resources.getResource("planetMenuRight").width, that.menuHeight);
+				}
+
+			}
 	    }
 	    else if (that.state == 3) {
-		if (that.curTime2 >= that.aniTime/2) {
-		    if (that.projector1x > -50) {
-			that.projector1x -= that.aniSpeed2;
-		    } else if (that.projector1x < -50) {
-			that.projector1x = -50;
-		    }
-		    if (that.projector2x < 562) {
-			that.projector2x += that.aniSpeed2;
-		    } else if (that.projector2x > 562) {
-			that.projector2x = 562;
-		    }
-		}
-		ctx.drawImage(resources.getResource( "projectorLeft" ), that.projector1x, that.projector1y);
-		ctx.drawImage(resources.getResource( "projectorRight" ), that.projector2x, that.projector2y);	
-		if (that.beamHeight > 0) {
-		    that.beamHeight -= that.aniSpeed2 * 20;
-		}
-		else if (that.beamHeight < 0) {
-		    that.beamHeight = 0;
-		}
-		
-		if (that.menuHeight > 0) {
-		    that.menuHeight -= that.aniSpeed2 * 20;
-		}
-		else if (that.menuHeight < 0) {
-		    that.menuHeight = 0;
-		}
-		ctx.drawImage(resources.getResource("beamLeft"), 0, (resources.getResource("beamLeft").height - that.beamHeight) / 2, resources.getResource("beamLeft").width, that.beamHeight);
-		ctx.drawImage(resources.getResource("beamRight"), 512, (resources.getResource("beamRight").height - that.beamHeight) / 2, resources.getResource("beamRight").width, that.beamHeight);
-		ctx.drawImage(resources.getResource("planetMenuLeft"), 0, (resources.getResource("planetMenuLeft").height - that.menuHeight) / 2, resources.getResource("planetMenuLeft").width, that.menuHeight);
-		ctx.drawImage(resources.getResource("planetMenuRight"), 512, (resources.getResource("planetMenuRight").height - that.menuHeight) / 2, resources.getResource("planetMenuRight").width, that.menuHeight);
-		
-		
+			that.curTime2 ++;
+			if (that.curTime2 <= that.aniTime) {
+				if (that.curTime2 >= that.aniTime/2) {
+					if (that.projector1x > -50) {
+					that.projector1x -= that.aniSpeed2;
+					} else if (that.projector1x < -50) {
+					that.projector1x = -50;
+					}
+					if (that.projector2x < 562) {
+					that.projector2x += that.aniSpeed2;
+					} else if (that.projector2x > 562) {
+					that.projector2x = 562;
+					}
+				}
+				ctx.drawImage(resources.getResource( "projectorLeft" ), that.projector1x, that.projector1y);
+				ctx.drawImage(resources.getResource( "projectorRight" ), that.projector2x, that.projector2y);	
+				if (that.beamHeight > 0) {
+					that.beamHeight -= that.aniSpeed2 * 20;
+				}
+				else if (that.beamHeight < 0) {
+					that.beamHeight = 0;
+				}
+				
+				if (that.menuHeight > 0) {
+					that.menuHeight -= that.aniSpeed2 * 20;
+				}
+				else if (that.menuHeight < 0) {
+					that.menuHeight = 0;
+				}
+				ctx.drawImage(resources.getResource("beamLeft"), 0, (resources.getResource("beamLeft").height - that.beamHeight) / 2, resources.getResource("beamLeft").width, that.beamHeight);
+				ctx.drawImage(resources.getResource("beamRight"), 512, (resources.getResource("beamRight").height - that.beamHeight) / 2, resources.getResource("beamRight").width, that.beamHeight);
+				ctx.drawImage(resources.getResource("planetMenuLeft"), 0, (resources.getResource("planetMenuLeft").height - that.menuHeight) / 2, resources.getResource("planetMenuLeft").width, that.menuHeight);
+				ctx.drawImage(resources.getResource("planetMenuRight"), 512, (resources.getResource("planetMenuRight").height - that.menuHeight) / 2, resources.getResource("planetMenuRight").width, that.menuHeight);
+			}
 	    }
 	}
     }
@@ -232,10 +244,10 @@ var PlanetMenuView = function( m ) {
     
     dispatcher.addListener("OpenPlanetMenu", this);
     this.onOpenPlanetMenu = function(e) {
-	that.state = 1;
-	that.creditWidget.money = e.force.gold;
-	that.infoWidget.updatePlanetInfo(e.planet.planetInfo.name, e.planet.planetInfo.structureList, e.force.name, e.commander.name);
-	new OpenMenuAnimation( this );
+		that.state = 1;
+		that.creditWidget.money = e.force.gold;
+		that.infoWidget.updatePlanetInfo(e.planet.planetInfo.name, e.planet.planetInfo.structureList, e.force.name, e.commander.name);
+		new OpenMenuAnimation( this );
     }
     
     
@@ -243,11 +255,13 @@ var PlanetMenuView = function( m ) {
     dispatcher.addListener("ExitPlanetMenu", this);
     this.onExitPlanetMenu = function(e) {
 	if (e.exit == true) {
+		
 	    if (that.state == 2) {
+		new OpenMenuAnimation( this );
 		that.state = 3;
 		dispatcher.broadcast( { name: "DisactivateWidgets" } );
-		dispatcher.broadcast( { name: "ShowPlanetButton",
-					display: true } );
+		
+		
 		/*
 		for (var i = 0; i < that.currentWidgetList.length; i++) {
 		    that.currentWidgetList[i].active = false;
@@ -291,7 +305,7 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
     this.xPos = xPos;
     this.yPos = yPos;
     this.name = name;
-    this.quant = 1;
+    this.quant = 0;
     this.updateName = updateName;
     this.highlighted = false;
     this.active = false;
@@ -310,6 +324,28 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
     this.yOffset = -30;
     this.lineWidth = 3;
     this.lineHeight = 3;
+	this.index = 0;
+	if (updateName == "fighter") {
+		this.index = 0;
+	}
+	else if (updateName == "gunboat") {
+		this.index = 1;
+	}
+	else if (updateName == "warship") {
+		this.index = 2;
+	}
+	else if (updateName == "sniper") {
+		this.index = 3;
+	}
+	else if (updateName == "cruiser") {
+		this.index = 4;
+	}
+	else if (updateName == "warrior") {
+		this.index = 5;
+	}
+	else if (updateName == "miner") {
+		this.index = 6;
+	}
     
     this.draw = function( ctx ) {
 	if ( ctx == ctxMenu && this.active) {
@@ -320,27 +356,42 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
 	    } else {
 	    
 	    }
+		ctx.textAlign = "left";
 	    ctx.font = that.font;
 	    ctx.fillStyle = that.shadowColor;
 	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
+		ctx.textAlign = "right";
+		ctx.fillText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset) + that.shadowDist, that.yPos + that.shadowDist);
 	
-	    if (that.cost <= that.force.gold && that.quant > 0) {
-		ctx.fillStyle = that.color;
+	    if (that.cost <= that.force.gold && (planetMenu.star.quantities[that.index] > 0 || that.updateName == "miner")) {
+			ctx.fillStyle = that.color;
 	    }
 	    else {
-		ctx.fillStyle = that.color2;
+			ctx.fillStyle = that.color2;
+		}
+		ctx.font = that.font;
+		
+		if (that.highlighted) {
+			ctx.textAlign = "left";
+			ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
+			ctx.strokeStyle = "#000000";
+			ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
+			
+			ctx.textAlign = "right";
+			ctx.fillText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset) - 2, that.yPos - 1);
+			ctx.strokeStyle = "#000000";
+			ctx.strokeText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset) - 2, that.yPos - 1);
+		} else {
+			ctx.textAlign = "left";
+			ctx.fillText(that.name, that.xPos, that.yPos);
+			ctx.strokeStyle = "#000000";
+			ctx.strokeText(that.name, that.xPos, that.yPos, 1);
+			ctx.textAlign = "right";
+			ctx.fillText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset), that.yPos);
+			ctx.strokeStyle = "#000000";
+			ctx.strokeText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset), that.yPos, 1);
 	    }
-	    ctx.font = that.font;
-	    if (that.highlighted) {
-		ctx.fillText(that.name, that.xPos - 2, that.yPos - 1);
-		ctx.strokeStyle = "#000000";
-		ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
-	    } else {
-		ctx.fillText(that.name, that.xPos, that.yPos);
-		ctx.strokeStyle = "#000000";
-		ctx.strokeText(that.name, that.xPos, that.yPos, 1);
-	    }
-	
+		ctx.textAlign = "left";
 	
 	    ctx.fillStyle = originalColor;
 	    ctx.font = originalFont;
@@ -537,6 +588,8 @@ var planetMenuExitButton = function(name, xPos, yPos) {
 	    trace("exit requested");
 	    dispatcher.broadcast( { name: "ExitPlanetMenu",
 				    exit: true } );
+					
+					
 	}
     }
 
@@ -1180,7 +1233,10 @@ var PlanetMenuHandler = function() {
 
 	    }
 	    else if (e.type == "miner") {
-
+			forces[this.star.visiting.group].gold -= e.cost;
+			 dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
+			
 	    }
 	    else if (e.type == "shipyard") {
 		

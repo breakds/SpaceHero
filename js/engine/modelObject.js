@@ -184,10 +184,12 @@ function Model(modelPath, texturePath) {
     
     this.constantRotation = function(xSpeed, ySpeed, zSpeed) {
 		that.conRot = true;
+		
 		var fps = 60;
 		xSpeed /= fps;
 		ySpeed /= fps;
 		zSpeed /= fps;
+		
 		that.rotSpeedVector = [xSpeed, ySpeed, zSpeed];
     }
 	
@@ -245,6 +247,7 @@ function Model(modelPath, texturePath) {
 
 	}
 	if (that.conRot) {
+		
 		that.rot[0] += that.rotSpeedVector[0];
 		if (that.rot[0] > (2 * Math.PI)) {
 			that.rot[0] -= (2 * Math.PI);
@@ -267,6 +270,7 @@ function Model(modelPath, texturePath) {
 			that.rot[2] += (2 * Math.PI);
 		}
 	}
+	
 	if (that.scaling) {
 	  var distance = getDistance(that.size, that.newScale);
 	  if (distance <= that.scaleSpeed) {
@@ -279,10 +283,12 @@ function Model(modelPath, texturePath) {
 	    that.size[2] += that.scaleSpeedVector[2];
 	  }
 	}
+	
     }
 
     
     this.draw = function() {
+		gl.uniformMatrix4fv(lightShaderProgram.mvLightingUniform, false, mvMatrix);
 		mvPushMatrix();
 		mat4.translate(mvMatrix, [that.pos[0], that.pos[1], that.pos[2]]);
 		mat4.rotate(mvMatrix, that.rot[0], [1.0, 0, 0]);
@@ -290,7 +296,40 @@ function Model(modelPath, texturePath) {
 		mat4.rotate(mvMatrix, that.rot[2], [0, 0, 1.0]);
 		mat4.scale(mvMatrix, [that.size[0], that.size[1], that.size[2]]);
 		
+		/*
+		if (that.conRot) {
+			for (var i = 0; i < that.textCoords.length; i++) {
+			
+				if (i % 2 == 0) {
+					that.textCoords[i] += that.rotSpeedVector[0];
+					
+					if (that.textCoords[i] > 0.9) {
+						that.textCoords[i] = that.textCoords[i] - 0.9;
+					}
+					else if (that.textCoords[i] < 0) {
+						that.textCoords[i] = 1.0 - that.textCoords[i];
+					}
+					
+				}
+				else {
+					that.textCoords[i] += that.rotSpeedVector[1];
+					
+					if (that.textCoords[i] > 1.0) {
+						that.textCoords[i] = that.textCoords[i] - 1;
+					}
+					else if (that.textCoords[i] < 0) {
+						that.textCoords[i] = 1.0 - that.textCoords[i];
+					}
+					
+				}
+				
+		}
 		
+		gl.bindBuffer(gl.ARRAY_BUFFER, that.textCoordsBuffer);
+		gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(that.textCoords), gl.STATIC_DRAW);
+
+		}
+		*/
 		var shaderProgram = currentShader;
 		gl.bindBuffer(gl.ARRAY_BUFFER, that.vertexBuffer);
 		gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, that.vertexBuffer.itemSize, gl.FLOAT, false, 0, 0);

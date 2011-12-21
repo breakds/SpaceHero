@@ -36,6 +36,8 @@
 	varying vec4 vPosition;
 	
 	uniform mat4 uMVMatrix;	
+	uniform mat4 uMVCamera;
+	uniform mat4 uMVLighting;
     
 	uniform vec3 uAmbientColor;
     
@@ -50,7 +52,8 @@
 
     void main(void) {
 		if (uIsLit) {
-			vec3 transformedDir = vec3(uMVMatrix * vec4(uLightingLocation, 0.0));
+			//vec3 asdf = (uMVLighting * vPosition).xyz;
+			vec3 transformedDir = vec3(uMVLighting * vec4(uLightingLocation, 1.0));
 			vec3 lightDirection = normalize(transformedDir - vPosition.xyz);
 			vec3 normal = normalize(vTransformedNormal);
 		  

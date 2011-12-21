@@ -13,10 +13,10 @@ var PlanetView = function( m ) {
 		vertices.push(this.model.orbitAround.position[0] + this.model.orbitRadius * Math.sin(2.0 * Math.PI * i / resolution));
 		vertices.push(this.model.orbitAround.position[1] + this.model.orbitRadius * Math.cos(2.0 * Math.PI * i / resolution));
 		vertices.push(this.model.orbitAround.position[2]);
-		colors.push(1.0);
-		colors.push(1.0);
-		colors.push(1.0);
 		colors.push(0.2);
+		colors.push(0.2);
+		colors.push(0.2);
+		colors.push(1.0);
 	}
 	
 	this.circleVertexBuffer = gl.createBuffer();
@@ -78,13 +78,13 @@ var Planet = function(pTexture, aTexture, x, y, z, radius, orbitRadius, orbitAro
 	this.planetModel.setScale(radius,radius,radius);
 	
 	this.planetModel.setRotation(90, 0, 0);
-	this.planetModel.constantRotation(0,0.2,0);
+	this.planetModel.constantRotation(0.0,0.1,0);
 	if (aTexture != null) {
 		this.hasAtmos = true;
 		this.atmosModel = new Model("ball.obj", aTexture);
 		this.atmosModel.setPosition(this.x,this.y,this.z);
 		this.atmosModel.setScale(radius * 1.2, radius * 1.2, radius * 1.2);
-		this.atmosModel.constantRotation(0,0.05,0.3);
+		this.atmosModel.constantRotation(0.0001,0,0);
 	}
 
     /// do init a game object before using it
