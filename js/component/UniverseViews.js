@@ -255,7 +255,6 @@ var HexagonGridView = function( m, height, width, margin )
 	var obj = this.model.getMap( uv.u, uv.v );
 	var terran = this.model.terran[uv.u][uv.v];
 	var status = logic.getStatus();
-	trace( uv.u + "," + uv.v );
 	if ( obj.type == "Commander" && !logic.status.onSelect) {
 	    dispatcher.broadcast( { name: "SelectCommander",
 				    obj: obj } );

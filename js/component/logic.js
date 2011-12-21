@@ -147,6 +147,12 @@ var Logic = function() {
 					   "textfield1",
 					   universe,
 					   512, 400, 300, 225 );
+	    dialog.onOK = function() {
+		window.location = "index.html";
+	    }
+	    dialog.onCancel = function() {
+		window.location = "index.html";
+	    }
 	} else if ( 0 == forces[1].solars.length &&
 		    0 == forces[1].commanders.length ) {
 
@@ -154,6 +160,12 @@ var Logic = function() {
 					   "textfield1",
 					   universe,
 					   512, 400, 300, 225 );
+	    dialog.onOK = function() {
+		window.location = "index.html";
+	    }
+	    dialog.onCancel = function() {
+		window.location = "index.html";
+	    }
 	}
 	if ( 0 == this.status.onAnimation ) {
 	    if ( e.groupID + 1 < forces.length ) {
