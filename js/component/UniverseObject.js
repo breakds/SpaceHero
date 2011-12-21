@@ -1,9 +1,11 @@
+mines = new Array();
 var MineStar = function( u, v ) {
     this.type = "Mine";
     this.landlord = null;
     this.u = u;
     this.v = v;
     univMap.addMineStar( u, v, this );
+    mines.push( this );
     this.income = 1000;
     this.onOccupy = function( cmder ) {
 	if ( (!this.landlord ) ||
@@ -12,6 +14,7 @@ var MineStar = function( u, v ) {
 		this.landlord.removeMine( this );
 	    }
 	    forces[cmder.group].declareMine( this );
+	    univMapView.requestUpdate();
 	}
     }
     dispatcher.addListener( "NewTurn", this );

@@ -37,6 +37,7 @@ var BattleStatus = function() {
     this.leftUnitShown = null;
     this.rightUnitShow = null;
     this.destination = -1;
+    this.returnThinking = null;
 }
 
 
@@ -163,14 +164,17 @@ var Logic = function() {
     }
 
 
-
-
-
+    
     /// Battle Part
     dispatcher.addListener( "StartBattle", this );
     this.onStartBattle = function( e ) {
 	if ( 0 != this.status.onAnimation ) {
 	    return ;
+	}
+	if ( e.returnThinking ) {
+	    this.battle.returnThinking = e.returnThinking;
+	} else {
+	    this.battle.returnThinking = null;
 	}
 	reporter.clear();
 	reporter.append( "Battle Start!" );
@@ -491,6 +495,10 @@ var Logic = function() {
 	}
 	if ( "defender" == this.battle.commander1.type ) {
 	    this.battle.commander1.terminate();
+	}
+	
+	if ( this.battle.returnThinking ) {
+	    this.battle.returnThinking.thinking = true;
 	}
     }
 }

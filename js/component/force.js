@@ -27,7 +27,7 @@ var Force = function( name, type, color ) {
     this.removeMine = function( mine ) {
 	var idx = this.mines.indexOf( mine );
 	if ( -1 != idx ) {
-	    this.mines.slice( idx, 1 );
+	    this.mines.splice( idx, 1 );
 	    mine.landlord = null;
 	    this.updateIncome();
 	}
@@ -101,12 +101,225 @@ var Force = function( name, type, color ) {
     }
     if ( "AI" == this.type ) {
 	this.thinking = false;
+	this.attackOrEscape = function( cmder ) {
+	    var pathes = new Array();
+	    for ( var i=0; i<forces[0].commanders.length; i++ ) {
+		pathes.push( 
+		    univMap.floodFill2( 
+			cmder.u,
+			cmder.v,
+			forces[0].commanders[i].u,
+			forces[0].commanders[i].v 
+		    ) 
+		);
+	    } 
+	    
+	    /// Escape
+	    var power = cmder.getPower();
+	    for ( var i=0; i<forces[0].commanders.length; i++ ) {
+		if ( pathes[i] ) {
+		    var power1 = forces[0].commanders[i].getPower();
+		    if ( power1 < 1.1 * power ) {
+			continue;
+		    }
+		    if ( pathes[i].length <= forces[0].commanders[i].maxAP ) {
+			for ( var j=0; j<6; j++ ) {
+			    var u = cmder.u + univMap.du[j];
+			    var v = cmder.v + univMap.dv[j];
+			    if ( univMap.available( u, v ) ) {
+				var tmpPath = univMap.floodFill3( 
+				    u, 
+				    v,
+				    forces[0].commanders[i].u,
+				    forces[0].commanders[i].v 
+				);
+				if ( tmpPath.length > pathes[i].length ) {
+				    cmder.setOrientation( j );
+				    if ( cmder.stepForward() ) {
+					return true;
+				    }
+				}
+			    }
+			}
+		    }
+		}
+	    }
+
+
+	    /// Go Attack
+	    for ( var i=0; i<forces[0].commanders.length; i++ ) {
+		if ( pathes[i] ) {
+		    var power1 = forces[0].commanders[i].getPower();
+		    if ( power1 > 0.8 * power ) {
+			continue;
+		    }
+		    if ( pathes[i].length <= cmder.AP + 2 ) {
+			cmder.setOrientation( pathes[i][0] );
+			if ( cmder.stepForward() ) {
+			    return true;
+			} else {
+			    var enemy = univMap.getMap( 
+				cmder.u + univMap.du[pathes[i][0]],
+				cmder.v + univMap.dv[pathes[i][0]] );
+			    if ( enemy.group != cmder.group ) {
+				forces[cmder.group].thinking = false;
+				dispatcher.broadcast( 
+				    { name: "StartBattle",
+				      commander0: cmder,
+				      commander1: enemy,
+				      returnThinking: forces[cmder.group] } );
+			    }
+			    return true;
+			}
+		    }
+		}
+	    }
+	    return false;
+	}
+
+
+	this.tryStar = function( cmder ) {
+	    var pathes = new Array();
+	    for ( var i=0; i<stars.length; i++ ) {
+		pathes.push( 
+		    univMap.floodFill( 
+			cmder.u,
+			cmder.v,
+			stars[i].u,
+			stars[i].v
+		    ) 
+		);
+	    } 
+	    
+	    /// Sort
+	    var ind = new Array();
+	    for ( var i=0; i<stars.length; i++ ) {
+		ind.push( i );
+	    }
+	    for ( var i=0; i<stars.length-1; i++ ) {
+		for ( var j=1; j<stars.length; j++ ) {
+		    if ( ( pathes[ind[j]] && (!pathes[ind[i]] ) ) ||
+			 ( pathes[ind[j]] && pathes[ind[i]] && 
+			   pathes[ind[j]].length < pathes[ind[i]].length ) ) {
+			var tmp = ind[i];
+			ind[i] = ind[j];
+			ind[j] = tmp;
+		    }
+		}
+	    }
+
+
+	    /// Empty Star
+	    for ( var i=0; i<stars.length; i++ ) {
+		if ( pathes[ind[i]] ) {
+		    if ( !stars[ind[i]].owner ) {
+			cmder.setOrientation( pathes[ind[i]][0] );
+			trace( "pick " + pathes[i][0] );
+			if ( cmder.stepForward() ) {
+			    if ( cmder.u == stars[ind[i]].u &&
+				 cmder.v == stars[ind[i]].v ) {
+				stars[ind[i]].setOwner( 
+				    forces[cmder.group]
+				);
+			    }
+			    return true;
+			}
+		    }
+		}
+	    }
+	    
+	    
+	    /// Enemy Star
+	    if ( cmder.getPower() < 6000 ) {
+		return false;
+	    }
+	    
+	    for ( var i=0; i<stars.length; i++ ) {
+		if ( pathes[ind[i]] ) {
+		    if ( stars[ind[i]].owner ) {
+			if ( stars[ind[i]].owner.groupID 
+			     == cmder.group ) {
+			    continue;
+			}
+			cmder.setOrientation( pathes[ind[i]][0] );
+			trace( "pick " + pathes[i][0] );
+			if ( cmder.stepForward() ) {
+			    if ( cmder.u == stars[ind[i]].u &&
+				 cmder.v == stars[ind[i]].v ) {
+				forces[cmder.group].thinking = false;
+				stars[ind[i]].owner.createCommander( "Defender", "Cannons", -1, -1 );
+				var defender = stars[ind[i]].owner.commanders[stars[ind[i]].owner.commanders.length -1 ];
+				defender.type = "defender";
+				defender.star = stars[ind[i]];
+				defender.addUnit( Cannon );
+				dispatcher.broadcast( {name: "StartBattle",
+						       commander0: cmder,
+						       commander1: defender,
+						       returnThinking: forces[cmder.group]
+						      } );
+			    }
+			    return true;
+			}
+		    }
+		}
+	    }
+	    
+	    
+	    
+	    return false;
+	}
 	this.update = function() {
 	    if ( this.thinking ) {
 		this.tick++;
 		if ( 0 != this.tick % 5 ) return;
 		for ( var i=0; i<this.commanders.length; i++ ) {
 		    if ( this.commanders[i].AP > 0 ) {
+			var cmder = this.commanders[i];
+
+
+			/// Try Stars
+			if ( this.tryStar( cmder ) ) {
+			    return ;
+			}
+
+
+			/// Try Escape or Attack
+			if ( this.attackOrEscape( cmder ) ) {
+			    return;
+			}
+
+
+
+
+
+			/// Easy Reachable Mines
+			for ( var j=0; j<mines.length; j++ ) {
+			    if ( (!mines[j].landlord) ||
+				 mines[j].landlord.groupID != cmder.group ) {
+				var path = univMap.floodFill( 
+				    cmder.u,
+				    cmder.v,
+				    mines[j].u,
+				    mines[j].v
+				);
+				
+				if ( !path ) {
+				    continue;
+				}
+				cmder.setOrientation( path[0] );
+				if ( cmder.stepForward() ) {
+				    terran = univMap.terran[cmder.u][cmder.v];
+				    if ( 0 != terran && "Mine" == terran.type ) {
+					terran.onOccupy( cmder );
+				    }
+				    return;
+					
+				}
+			    }
+			}
+			
+
+			
 			do { 
 			    this.commanders[i].setOrientation( Math.floor( Math.random() * 6 ) );
 			} while ( ! this.commanders[i].stepForward() );

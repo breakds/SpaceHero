@@ -401,10 +401,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
 		}
 	    } else {
 		terran.setOwner( forces[this.objs[0].group] );
-
 	    }
-
-
 	} 
     }
 
