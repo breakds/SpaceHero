@@ -383,24 +383,31 @@ var CommanderMoveAnimation = function( commanderObj ) {
 	    }
 	    this.objs[0].path = new Array();
 	} else if ( "Star" == terran.type ) {
-	    if ( this.objs[0].group == terran.owner.groupID && 
-		 this.objs[0].group == 0 ) {
-		dispatcher.broadcast( { name: "EnterSolarSystem",
-					visiting: this.objs[0],
-					star: terran } );
-	    } else if ( "Mine" == terran.type ) {
-		terran.owner.createCommander( "Defender", "Cannons", -1, -1 );
-		var defender = terran.owner.commanders[
-		    terran.owner.commanders.length -1 ];
-		defender.type = "defender";
-		defender.star = terran;
-		defender.addUnit( Cannon );
-		dispatcher.broadcast( {name: "StartBattle",
-				       commander0: this.objs[0],
-				       commander1: defender } );
-	    } 
-	}
+	    if ( terran.owner ) {
+		if ( this.objs[0].group == terran.owner.groupID ) {
+		    dispatcher.broadcast( { name: "EnterSolarSystem",
+					    visiting: this.objs[0],
+					    star: terran } );
+		} else {
+		    terran.owner.createCommander( "Defender", "Cannons", -1, -1 );
+		    var defender = terran.owner.commanders[
+			terran.owner.commanders.length -1 ];
+		    defender.type = "defender";
+		    defender.star = terran;
+		    defender.addUnit( Cannon );
+		    dispatcher.broadcast( {name: "StartBattle",
+					   commander0: this.objs[0],
+					   commander1: defender } );
+		}
+	    } else {
+		terran.setOwner( forces[this.objs[0].group] );
+
+	    }
+
+
+	} 
     }
+
     this.tick = 0;
     this.special = false;
     this.next = function() {
