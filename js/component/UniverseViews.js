@@ -150,8 +150,13 @@ var HexagonGridView = function( m, height, width, margin )
 					 this.radius  
 				     );
 				 }
-
-
+			     } else if ( "Obstacle" == this.model.terran[u][v].type ) {
+				 ctxBg2d.drawImage( resources.getResource( "obstacleImg" ), 
+						    x - this.radius * 0.9,
+						    y - this.radius * 0.9,
+						    this.radius * 1.8,
+						    this.radius * 1.8 );
+				 
 			     }
 		    }
 		    y += smallerRadius * 2;
@@ -383,7 +388,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
 		dispatcher.broadcast( { name: "EnterSolarSystem",
 					visiting: this.objs[0],
 					star: terran } );
-	    } else {
+	    } else if ( "Mine" == terran.type ) {
 		terran.owner.createCommander( "Defender", "Cannons", -1, -1 );
 		var defender = terran.owner.commanders[
 		    terran.owner.commanders.length -1 ];
@@ -393,7 +398,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
 		dispatcher.broadcast( {name: "StartBattle",
 				       commander0: this.objs[0],
 				       commander1: defender } );
-	    }
+	    } 
 	}
     }
     this.tick = 0;

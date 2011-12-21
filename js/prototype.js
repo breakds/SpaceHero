@@ -103,7 +103,7 @@ for ( var i=0; i<forces[1].commanders.length; i++ ) {
 }
 
 
-
+univMap.addObstacle( 3, 10 );
 
 
 var planetMenu = new PlanetMenu();

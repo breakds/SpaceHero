@@ -68,6 +68,13 @@ var HexagonMap = function( rows, cols ) {
 	    this.terran[i][j] = 0;
 	}
     }
+
+    this.addObstacle = function( u, v ) {
+	if ( this.inMap( u, v ) ) {
+	    this.terran[u][v] = new Obstacle();
+	    this.map[u][v] = this.terran[u][v];
+	}
+    }
     
     this.addSolarSystem = function( u, v, m ) {
 	if ( this.inMap( u, v ) ) {
@@ -379,3 +386,7 @@ var HexCellUnveilAnimation = function( hexmap, u, v ) {
     this.init();
 }
 HexCellUnveilAnimation.prototype = new Tween;
+
+var Obstacle = function() {
+    this.type = "Obstacle";
+}

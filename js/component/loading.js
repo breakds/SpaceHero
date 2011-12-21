@@ -1,4 +1,5 @@
 /// Resources
+resources.addImage( "img/obstacle.png", "obstacleImg" );
 resources.addImage( "img/commander0.png", "commander0Img" );
 resources.addImage( "img/commander1.png", "commander1Img" );
 resources.addImage( "img/commander0select.png", "commander0SelectImg" );
