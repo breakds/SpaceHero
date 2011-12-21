@@ -393,6 +393,25 @@ var Force = function( name, type, color ) {
 
 
 		/// Create Commander ?
+		if ( this.gold > 12000 && this.commanders.length < 5) {
+		    if ( this.solars.length > 0 ) {
+			var r = Math.floor( Math.random() * this.solars.length );
+
+			var flag = true;
+			var solar = this.solars[r];
+			for ( var j=0; j<6; j++ ) {
+			    var u = solar.u + univMap.du[j];
+			    var v = solar.v + univMap.dv[j];
+			    if ( univMap.available( u, v) ) {
+				solar.owner.createRandomCommander( u, v );
+				flag = true;
+				break;
+			    }
+			}
+
+		    }
+		}
+		
 		this.thinking = false;
 		dispatcher.broadcast( { name: "EndTurn", 
 					groupID: this.groupID } );

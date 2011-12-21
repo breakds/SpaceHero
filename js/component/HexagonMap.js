@@ -98,7 +98,7 @@ var HexagonMap = function( rows, cols ) {
     for ( var i=0; i<this.cols; i++ ) {
 	this.veil[i] = new Array();
 	for ( var j=this.lower[i]; j<=this.upper[i]; j++ ) {
-	    this.veil[i][j] = false;
+	    this.veil[i][j] = true;
 	}
     }
 
@@ -444,4 +444,7 @@ HexCellUnveilAnimation.prototype = new Tween;
 
 var Obstacle = function() {
     this.type = "Obstacle";
+    this.requestUpdate = function() {
+	return ;
+    }
 }
