@@ -103,6 +103,24 @@ var Logic = function() {
 	    new CommanderMoveAnimation( this.status.onSelect );
 	}
     }
+
+
+    dispatcher.addListener( "CreateCommander", this );
+    this.onCreateCommander = function( e ) {
+	if ( 0 == this.status.onAnimation ) {
+	    var dialog = new BubbleDialog( 
+		"Are you sure that you want a new Commander? You need to pay 2500 gold to recruit a new Commander.", 
+		"textfield1",
+		universe,
+		512, 400, 280, 210 );
+	    dialog.onOK = function() {
+		trace( "create!" );
+	    }
+	    dialog.onCancel = function() {
+		trace( "cancel!" );
+	    }
+	}
+    }
     
 
     dispatcher.addListener( "EndTurn", this );
@@ -462,7 +480,3 @@ var Logic = function() {
     }
 }
 Logic.prototype = new GameObject;
-
-
-
-

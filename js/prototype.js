@@ -104,10 +104,15 @@ for ( var i=0; i<forces[1].commanders.length; i++ ) {
 
 
 
+
+
 var planetMenu = new PlanetMenu();
 
-
+/*
+new BubbleDialog( "Hello Everyone please gasdfgasdf gasdf gasdf gasdf gasdf gasdf gasdf", "textfield1", universe, 500, 400, 400, 300 );
+*/
 game.play();
+
 
 
 

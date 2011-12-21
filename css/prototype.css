@@ -93,14 +93,15 @@ canvas {
 }
 
 .largetext {
-    position:absolute;
+    text-align: left;
     left:200px;
     top:200px;
+    position:absolute;
     z-index: 201;
     width: 100px;
     height: 50px;
     color: #FFFFFF;
-    font-size: 40pt;
+    font-size: 15pt;
     -moz-user-select: none;
     -khtml-user-select: none;
     user-select: none;
