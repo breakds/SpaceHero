@@ -1267,6 +1267,7 @@ var PlanetMenuHandler = function() {
 					    value: forces[this.star.visiting.group].gold } );
 			this.star.quantities[6]--;
 			this.star.miners++;
+		this.star.owner.updateIncome();
 	    }
 	    else if (e.type == "shipyard") {
 			//forces[this.star.visiting.group].gold -= e.cost;
