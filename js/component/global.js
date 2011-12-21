@@ -44,7 +44,7 @@ solarSystem.addContext( ctxMenu );
 var defaultLineWidth = ctxMenu.lineWidth;
 var defaultTextAlign = ctxMenu.textAlign;
 var defaultTextBaseline = ctxMenu.textBaseline;
-trace( defaultTextBaseline );
+
 
 /// Create Logic
 var logic = new Logic();

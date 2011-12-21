@@ -1,4 +1,5 @@
 var Button = function( caption, bgColor, left, top, width, height, stage, ctx ) {
+    this.views = new Array();
     this.left = left;
     this.top = top;
     this.width = width;
