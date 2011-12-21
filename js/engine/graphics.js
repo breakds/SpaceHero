@@ -40,9 +40,6 @@ var GameScreen = { width: bg2d.width, height: bg2d.height };
 
 
 
-
-
-
 /// 2d Context
 /// if not enabled, this canvas will not be rendered
 

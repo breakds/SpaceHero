@@ -44,6 +44,7 @@ OpenMenuAnimation.prototype = new Tween;
 
 var PlanetMenuView = function( m ) {
     this.setModel( m );
+	this.model = m;
     this.register( solarSystem );
     this.xPos = 0;
     this.yPos = 0;
@@ -73,7 +74,7 @@ var PlanetMenuView = function( m ) {
     this.beamHeight = 0;
     this.menuHeight = 0;
     
-    this.aniTime = (1.2 * fps);
+    this.aniTime = 120;
     this.curTime = 0;
     this.curTime2 = 0;
     
@@ -103,18 +104,17 @@ var PlanetMenuView = function( m ) {
     this.widgets.push(new planetMenuExitButton("Exit", this.menu1xPos + 190, this.menu1yPos + 580));
     this.creditWidget = new planetMenuCredits("Credits: ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney);
     
-    this.shipYardWidgets.push(new planetMenuButton("Fighter", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", Fighter.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Gunboat", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", Gunboat.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Warship", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", Warship.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Sniper", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", Sniper.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Cruiser", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", Cruiser.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Warrior", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", Warrior.price, "shipyard" ));
-    this.shipYardWidgets.push(new planetMenuButton("Miner", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 50, "shipyard" ));
+    this.shipYardWidgets.push(new planetMenuButton("Fighter", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", Fighter.price, "shipyard", this ));
+    this.shipYardWidgets.push(new planetMenuButton("Gunboat", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", Gunboat.price, "shipyard",this ));
+    this.shipYardWidgets.push(new planetMenuButton("Warship", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "warship", Warship.price, "shipyard",this ));
+    this.shipYardWidgets.push(new planetMenuButton("Sniper", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", Sniper.price, "shipyard",this ));
+    this.shipYardWidgets.push(new planetMenuButton("Cruiser", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", Cruiser.price, "shipyard",this ));
+    this.shipYardWidgets.push(new planetMenuButton("Warrior", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", Warrior.price, "shipyard",this ));
+    this.shipYardWidgets.push(new planetMenuButton("Miner", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 100, "shipyard", this ));
     
-    this.factoryWidgets.push(new planetMenuButton("ShipYard", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "shipyard", 50, "factory" ));
-    this.factoryWidgets.push(new planetMenuButton("Defense System", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "defensesystem", 0, "factory" ));
-    this.factoryWidgets.push(new planetMenuButton("Refinery", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "refinery", 0, "factory" ));
-    this.factoryWidgets.push(new planetMenuButton("Fusion Power Plant", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "powerplant",0, "factory" ));
+    this.factoryWidgets.push(new planetMenuButton("Defense System", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 1, "defensesystem", 500, "factory",this ));
+    this.factoryWidgets.push(new planetMenuButton("Refinery", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "refinery", 200, "factory", this ));
+    this.factoryWidgets.push(new planetMenuButton("Power Plant", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "powerplant",400, "factory",this ));
     dispatcher.broadcast( { name: "DisactivateWidgets" } );
     
     
@@ -159,8 +159,10 @@ var PlanetMenuView = function( m ) {
 			ctx.globalAlpha = originalAlpha;
 	    } 
 		else if (that.state == 1) {
+			
 			that.curTime++;
 			if (that.curTime <= that.aniTime) {
+				
 				if (that.projector1x < 0) {
 					that.projector1x += that.aniSpeed2;
 				} else if (that.projector1x > 0) {
@@ -196,6 +198,7 @@ var PlanetMenuView = function( m ) {
 			}
 	    }
 	    else if (that.state == 3) {
+			
 			that.curTime2 ++;
 			if (that.curTime2 <= that.aniTime) {
 				if (that.curTime2 >= that.aniTime/2) {
@@ -297,11 +300,16 @@ var PlanetMenuView = function( m ) {
 }
 PlanetMenuView.prototype = new View;
 
-var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
+var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab, model ) {
     this.register( solarSystem );
+	this.menuModel = model;
+	if (this.model = null) {
+		console.log("null model");
+	}
     this.tab = tab;
     this.force = null;
     this.cost = cost;
+	this.costToUse = cost;
     this.xPos = xPos;
     this.yPos = yPos;
     this.name = name;
@@ -346,9 +354,24 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
 	else if (updateName == "miner") {
 		this.index = 6;
 	}
+	else if (updateName == "defensesystem") {
+		this.index = 7;
+	}
+	else if (updateName == "refinery") {
+		this.index = 8;
+	}
+	else if (updateName == "powerplant") {
+		this.index = 9;
+	}
     
     this.draw = function( ctx ) {
 	if ( ctx == ctxMenu && this.active) {
+		if (this.menuModel.model.star.hasPowerPlant  && this.index < 6) {
+			that.costToUse = that.cost * .90;
+		}
+		else {
+			that.costToUse = that.cost;
+		}
 	    var originalColor = ctx.fillStyle;
 	    var originalFont = ctx.font;
 	    if (that.highlighted) {
@@ -361,12 +384,13 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
 	    ctx.fillStyle = that.shadowColor;
 	    ctx.fillText(that.name, that.xPos + that.shadowDist, that.yPos + that.shadowDist);
 		ctx.textAlign = "right";
-		ctx.fillText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset) + that.shadowDist, that.yPos + that.shadowDist);
+		ctx.fillText(that.costToUse, that.xPos + that.buttonWidth + (2*that.xOffset) + that.shadowDist, that.yPos + that.shadowDist);
 	
-	    if (that.cost <= that.force.gold && (planetMenu.star.quantities[that.index] > 0 || that.updateName == "miner")) {
+	    if (that.costToUse <= that.force.gold && (this.menuModel.model.star.quantities[that.index] > 0)) {
 			ctx.fillStyle = that.color;
 	    }
 	    else {
+			console.log(that.index);
 			ctx.fillStyle = that.color2;
 		}
 		ctx.font = that.font;
@@ -378,18 +402,18 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
 			ctx.strokeText(that.name, that.xPos - 2, that.yPos - 1);
 			
 			ctx.textAlign = "right";
-			ctx.fillText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset) - 2, that.yPos - 1);
+			ctx.fillText(that.costToUse, that.xPos + that.buttonWidth + (2*that.xOffset) - 2, that.yPos - 1);
 			ctx.strokeStyle = "#000000";
-			ctx.strokeText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset) - 2, that.yPos - 1);
+			ctx.strokeText(that.costToUse, that.xPos + that.buttonWidth + (2*that.xOffset) - 2, that.yPos - 1);
 		} else {
 			ctx.textAlign = "left";
 			ctx.fillText(that.name, that.xPos, that.yPos);
 			ctx.strokeStyle = "#000000";
 			ctx.strokeText(that.name, that.xPos, that.yPos, 1);
 			ctx.textAlign = "right";
-			ctx.fillText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset), that.yPos);
+			ctx.fillText(that.costToUse, that.xPos + that.buttonWidth + (2*that.xOffset), that.yPos);
 			ctx.strokeStyle = "#000000";
-			ctx.strokeText(that.cost, that.xPos + that.buttonWidth + (2*that.xOffset), that.yPos, 1);
+			ctx.strokeText(that.costToUse, that.xPos + that.buttonWidth + (2*that.xOffset), that.yPos, 1);
 	    }
 		ctx.textAlign = "left";
 	
@@ -421,10 +445,16 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab ) {
     
     this.onLeftMouseDown = function( x, y ) {
 	if ( that.active ) {
-	    
-	    dispatcher.broadcast( { name: "PlanetMenuAction",
-				    type: that.updateName,
-				    cost: that.cost } );
+	    if (this.menuModel.model.star.hasPowerPlant && this.index < 6) {
+			that.costToUse = that.cost * .90;
+		} else {
+			that.costToUse = that.cost;
+		}
+		if (that.menuModel.model.star.quantities[that.index] > 0) {
+			dispatcher.broadcast( { name: "PlanetMenuAction",
+						type: that.updateName,
+						cost: that.costToUse } );
+		}
 
 	}
     }
@@ -864,31 +894,29 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     }
     this.informationList["planet"] = this.planetInfoText;
     this.headerList["planet"] = planetName;
-    this.profilePicList["planet"] = "pmProfilePic";
+    this.profilePicList["planet"] = null;
     
     this.fighterInfoText = new Array(); 
     this.fighterInfoText.push("Health:                        3");
     this.fighterInfoText.push("Attack:                        2");
     this.fighterInfoText.push("Defence:                     2");
     this.fighterInfoText.push("Speed:                         9");
-    this.fighterInfoText.push("Price:                         30");
     this.fighterInfoText.push("");
     this.fighterInfoText.push("Quantity:                  1");
     this.informationList["fighter"] = this.fighterInfoText;
     this.headerList["fighter"] = "Fighter";
-    this.profilePicList["fighter"] = "pmProfilePic";
+    this.profilePicList["fighter"] = "fighterImg";
     
     this.gunboatInfoText = new Array(); 
     this.gunboatInfoText.push("Health:                        4");
     this.gunboatInfoText.push("Attack:                        4");
     this.gunboatInfoText.push("Defence:                     4");
     this.gunboatInfoText.push("Speed:                         5");
-    this.gunboatInfoText.push("Price:                         40");
     this.gunboatInfoText.push("");
     this.gunboatInfoText.push("Quantity:                  1");
     this.informationList["gunboat"] = this.gunboatInfoText;
     this.headerList["gunboat"] = "Gunboat";
-    this.profilePicList["gunboat"] = "pmProfilePic";
+    this.profilePicList["gunboat"] = "gunboatImg";
 
     
     this.warshipInfoText = new Array(); 
@@ -896,12 +924,11 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.warshipInfoText.push("Attack:                        9");
     this.warshipInfoText.push("Defence:                     9");
     this.warshipInfoText.push("Speed:                         9");
-    this.warshipInfoText.push("Price:                       240");
     this.warshipInfoText.push("");
     this.warshipInfoText.push("Quantity:                  1");
     this.informationList["warship"] = this.warshipInfoText;
     this.headerList["warship"] = "Warship";
-    this.profilePicList["warship"] = "pmProfilePic";
+    this.profilePicList["warship"] = "warshipImg";
 
     
     this.sniperInfoText = new Array(); 
@@ -909,12 +936,11 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.sniperInfoText.push("Attack:                        9");
     this.sniperInfoText.push("Defence:                     5");
     this.sniperInfoText.push("Speed:                         7");
-    this.sniperInfoText.push("Price:                       225");
     this.sniperInfoText.push("");
     this.sniperInfoText.push("Quantity:                  1");
     this.informationList["sniper"] = this.sniperInfoText;
     this.headerList["sniper"] = "Sniper";
-    this.profilePicList["sniper"] = "pmProfilePic";
+    this.profilePicList["sniper"] = "sniperImg";
     
     
     this.cruiserInfoText = new Array(); 
@@ -922,24 +948,22 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.cruiserInfoText.push("Attack:                      15");
     this.cruiserInfoText.push("Defence:                   14");
     this.cruiserInfoText.push("Speed:                         6");
-    this.cruiserInfoText.push("Price:                       820");
     this.cruiserInfoText.push("");
     this.cruiserInfoText.push("Quantity:                  1");
     this.informationList["cruiser"] = this.cruiserInfoText;
     this.headerList["cruiser"] = "Cruiser";
-    this.profilePicList["cruiser"] = "pmProfilePic";
+    this.profilePicList["cruiser"] = "cruiserImg";
 
     this.warriorInfoText = new Array(); 
     this.warriorInfoText.push("Health:                      75");
     this.warriorInfoText.push("Attack:                      15");
     this.warriorInfoText.push("Defence:                   13");
     this.warriorInfoText.push("Speed:                         7");
-    this.warriorInfoText.push("Price:                       750");
     this.warriorInfoText.push("");
     this.warriorInfoText.push("Quantity:                  1");
     this.informationList["warrior"] = this.warriorInfoText;
     this.headerList["warrior"] = "Warrior";
-    this.profilePicList["warrior"] = "pmProfilePic";
+    this.profilePicList["warrior"] = "warriorImg";
     
     this.minerInfoText = new Array(); 
     this.minerInfoText.push("Miners are weak ships");
@@ -949,6 +973,8 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.minerInfoText.push("Mining resources is");
     this.minerInfoText.push("your main source of");
     this.minerInfoText.push("income.");
+	this.minerInfoText.push("");
+	this.minerInfoText.push("[One per planet]");
     this.informationList["miner"] = this.minerInfoText;
     this.headerList["miner"] = "Miner";
     this.profilePicList["miner"] = "pmProfilePic";
@@ -964,15 +990,12 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     
     this.defenseInfoText = new Array(); 
     this.defenseInfoText.push("The planetary defense");
-    this.defenseInfoText.push("system helps you");
-    this.defenseInfoText.push("protect your solar");
-    this.defenseInfoText.push("system from enemy");
-    this.defenseInfoText.push("invaders. All of your ");
-    this.defenseInfoText.push("starships in the solar");
-    this.defenseInfoText.push("system with a");
-    this.defenseInfoText.push("planetary defense");
-    this.defenseInfoText.push("system get a boost in");
-    this.defenseInfoText.push("defense.");
+    this.defenseInfoText.push("system gives your");
+	this.defenseInfoText.push("solar system defense");
+	this.defenseInfoText.push("turrets to fend off");
+	this.defenseInfoText.push("enemy invaders.");
+	this.defenseInfoText.push("");
+	this.defenseInfoText.push("[3 per solar system]");
     this.informationList["defensesystem"] = this.defenseInfoText;
     this.headerList["defensesystem"] = "Defense System";
     this.profilePicList["defensesystem"] = "pmProfilePic";
@@ -984,6 +1007,8 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.refineryInfoText.push("efficiently .Thus your");
     this.refineryInfoText.push("income is increased");
     this.refineryInfoText.push("by 10%.");
+	this.refineryInfoText.push("");
+	this.refineryInfoText.push("[1 per solar system]");
     this.informationList["refinery"] = this.refineryInfoText;
     this.headerList["refinery"] = "Refinery";
     this.profilePicList["refinery"] = "pmProfilePic";
@@ -995,6 +1020,8 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.powerplantInfoText.push("and efficient energy");
     this.powerplantInfoText.push("which allows you to");
     this.powerplantInfoText.push("build ships 10% faster.");
+	this.powerplantInfoText.push("");
+	this.powerplantInfoText.push("[1 per solar system]");
     this.informationList["powerplant"] = this.powerplantInfoText;
     this.headerList["powerplant"] = "Fusion Power Plant";
     this.profilePicList["powerplant"] = "pmProfilePic";
@@ -1010,7 +1037,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.shadowColor = "#222222";
     this.headerFont = "28px Eras Bold ITC";
     this.infoFont = "23px Eras Bold ITC";
-    this.profilePicX = this.xPos;
+    this.profilePicX = this.xPos + 50;
     this.profilePicY = this.yPos + 20;
     this.headerTextX = 270;
     this.headerTextY = 0;
@@ -1053,7 +1080,9 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
 	ctx.strokeText(that.headerText, that.xPos + that.headerTextX, that.yPos + that.headerTextY);
 	ctx.textAlign = "left";
 	//trace(that.profilePicX + " " + that.profilePicY);
-	ctx.drawImage(resources.getResource(that.profilePic), that.profilePicX, that.profilePicY);
+	if (that.profilePic != null) {
+		ctx.drawImage(resources.getResource(that.profilePic), that.profilePicX, that.profilePicY, 180, 180);
+	}
 	
 	ctx.font = that.infoFont;
 	
@@ -1236,25 +1265,33 @@ var PlanetMenuHandler = function() {
 			forces[this.star.visiting.group].gold -= e.cost;
 			 dispatcher.broadcast( { name: "UpdateCredits",
 					    value: forces[this.star.visiting.group].gold } );
-			
+			this.star.quantities[6]--;
+			this.star.miners++;
 	    }
 	    else if (e.type == "shipyard") {
-		
+			//forces[this.star.visiting.group].gold -= e.cost;
 	    }
 	    else if (e.type == "defensesystem") {
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "defensesystem",
-					quant: 0} );
+			forces[this.star.visiting.group].gold -= e.cost;
+			this.star.defenseSystem ++;
+			this.star.quantities[7]--;
+			dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
 	    }
 	    else if (e.type == "refinery") {
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "refinery",
-					quant: 0} );
+			forces[this.star.visiting.group].gold -= e.cost;
+			this.star.hasRefinery = true;
+			this.star.quantities[8]--;
+			this.star.incomePercent *= 1.1;
+			dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
 	    }
 	    else if (e.type == "powerplant") {
-		dispatcher.broadcast( { name: "SetShipQuantity",
-					type: "powerplant",
-					quant: 0} );
+			forces[this.star.visiting.group].gold -= e.cost;
+			this.star.hasPowerPlant = true;
+			this.star.quantities[9]--;
+			dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
 	    }
 	}
 	
