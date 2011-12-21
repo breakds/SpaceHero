@@ -102,7 +102,7 @@ var PlanetMenuView = function( m ) {
     this.widgets.push(new planetMenuLabel("___________________", "30px Eras Bold ITC", "#FFFFFF", this.menu1xPos - 14, this.menu1yPos + 60));
     this.infoWidget = new planetMenuInfoBox(this.menu2xPos, this.menu2yPos, "planet", this.planetName, this.playerName, this.commanderName, this.planetStructures);
     this.widgets.push(new planetMenuExitButton("Exit", this.menu1xPos + 190, this.menu1yPos + 580));
-    this.creditWidget = new planetMenuCredits("Credits: ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney);
+    this.creditWidget = new planetMenuCredits("Gold:    ", this.menu1xPos, this.menu1yPos + 520, this.playerMoney);
     
     this.shipYardWidgets.push(new planetMenuButton("Fighter", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing, "fighter", Fighter.price, "shipyard", this ));
     this.shipYardWidgets.push(new planetMenuButton("Gunboat", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "gunboat", Gunboat.price, "shipyard",this ));
@@ -110,11 +110,11 @@ var PlanetMenuView = function( m ) {
     this.shipYardWidgets.push(new planetMenuButton("Sniper", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 4, "sniper", Sniper.price, "shipyard",this ));
     this.shipYardWidgets.push(new planetMenuButton("Cruiser", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 5, "cruiser", Cruiser.price, "shipyard",this ));
     this.shipYardWidgets.push(new planetMenuButton("Warrior", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 6, "warrior", Warrior.price, "shipyard",this ));
-    this.shipYardWidgets.push(new planetMenuButton("Miner", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", 100, "shipyard", this ));
+    this.shipYardWidgets.push(new planetMenuButton("Miner", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 7, "miner", minerPrice, "shipyard", this ));
     
-    this.factoryWidgets.push(new planetMenuButton("Defense System", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 1, "defensesystem", 500, "factory",this ));
-    this.factoryWidgets.push(new planetMenuButton("Refinery", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "refinery", 200, "factory", this ));
-    this.factoryWidgets.push(new planetMenuButton("Power Plant", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "powerplant",400, "factory",this ));
+    this.factoryWidgets.push(new planetMenuButton("Defense System", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 1, "defensesystem", defenseSystemPrice[1], "factory",this ));
+    this.factoryWidgets.push(new planetMenuButton("Refinery", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 2, "refinery", refineryPrice, "factory", this ));
+    this.factoryWidgets.push(new planetMenuButton("Power Plant", this.menu1xPos,this.menu1yPos + this.buttonStartY + this.buttonSpacing * 3, "powerplant",powerPlantPrice, "factory",this ));
     dispatcher.broadcast( { name: "DisactivateWidgets" } );
     
     
@@ -372,6 +372,9 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab, model )
 		else {
 			that.costToUse = that.cost;
 		}
+		if (this.index == 7) {
+			that.costToUse = this.menuModel.model.star.getDefenseSystemPrice();
+		}
 	    var originalColor = ctx.fillStyle;
 	    var originalFont = ctx.font;
 	    if (that.highlighted) {
@@ -390,7 +393,6 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab, model )
 			ctx.fillStyle = that.color;
 	    }
 	    else {
-			console.log(that.index);
 			ctx.fillStyle = that.color2;
 		}
 		ctx.font = that.font;
@@ -449,6 +451,9 @@ var planetMenuButton = function(name, xPos, yPos, updateName, cost, tab, model )
 			that.costToUse = that.cost * .90;
 		} else {
 			that.costToUse = that.cost;
+		}
+		if (this.index == 7) {
+			that.costToUse = this.menuModel.model.star.getDefenseSystemPrice();
 		}
 		if (that.menuModel.model.star.quantities[that.index] > 0) {
 			dispatcher.broadcast( { name: "PlanetMenuAction",
@@ -1006,7 +1011,7 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.refineryInfoText.push("minerals more");
     this.refineryInfoText.push("efficiently .Thus your");
     this.refineryInfoText.push("income is increased");
-    this.refineryInfoText.push("by 10%.");
+    this.refineryInfoText.push("by 100%.");
 	this.refineryInfoText.push("");
 	this.refineryInfoText.push("[1 per solar system]");
     this.informationList["refinery"] = this.refineryInfoText;
@@ -1019,7 +1024,8 @@ var planetMenuInfoBox = function(xPos, yPos, type, planetName, ownerName, comman
     this.powerplantInfoText.push("ship yard with cheap");
     this.powerplantInfoText.push("and efficient energy");
     this.powerplantInfoText.push("which allows you to");
-    this.powerplantInfoText.push("build ships 10% faster.");
+    this.powerplantInfoText.push("build ships 10%");
+	this.powerplantInfoText.push("cheaper.");
 	this.powerplantInfoText.push("");
 	this.powerplantInfoText.push("[1 per solar system]");
     this.informationList["powerplant"] = this.powerplantInfoText;
@@ -1262,35 +1268,32 @@ var PlanetMenuHandler = function() {
 
 	    }
 	    else if (e.type == "miner") {
+		/*
 			forces[this.star.visiting.group].gold -= e.cost;
 			 dispatcher.broadcast( { name: "UpdateCredits",
 					    value: forces[this.star.visiting.group].gold } );
 			this.star.quantities[6]--;
 			this.star.miners++;
-		this.star.owner.updateIncome();
+			*/
+			this.star.addMiner();
+			dispatcher.broadcast( { name: "UpdateCredits",
+					    value: forces[this.star.visiting.group].gold } );
 	    }
 	    else if (e.type == "shipyard") {
 			//forces[this.star.visiting.group].gold -= e.cost;
 	    }
 	    else if (e.type == "defensesystem") {
-			forces[this.star.visiting.group].gold -= e.cost;
-			this.star.defenseSystem ++;
-			this.star.quantities[7]--;
+			this.star.addDefenseSystem();
 			dispatcher.broadcast( { name: "UpdateCredits",
 					    value: forces[this.star.visiting.group].gold } );
 	    }
 	    else if (e.type == "refinery") {
-			forces[this.star.visiting.group].gold -= e.cost;
-			this.star.hasRefinery = true;
-			this.star.quantities[8]--;
-			this.star.incomePercent *= 1.1;
+			this.star.addRefinery();
 			dispatcher.broadcast( { name: "UpdateCredits",
 					    value: forces[this.star.visiting.group].gold } );
 	    }
 	    else if (e.type == "powerplant") {
-			forces[this.star.visiting.group].gold -= e.cost;
-			this.star.hasPowerPlant = true;
-			this.star.quantities[9]--;
+			this.star.addPowerPlant();
 			dispatcher.broadcast( { name: "UpdateCredits",
 					    value: forces[this.star.visiting.group].gold } );
 	    }

@@ -9,7 +9,7 @@ var Force = function( name, type, color ) {
     this.name = name;
     this.gold = 5000;
     this.colorFlag = resources.getResource( color + "Flag" );
-    trace( this.colorFlag );
+
 
     /// Commanders that belongs to this force
     this.commanders = new Array();
@@ -45,7 +45,7 @@ var Force = function( name, type, color ) {
     this.removeSolar = function( solar ) {
 	var idx = this.solars.indexOf( solar );
 	if ( -1 != idx ) {
-	    this.solars.slice( idx, 1 );
+	    this.solars.splice( idx, 1 );
 	    this.updateIncome();
 	}
     }
@@ -133,10 +133,12 @@ var Force = function( name, type, color ) {
 				    forces[0].commanders[i].u,
 				    forces[0].commanders[i].v 
 				);
-				if ( tmpPath.length > pathes[i].length ) {
-				    cmder.setOrientation( j );
-				    if ( cmder.stepForward() ) {
-					return true;
+				if ( tmpPath ) {
+				    if ( tmpPath.length > pathes[i].length ) {
+					cmder.setOrientation( j );
+					if ( cmder.stepForward() ) {
+					    return true;
+					}
 				    }
 				}
 			    }
@@ -214,7 +216,6 @@ var Force = function( name, type, color ) {
 		if ( pathes[ind[i]] ) {
 		    if ( !stars[ind[i]].owner ) {
 			cmder.setOrientation( pathes[ind[i]][0] );
-			trace( "pick " + pathes[i][0] );
 			if ( cmder.stepForward() ) {
 			    if ( cmder.u == stars[ind[i]].u &&
 				 cmder.v == stars[ind[i]].v ) {
@@ -250,7 +251,7 @@ var Force = function( name, type, color ) {
 				var defender = stars[ind[i]].owner.commanders[stars[ind[i]].owner.commanders.length -1 ];
 				defender.type = "defender";
 				defender.star = stars[ind[i]];
-				for ( var l=0; l<stars[ind[i]].defenceSystem; l++ ) {
+				for ( var l=0; l<stars[ind[i]].defenseSystem; l++ ) {
 				    defender.addUnit( Cannon );
 				}
 				dispatcher.broadcast( {name: "StartBattle",
@@ -335,6 +336,17 @@ var Force = function( name, type, color ) {
 	    if ( this.thinking ) {
 		this.tick++;
 		if ( 0 != this.tick % 5 ) return;
+
+		/// Try build Miner
+		for ( var i=0; i<stars.length; i++ ) {
+		    if ( stars[i].owner == this ) {
+			if ( this.gold > stars[i].getMinerPrice() ) {
+			    stars[i].addMiner();
+			}
+		    }
+		}
+		
+		
 		for ( var i=0; i<this.commanders.length; i++ ) {
 		    if ( this.commanders[i].AP > 0 ) {
 			var cmder = this.commanders[i];
@@ -413,6 +425,30 @@ var Force = function( name, type, color ) {
 
 		    }
 		}
+
+
+
+		/// Try build Defence System
+		for ( var i=0; i<stars.length; i++ ) {
+		    if ( stars[i].owner == this ) {
+			if ( this.gold > stars[i].getDefenseSystemPrice() * 3 ) {
+			    stars[i].addDefenseSystem();
+			}
+		    }
+		}
+
+		/// Try build Refinery
+		for ( var i=0; i<stars.length; i++ ) {
+		    if ( stars[i].owner == this ) {
+			if ( this.gold > stars[i].getRefineryPrice() * 4 ) {
+			    stars[i].addRefinery();
+			}
+		    }
+		}
+
+
+
+
 		
 		this.thinking = false;
 		dispatcher.broadcast( { name: "EndTurn", 

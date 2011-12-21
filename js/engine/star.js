@@ -96,8 +96,14 @@ StarSolarView.prototype = new View();
   StarUniverseView.prototype = new View();
 */
 
-
-
+var minerPrice = 1000;
+var refineryPrice = 5000;
+var powerPlantPrice = 600;
+var defenseSystemPrice = new Array();
+defenseSystemPrice[0] = 1000;
+defenseSystemPrice[1] = 2000;
+defenseSystemPrice[2] = 5000;
+defenseSystemPrice[3] = 5000000;
 
 var stars = new Array();
 
@@ -110,9 +116,9 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     this.u = u;
     this.v = v;
 	
-    this.incomePercent = 1.0;
+	this.name = getSolarName();
 
-    this.defenceSystem = 1;
+    this.defenseSystem = 1;
     /// Put the solar system onto the universe map
     univMap.addSolarSystem( u, v, this );
     
@@ -128,12 +134,30 @@ var Star = function(texture, x, y, z, radius, u, v ) {
 	if ( this.owner ) {
 	    this.owner.removeSolar( this );
 	}
-	this.defenceSystem = 1;
+	this.defenseSystem = 1;
+	this.quantities[7] = 2;
 	this.owner = force;
 	this.owner.declareSolar( this );
 	univMap.requestUpdate();
     }
 
+	
+	
+	this.getMinerPrice = function() {
+		return minerPrice;
+	}
+	
+	this.getRefineryPrice = function() {
+		return refineryPrice;
+	}
+	
+	this.getPowerPlantPrice = function() {
+		return powerPlantPrice;
+	}
+	
+	this.getDefenseSystemPrice = function() {
+		return defenseSystemPrice[this.defenseSystem];
+	}
 
     /// The quantities of battle units that this star can
     /// produce currently
@@ -143,12 +167,72 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     }
 	this.quantities[7] = 3;
 
-    
+    this.addMiner = function() {
+		if (this.quantities[6] <= 0) {
+			return;
+		}
+		if (this.owner == null) {
+			return;
+		}
+		if (this.owner.gold < minerPrice) {
+			return;
+		}
+		this.owner.gold -= minerPrice;
+		this.miners++;
+		this.owner.updateIncome();
+		this.quantities[6] --;
+	}
+	
+	this.addDefenseSystem = function() {
+		if (this.quantities[7] <= 0) {
+			return;
+		}
+		if (!this.owner) {
+			return;
+		}
+		if (this.owner.gold < defenseSystemPrice[this.defenseSystem]) {
+			return;
+		}
+		this.owner.gold -= defenseSystemPrice[this.defenseSystem];
+		this.defenseSystem++;
+		this.quantities[7] --;
+	}
+	
+	this.addRefinery = function() {
+		if (this.quantities[8] <= 0) {
+			return;
+		}
+		if (this.owner == null) {
+			return;
+		}
+		if (this.owner.gold < refineryPrice) {
+			return;
+		}
+		this.owner.gold -= refineryPrice;
+		this.hasRefinery = true;
+		this.incomeRate *= 2;
+		this.owner.updateIncome();
+		this.quantities[8] --;
+	}
+	
+	this.addPowerPlant = function() {
+		if (this.quantities[9] <= 0) {
+			return;
+		}
+		if (this.owner == null) {
+			return;
+		}
+		if (this.owner.gold < powerPlantPrice) {
+			return;
+		}
+		this.owner.gold -= powerPlantPrice;
+		this.hasPowerPlant = true;
+		this.quantities[9] --;
+	}
 
     /// The owner get incomeRate * #miner gold each turn
-    this.incomeRate = 20;
+    this.incomeRate = 100;
 	
-	this.incomeRate2 = this.incomeRate;
     this.position = vec3.create();
     this.position[0] = x;
     this.position[1] = y;
@@ -213,13 +297,12 @@ var Star = function(texture, x, y, z, radius, u, v ) {
 	}
     }
     this.quantities[6] = this.planets.length - 1;
-
     /// Every Turn, the onwer gains gold
     dispatcher.addListener( "NewTurn", this);
     this.onNewTurn = function( e ) {
 	if ( this.owner ) {
-	    this.owner.gold += that.miners * that.incomeRate2 * that.incomePercent;
-		this.incomeRate = that.miners * that.incomeRate2 * that.incomePercent;
+	    this.owner.gold += that.miners * that.incomeRate;
+		
 	}
     }
     
@@ -236,11 +319,12 @@ var Star = function(texture, x, y, z, radius, u, v ) {
     
     
     this.miners = 1; // number of miners in the system
-    this.defenceSystem = 1;
+    this.defenseSystem = 1;
     this.hasRefinery = false;
     this.hasPowerPlant = false;
     var openButton = new planetMenuOpenButton("Open Planet Menu", 50, 670, this);
     var leaveButton = new exitSolarSystemButton("Leave Solar System", 50, 730, this);
+	var solarInfo = new solarInfoPanel(this);
 }
 
 Star.prototype = new GameObject();
@@ -323,7 +407,6 @@ var planetMenuOpenButton = function(name, xPos, yPos, model) {
     
     this.onLeftMouseDown = function( x, y ) {
 	if (that.active) {
-	    trace( that.model.visiting );
 	    dispatcher.broadcast( { name: "OpenPlanetMenu",
 				    force: planetMenu.star.owner,
 				    commander: that.model.visiting ,
@@ -484,7 +567,6 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
     }
     
     this.hitTest = function( x, y ) {
-	//trace("testing button" );
 	if ( x < that.xPos + that.buttonWidth + that.xOffset && x > that.xPos + that.xOffset &&
 	     y < that.yPos + that.buttonHeight + that.yOffset && y > that.yPos + that.yOffset) {
 	    return true;
@@ -510,6 +592,8 @@ var exitSolarSystemButton = function(name, xPos, yPos, model) {
     this.requestUpdate();
 }
 exitSolarSystemButton.prototype = new View;
+
+
 
 
 var CommanderInfoPanel = function( commander, right, top ) {
@@ -634,3 +718,68 @@ var CommanderInfoPanel = function( commander, right, top ) {
     this.requestUpdate();
 }
 CommanderInfoPanel.prototype = new View;
+
+
+
+var solarInfoPanel = function( star ) {
+    this.star = star
+	this.register( solarSystem );
+    this.xPos = 1000;
+	this.yPos = 50;
+	this.spacing = 40;
+	this.shadowX = 1;
+	this.shadowY = 2;
+	this.font1 = "32px Arial Bold";
+	this.font2 = "22px Arial Bold";
+	this.shadowColor = "rgb(0,0,0)";
+	this.fontColor = "rgb(255,255,255)";
+	this.strokeColor = "rgb(100,100,100)";
+    this.active = true;
+    this.draw = function( ctx ) {
+	if ( ctx == ctxMenu && this.active && this.star.active ) {
+	    ctx.textAlign = "right";
+		ctx.font = this.font1;
+		ctx.strokeStyle = this.strokeColor;
+		
+		ctx.fillStyle = this.shadowColor;
+		ctx.fillText(this.star.name, this.xPos + this.shadowX, this.yPos + this.shadowY);
+		ctx.fillStyle = this.fontColor;
+		ctx.fillText(this.star.name, this.xPos, this.yPos);
+		//ctx.strokeText(this.star.name, this.xPos, this.yPos);
+		
+		ctx.font = this.font2;
+		
+		ctx.fillStyle = this.shadowColor;
+		ctx.fillText("Defense Turrets: " + this.star.defenseSystem, this.xPos + this.shadowX, this.yPos + this.shadowY + this.spacing);
+		ctx.fillStyle = this.fontColor;
+		ctx.fillText("Defense Turrets: " + this.star.defenseSystem, this.xPos, this.yPos + this.spacing);
+		//ctx.strokeText("Defense Turrets: " + this.star.defenseSystem, this.xPos, this.yPos + this.spacing);
+		
+		ctx.fillStyle = this.shadowColor;
+		ctx.fillText("Miners: " + this.star.miners, this.xPos + this.shadowX, this.yPos + this.shadowY + this.spacing * 2);
+		ctx.fillStyle = this.fontColor;
+		ctx.fillText("Miners: " + this.star.miners, this.xPos, this.yPos + this.spacing * 2);
+		//ctx.strokeText("Miners: " + this.star.miners, this.xPos, this.yPos + this.spacing * 2);
+	    ctx.textAlign = "left";
+	    
+		}
+    }
+
+    
+    dispatcher.addListener( "OpenPlanetMenu", this );
+    this.onOpenPlanetMenu = function( e ) {
+	this.active = false;
+    }
+
+    dispatcher.addListener("ShowPlanetButton", this);
+    this.onShowPlanetButton = function(e) {
+	this.active = true;
+    }
+
+    this.requestUpdate = function() {
+	dispatcher.broadcast( { name: "UpdateContext",
+				ctx: ctxMenu } );
+    }
+    this.requestUpdate();
+}
+solarInfoPanel.prototype = new View;

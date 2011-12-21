@@ -141,6 +141,20 @@ var Logic = function() {
 
     dispatcher.addListener( "EndTurn", this );
     this.onEndTurn = function( e ) {
+	if ( 0 == forces[0].solars.length &&
+	     0 == forces[0].commanders.length ) {
+	    var dialog = new BubbleDialog( "Unfortunaly you have lost all your solar systems and your commanders. You Lose.",
+					   "textfield1",
+					   universe,
+					   512, 400, 300, 225 );
+	} else if ( 0 == forces[1].solars.length &&
+		    0 == forces[1].commanders.length ) {
+
+	    var dialog = new BubbleDialog( "Congratulations! The Victory is yours!",
+					   "textfield1",
+					   universe,
+					   512, 400, 300, 225 );
+	}
 	if ( 0 == this.status.onAnimation ) {
 	    if ( e.groupID + 1 < forces.length ) {
 		this.status.onTurn = e.groupID + 1;

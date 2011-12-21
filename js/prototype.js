@@ -57,12 +57,27 @@ univMap.addObstacle( 8,3 );
 univMap.addObstacle( 9,2 );
 univMap.addObstacle( 9,0 );
 
+univMap.addObstacle( 2,15 );
+univMap.addObstacle( 3,14 );
+univMap.addObstacle( 4,13 );
+univMap.addObstacle( 5,12 );
+univMap.addObstacle( 5,10 );
+univMap.addObstacle( 6,9 );
+univMap.addObstacle( 7,8 );
+univMap.addObstacle( 8,9 );
+univMap.addObstacle( 9,10 );
+univMap.addObstacle( 9,12 );
+univMap.addObstacle( 6,13 );
+univMap.addObstacle( 7,14 );
+univMap.addObstacle( 7,16 );
+univMap.addObstacle( 7,18 );
+
 
 /// The Commanders
 forces[0].createCommander( "Admiral", "Gideon", 3, 4 );
 forces[0].commanders[0].level = 4;
 forces[0].commanders[0].setAttack( 8 );
-forces[0].commanders[0].setAttack( 10 );
+forces[0].commanders[0].setDefence( 10 );
 forces[0].commanders[0].addUnit( Gunboat );
 forces[0].commanders[0].units[0].setQuantity( 20 );
 forces[0].commanders[0].addUnit( Fighter );
@@ -80,6 +95,29 @@ forces[1].commanders[0].addUnit( Warship );
 forces[1].commanders[0].units[2].setQuantity( 4 );
 
 
+
+
+var StoryEvent = {
+    onNewYear : function( e ) {
+	if ( e.year == 2999 ) {
+	    var dialog = new BubbleDialog( "Master Lancelot is back from his exploration on a planet far away from our galaxy. He is bringing back a dragon! Will you accept him?",
+					   "textfield1",
+					   universe,
+					   512, 400, 300, 225 );
+	    dialog.onOK = function() {
+		forces[0].createCommander( "Master", "Lancelot", 
+					   7, 10 );
+		var i = forces[0].commanders.length - 1;
+		forces[0].commanders[i].level = 5;
+		forces[0].commanders[i].setAP( 7 );
+		forces[0].commanders[i].setAttack( 7 );
+		forces[0].commanders[i].setDefence( 1 );
+		forces[0].commanders[i].addUnit( Dragon );
+	    }
+	}
+    }
+}
+dispatcher.addListener( "NewYear", StoryEvent );
 
 
 

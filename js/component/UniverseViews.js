@@ -394,7 +394,7 @@ var CommanderMoveAnimation = function( commanderObj ) {
 			terran.owner.commanders.length -1 ];
 		    defender.type = "defender";
 		    defender.star = terran;
-		    for ( var i=0; i<terran.defenceSystem; i++ ) {
+		    for ( var i=0; i<terran.defenseSystem; i++ ) {
 			defender.addUnit( Cannon );
 		    }
 		    dispatcher.broadcast( {name: "StartBattle",
